@@ -8,15 +8,15 @@ import { useToast } from "@/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const MobileNavLinks = () => {
-	const { user, signOut } = useAuth();
+	const { user, logout } = useAuth();
 	const { toast } = useToast();
 
-	const handleSignOut = async () => {
+	const handleLogout = async () => {
 		try {
-			await signOut();
-			toast({ title: "サインアウトしました" });
+			await logout();
+			toast({ title: "ログアウトしました" });
 		} catch (error: any) {
-			console.error("Error signing out:", error.message);
+			console.error("Error loging out:", error.message);
 		}
 	};
 
@@ -62,19 +62,19 @@ const MobileNavLinks = () => {
 					<SheetClose asChild>
 						{user ? (
 							<button
-								onClick={handleSignOut}
+								onClick={handleLogout}
 								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 							>
 								<FiLogOut className="mr-2" />
-								サインアウト
+								ログアウト
 							</button>
 						) : (
 							<Link
-								href="/signin"
+								href="/login"
 								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 							>
 								<FiLogIn className="mr-2" />
-								サインイン
+								ログイン
 							</Link>
 						)}
 					</SheetClose>

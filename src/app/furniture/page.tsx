@@ -216,7 +216,7 @@ export default function FurnitureListPage() {
 				</div>
 			</div>
 
-			{/* 登録 or サインインリンク */}
+			{/* 登録 or ログインリンク */}
 			{user ? (
 				<Link
 					href="/furniture/add"
@@ -226,10 +226,10 @@ export default function FurnitureListPage() {
 				</Link>
 			) : (
 				<Link
-					href="/signin"
+					href="/login"
 					className="fixed bottom-5 right-4 md:bottom-8 md:right-8 px-6 py-3 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-sm flex items-center justify-center transition-all duration-300 ease-natural group z-50 text-sm font-bold tracking-tighter-custom"
 				>
-					サインインして家具を登録
+					ログインして家具を登録
 				</Link>
 			)}
 		</div>

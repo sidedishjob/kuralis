@@ -369,11 +369,11 @@ export default function FurnitureDetailPage() {
 									</div>
 									{!user && (
 										<Link
-											href="/signin"
+											href="/login"
 											className="px-4 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom flex items-center space-x-2"
 										>
 											<FiLock size={16} />
-											<span>サインインして編集</span>
+											<span>ログインして編集</span>
 										</Link>
 									)}
 								</div>

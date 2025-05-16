@@ -9,7 +9,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import Link from "next/link";
 import { FiArrowRight } from "react-icons/fi";
 
-export default function SignInPage() {
+export default function LoginPage() {
 	const router = useRouter();
 	const { user } = useAuth();
 
@@ -26,7 +26,7 @@ export default function SignInPage() {
 							おかえりなさい
 						</h1>
 						<p className="mt-2 text-sm text-kuralis-600 mb-8">
-							アカウントにサインインして、コレクションを管理しましょう。
+							アカウントにログインして、コレクションを管理しましょう。
 						</p>
 						<Link
 							href="/signup"
@@ -48,8 +48,8 @@ export default function SignInPage() {
 								sign_in: {
 									email_label: "メールアドレス",
 									password_label: "パスワード",
-									button_label: "サインイン",
-									loading_button_label: "サインイン中...",
+									button_label: "ログイン",
+									loading_button_label: "ログイン中...",
 									email_input_placeholder: "メールアドレスを入力",
 									password_input_placeholder: "パスワードを入力",
 								},

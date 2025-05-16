@@ -6,15 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 const NavLinks = () => {
-	const { user, signOut } = useAuth();
+	const { user, logout } = useAuth();
 	const { toast } = useToast();
 
-	const handleSignOut = async () => {
+	const handleLogout = async () => {
 		try {
-			await signOut();
-			toast({ title: "サインアウトしました" });
+			await logout();
+			toast({ title: "ログアウトしました" });
 		} catch (error: any) {
-			console.error("Error signing out:", error.message);
+			console.error("Error loging out:", error.message);
 		}
 	};
 
@@ -40,19 +40,19 @@ const NavLinks = () => {
 			</Link>
 			{user ? (
 				<button
-					onClick={handleSignOut}
+					onClick={handleLogout}
 					className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom flex items-center"
 				>
 					<FiLogOut className="mr-2" />
-					サインアウト
+					ログアウト
 				</button>
 			) : (
 				<Link
-					href="/signin"
+					href="/login"
 					className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom flex items-center"
 				>
 					<FiLogIn className="mr-2" />
-					サインイン
+					ログイン
 				</Link>
 			)}
 		</>

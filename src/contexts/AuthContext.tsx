@@ -7,13 +7,13 @@ import type { User } from "@supabase/supabase-js";
 interface AuthContextType {
 	user: User | null;
 	loading: boolean;
-	signOut: () => Promise<void>;
+	logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
 	user: null,
 	loading: true,
-	signOut: async () => {}, // fallback
+	logout: async () => {}, // fallback
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -35,13 +35,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		return () => listener.subscription.unsubscribe();
 	}, []);
 
-	const signOut = async () => {
+	const logout = async () => {
 		await supabase.auth.signOut();
 		setUser(null);
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, loading, signOut }}>{children}</AuthContext.Provider>
+		<AuthContext.Provider value={{ user, loading, logout }}>{children}</AuthContext.Provider>
 	);
 };
 

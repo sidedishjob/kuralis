@@ -27,7 +27,7 @@ export default function SignUpPage() {
 							アカウントを作成して、家具との思い出を記録しましょう。
 						</p>
 						<Link
-							href="/signin"
+							href="/login"
 							className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 group font-normal tracking-tighter-custom"
 						>
 							<span>すでにアカウントをお持ちの方はこちら</span>

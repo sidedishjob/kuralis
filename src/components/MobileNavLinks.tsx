@@ -63,14 +63,15 @@ const MobileNavLinks = () => {
 						{user ? (
 							<button
 								onClick={handleSignOut}
-								className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 							>
+								<FiLogOut className="mr-2" />
 								サインアウト
 							</button>
 						) : (
 							<Link
 								href="/signin"
-								className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 							>
 								<FiLogIn className="mr-2" />
 								サインイン

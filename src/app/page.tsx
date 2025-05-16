@@ -1,83 +1,93 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+import Link from "next/link";
+import { FiArrowRight, FiArrowDown, FiHeart } from "react-icons/fi";
+
+export default function Page() {
 	return (
-		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-				<Image
-					className="dark:invert"
-					src="/next.svg"
-					alt="Next.js logo"
-					width={180}
-					height={38}
-					priority
-				/>
-				<ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-					<li className="mb-2 tracking-[-.01em]">
-						Get started by editing{" "}
-						<code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-							src/app/page.tsx
-						</code>
-						.
-					</li>
-					<li className="tracking-[-.01em]">Save and see your changes instantly.</li>
-				</ol>
+		<>
+			<section className="min-h-[90vh] flex items-center relative">
+				<div className="container mx-auto px-6 md:px-12">
+					<div className="max-w-2xl mx-auto text-center space-y-10">
+						<h1 className="text-5xl md:text-6xl font-bold tracking-tighter-custom">
+							kuralis
+						</h1>
 
-				<div className="flex gap-4 items-center flex-col sm:flex-row">
-					<a
-						className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Image
-							className="dark:invert"
-							src="/vercel.svg"
-							alt="Vercel logomark"
-							width={20}
-							height={20}
-						/>
-						Deploy now
-					</a>
-					<a
-						className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-						href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Read our docs
-					</a>
+						<p className="text-lg md:text-xl text-kuralis-600 tracking-tighter-custom leading-relaxed">
+							使い手として、家具と暮らす。
+						</p>
+
+						<div className="pt-16">
+							<Link
+								href="/furniture"
+								className="inline-flex items-center text-kuralis-700 hover:text-kuralis-900 transition-colors duration-300 group font-normal tracking-tighter-custom"
+							>
+								<span className="border-b border-kuralis-300 group-hover:border-kuralis-700 transition-colors duration-300 py-1">
+									View Collection
+								</span>
+								<FiArrowRight
+									size={16}
+									className="ml-2 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-400 ease-natural"
+								/>
+							</Link>
+						</div>
+					</div>
 				</div>
-			</main>
-			<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
-					Learn
-				</a>
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-					Examples
-				</a>
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-					Go to nextjs.org →
-				</a>
-			</footer>
-		</div>
+				<div className="absolute bottom-16 left-1/2 -translate-x-1/2">
+					<FiArrowDown size={24} className="text-kuralis-400 animate-bounce" />
+				</div>
+			</section>
+
+			<section className="py-40 border-t border-kuralis-100">
+				<div className="container mx-auto px-6 md:px-12">
+					<div className="max-w-4xl mx-auto">
+						<div className="space-y-40">
+							<p className="text-xl md:text-2xl text-kuralis-600 leading-relaxed text-center max-w-2xl mx-auto">
+								家具は、私たちの生活を豊かにし、
+								<br />
+								時には心の拠り所となります。
+							</p>
+
+							<div className="max-w-xl mx-auto space-y-8">
+								<div className="w-16 h-16 rounded-full bg-kuralis-100 flex items-center justify-center mx-auto">
+									<FiHeart size={32} className="text-kuralis-600" />
+								</div>
+								<p className="text-kuralis-600 leading-relaxed text-center">
+									家具は単なる物ではなく、
+									<br />
+									私たちの生活を共に歩むパートナーです。
+									<br />
+									<br />
+									kuralisは、あなたと家具との
+									<br />
+									特別な関係を大切に育んでいくための
+									<br />
+									ツールです。
+								</p>
+							</div>
+						</div>
+
+						<div className="mt-40 text-center">
+							<p className="text-kuralis-600 mb-8 tracking-tighter-custom">
+								あなたの大切な家具を登録してみましょう
+							</p>
+							<Link
+								href="/furniture"
+								className="inline-flex items-center text-kuralis-700 hover:text-kuralis-900 transition-colors duration-300 group font-normal tracking-tighter-custom"
+							>
+								<span className="border-b border-kuralis-300 group-hover:border-kuralis-700 transition-colors duration-300 py-1">
+									Start Collection
+								</span>
+								<FiArrowRight
+									size={16}
+									className="ml-2 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-400 ease-natural"
+								/>
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+		</>
 	);
 }

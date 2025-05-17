@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 
 /**
- * ホームに戻るボタン（クライアント専用）
+ * ホームに戻る共通ボタンコンポーネント
  */
 export default function BackToHomeButton() {
 	const router = useRouter();

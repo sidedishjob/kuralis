@@ -13,3 +13,14 @@ export interface MaintenanceItem {
 	nextDate?: Date;
 	icon?: React.ReactNode; // UIで表示用
 }
+
+// メンテナンスタスク
+export interface MaintenanceTask {
+	id: string;
+	furnitureId: string;
+	furnitureName: string;
+	method: string;
+	nextDate: Date;
+	cycle: string;
+	lastDoneAt: string;
+}

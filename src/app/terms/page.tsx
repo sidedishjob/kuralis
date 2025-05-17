@@ -1,24 +1,9 @@
-"use client";
+import BackToHomeButton from "@/components/BackToHomeButton";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { FiArrowLeft } from "react-icons/fi";
-
-const TermsPage: React.FC = () => {
-	const router = useRouter();
-
+export default function TermsPage() {
 	return (
 		<div className="container mx-auto py-12 px-6 md:px-12">
-			<button
-				onClick={() => router.push("/")}
-				className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
-			>
-				<FiArrowLeft
-					size={16}
-					className="mr-2 transform translate-x-0 group-hover:-translate-x-1 transition-all duration-400 ease-natural"
-				/>
-				<span>ホームに戻る</span>
-			</button>
+			<BackToHomeButton />
 
 			<div className="max-w-3xl mx-auto">
 				<h1 className="text-3xl font-bold tracking-tighter-custom mb-12">利用規約</h1>
@@ -90,16 +75,17 @@ const TermsPage: React.FC = () => {
 							第5条（本サービスの提供の停止等）
 						</h2>
 						<p className="text-kuralis-600 leading-relaxed mb-4">
-							当社は、以下のいずれかの事由があると判断した場合、ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
+							当社は、以下のいずれかの事由があると判断した場合、ユーザーに事前に通知することなく
+							本サービスの全部または一部の提供を停止または中断することができるものとします。
 						</p>
 						<ul className="list-disc list-inside space-y-2 text-kuralis-600">
 							<li>
 								本サービスにかかるコンピュータシステムの保守点検または更新を行う場合
 							</li>
 							<li>
-								地震、落雷、火災、停電または天災などの不可抗力により、本サービスの提供が困難となった場合
+								天地震、落雷、火災、停電または天災などの不可抗力により、本サービスの提供が困難となった場合
 							</li>
-							<li>コンピュータまたは通信回線等が事故により停止した場合</li>
+							<li>事コンピュータまたは通信回線等が事故により停止した場合</li>
 							<li>その他、当社が本サービスの提供が困難と判断した場合</li>
 						</ul>
 					</section>
@@ -109,13 +95,12 @@ const TermsPage: React.FC = () => {
 							第6条（免責事項）
 						</h2>
 						<p className="text-kuralis-600 leading-relaxed">
-							当社は、本サービスに関して、ユーザーと他のユーザーまたは第三者との間において生じた取引、連絡または紛争等について一切責任を負いません。
+							当社は、本サービスに関して、ユーザーと他のユーザーまたは第三者との間において
+							生じた取引、連絡または紛争等について一切責任を負いません。
 						</p>
 					</section>
 				</div>
 			</div>
 		</div>
 	);
-};
-
-export default TermsPage;
+}

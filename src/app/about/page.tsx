@@ -1,10 +1,9 @@
-"use client";
+// app/about/page.tsx
 
 import { FiArrowRight, FiHeart, FiUser, FiFeather, FiArrowDown } from "react-icons/fi";
 import Link from "next/link";
-import React from "react";
 
-const AboutPage = () => {
+export default function AboutPage() {
 	return (
 		<>
 			{/* Hero Section */}
@@ -99,6 +98,4 @@ const AboutPage = () => {
 			</section>
 		</>
 	);
-};
-
-export default AboutPage;
+}

@@ -1,0 +1,64 @@
+"use client";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FiInfo, FiShoppingBag, FiSettings } from "react-icons/fi";
+import FurnitureDetailBasicTab from "./FurnitureDetailBasicTab";
+import FurnitureDetailPurchaseTab from "./FurnitureDetailPurchaseTab";
+import FurnitureDetailMaintenanceTab from "./FurnitureDetailMaintenanceTab";
+
+import { Furniture } from "@/types/furniture";
+
+interface Props {
+	furniture: Furniture;
+	editedFurniture: Furniture;
+	setEditedFurniture: (f: Furniture) => void;
+	isEditing: boolean;
+}
+
+export default function FurnitureDetailTabs({
+	furniture,
+	editedFurniture,
+	setEditedFurniture,
+	isEditing,
+}: Props) {
+	return (
+		<Tabs defaultValue="basic" className="w-full">
+			<TabsList className="w-full grid grid-cols-3 mb-8 bg-transparent p-0 gap-2">
+				<TabsTrigger value="basic" className="flex items-center">
+					<FiInfo className="mr-2" /> 基本情報
+				</TabsTrigger>
+				<TabsTrigger value="purchase" className="flex items-center">
+					<FiShoppingBag className="mr-2" /> 購入情報
+				</TabsTrigger>
+				<TabsTrigger value="maintenance" className="flex items-center">
+					<FiSettings className="mr-2" /> メンテナンス
+				</TabsTrigger>
+			</TabsList>
+
+			<TabsContent value="basic">
+				<FurnitureDetailBasicTab
+					furniture={furniture}
+					editedFurniture={editedFurniture}
+					setEditedFurniture={setEditedFurniture}
+					isEditing={isEditing}
+				/>
+			</TabsContent>
+			<TabsContent value="purchase">
+				<FurnitureDetailPurchaseTab
+					furniture={furniture}
+					editedFurniture={editedFurniture}
+					setEditedFurniture={setEditedFurniture}
+					isEditing={isEditing}
+				/>
+			</TabsContent>
+			<TabsContent value="maintenance">
+				<FurnitureDetailMaintenanceTab
+					furniture={furniture}
+					editedFurniture={editedFurniture}
+					setEditedFurniture={setEditedFurniture}
+					isEditing={isEditing}
+				/>
+			</TabsContent>
+		</Tabs>
+	);
+}

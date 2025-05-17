@@ -1,24 +1,9 @@
-"use client";
+import BackToHomeButton from "./BackToHomeButton";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { FiArrowLeft } from "react-icons/fi";
-
-const PrivacyPage: React.FC = () => {
-	const router = useRouter();
-
+export default function PrivacyPage() {
 	return (
 		<div className="container mx-auto py-12 px-6 md:px-12">
-			<button
-				onClick={() => router.push("/")}
-				className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
-			>
-				<FiArrowLeft
-					size={16}
-					className="mr-2 transform translate-x-0 group-hover:-translate-x-1 transition-all duration-400 ease-natural"
-				/>
-				<span>ホームに戻る</span>
-			</button>
+			<BackToHomeButton />
 
 			<div className="max-w-3xl mx-auto">
 				<h1 className="text-3xl font-bold tracking-tighter-custom mb-12">
@@ -92,6 +77,4 @@ const PrivacyPage: React.FC = () => {
 			</div>
 		</div>
 	);
-};
-
-export default PrivacyPage;
+}

@@ -24,7 +24,11 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 }) => {
 	return (
 		<Sheet>
-			<SheetTrigger className="md:hidden text-kuralis-400 hover:text-kuralis-600 transition-colors duration-300">
+			<SheetTrigger
+				className="md:hidden text-kuralis-400 hover:text-kuralis-600 transition-colors duration-300"
+				aria-label="フィルターを開く"
+				title="フィルターを開く"
+			>
 				<FiFilter size={16} className="ml-2" />
 			</SheetTrigger>
 			<SheetContent side="left" className="w-full max-w-xs">

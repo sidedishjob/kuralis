@@ -1,10 +1,7 @@
-"use client";
-
-import React from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FiArrowRight, FiArrowDown, FiHeart } from "react-icons/fi";
-import { getUserFromCookie } from "@/lib/supabase";
+import { getUserFromCookie } from "@/lib/server/auth";
 
 export default async function Page() {
 	const user = await getUserFromCookie();

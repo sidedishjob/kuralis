@@ -2,9 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { FiArrowRight, FiArrowDown, FiHeart } from "react-icons/fi";
+import { getUserFromCookie } from "@/lib/supabase";
 
-export default function Page() {
+export default async function Page() {
+	const user = await getUserFromCookie();
+	if (user) {
+		redirect("/furniture");
+	}
 	return (
 		<>
 			<section className="min-h-[90vh] flex items-center relative">

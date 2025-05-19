@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FiArrowRight, FiArrowDown, FiHeart } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import { getUserFromCookie } from "@/lib/server/auth";
 
 export default async function Page() {
@@ -8,89 +8,84 @@ export default async function Page() {
 	if (user) {
 		redirect("/furniture");
 	}
+
 	return (
-		<>
-			<section className="min-h-[90vh] flex items-center relative">
-				<div className="container mx-auto px-6 md:px-12">
-					<div className="max-w-2xl mx-auto text-center space-y-10">
-						<h1 className="text-5xl md:text-6xl font-bold tracking-tighter-custom">
-							kuralis
-						</h1>
-
-						<p className="text-lg md:text-xl text-kuralis-600 tracking-tighter-custom leading-relaxed">
-							使い手として、家具と暮らす。
-						</p>
-
-						<div className="pt-16">
-							<Link
-								href="/furniture"
-								className="inline-flex items-center text-kuralis-700 hover:text-kuralis-900 transition-colors duration-300 group font-normal tracking-tighter-custom"
-							>
-								<span className="border-b border-kuralis-300 group-hover:border-kuralis-700 transition-colors duration-300 py-1">
-									View Collection
-								</span>
-								<FiArrowRight
-									size={16}
-									className="ml-2 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-400 ease-natural"
-								/>
-							</Link>
-						</div>
-					</div>
-				</div>
-				<div className="absolute bottom-16 left-1/2 -translate-x-1/2">
-					<FiArrowDown size={24} className="text-kuralis-400 animate-bounce" />
+		<main className="bg-white">
+			{/* ファーストビュー */}
+			<section className="min-h-[85vh] flex flex-col justify-center items-center text-center px-4">
+				<h1 className="text-5xl md:text-7xl font-light tracking-tight mb-8 text-kuralis-900">
+					kuralis
+				</h1>
+				<p className="text-xl md:text-2xl text-kuralis-700 font-light tracking-wide mb-12">
+					使い手として、家具と暮らす。
+				</p>
+				<div className="flex flex-col md:flex-row gap-5 mt-6">
+					<Link
+						href="/signup"
+						className="inline-flex items-center gap-2 px-8 py-3 border border-kuralis-900 text-kuralis-900 text-base font-medium hover:bg-kuralis-900 hover:text-white transition-all duration-200 shadow-none"
+					>
+						Start Collection
+						<FiArrowRight className="w-5 h-5" />
+					</Link>
+					<Link
+						href="/login"
+						className="inline-flex items-center gap-2 px-8 py-3 border border-kuralis-100 text-kuralis-400 text-base font-medium hover:bg-kuralis-100 hover:text-kuralis-700 transition-all duration-200 shadow-none"
+					>
+						Login
+					</Link>
 				</div>
 			</section>
 
-			<section className="py-40 border-t border-kuralis-100">
-				<div className="container mx-auto px-6 md:px-12">
-					<div className="max-w-4xl mx-auto">
-						<div className="space-y-40">
-							<p className="text-xl md:text-2xl text-kuralis-600 leading-relaxed text-center max-w-2xl mx-auto">
-								家具は、私たちの生活を豊かにし、
-								<br />
-								時には心の拠り所となります。
-							</p>
-
-							<div className="max-w-xl mx-auto space-y-8">
-								<div className="w-16 h-16 rounded-full bg-kuralis-100 flex items-center justify-center mx-auto">
-									<FiHeart size={32} className="text-kuralis-600" />
-								</div>
-								<p className="text-kuralis-600 leading-relaxed text-center">
-									家具は単なる物ではなく、
-									<br />
-									私たちの生活を共に歩むパートナーです。
-									<br />
-									<br />
-									kuralisは、あなたと家具との
-									<br />
-									特別な関係を大切に育んでいくための
-									<br />
-									ツールです。
-								</p>
-							</div>
-						</div>
-
-						<div className="mt-40 text-center">
-							<p className="text-kuralis-600 mb-8 tracking-tighter-custom">
-								あなたの大切な家具を登録してみましょう
-							</p>
-							<Link
-								href="/furniture"
-								className="inline-flex items-center text-kuralis-700 hover:text-kuralis-900 transition-colors duration-300 group font-normal tracking-tighter-custom"
-							>
-								<span className="border-b border-kuralis-300 group-hover:border-kuralis-700 transition-colors duration-300 py-1">
-									Start Collection
-								</span>
-								<FiArrowRight
-									size={16}
-									className="ml-2 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-400 ease-natural"
-								/>
-							</Link>
-						</div>
-					</div>
+			{/* Value Props */}
+			<section className="max-w-5xl mx-auto px-4 py-32 grid md:grid-cols-3 gap-16 border-t border-kuralis-100">
+				<div>
+					<h3 className="text-lg font-semibold text-kuralis-800 mb-3 tracking-tight">
+						家具を記録する
+					</h3>
+					<p className="text-base text-kuralis-500 leading-relaxed">
+						お気に入りの家具や写真、設置場所をシンプルに管理できます。
+					</p>
+				</div>
+				<div>
+					<h3 className="text-lg font-semibold text-kuralis-800 mb-3 tracking-tight">
+						メンテナンスを可視化
+					</h3>
+					<p className="text-base text-kuralis-500 leading-relaxed">
+						家具ごとにメンテナンス履歴や実施予定を記録し、いつでも見返せます。
+					</p>
+				</div>
+				<div>
+					<h3 className="text-lg font-semibold text-kuralis-800 mb-3 tracking-tight">
+						思い出とストーリー
+					</h3>
+					<p className="text-base text-kuralis-500 leading-relaxed">
+						家具にまつわる思い出や家族のストーリーも、そっと残せます。
+					</p>
 				</div>
 			</section>
-		</>
+
+			{/* サブCTA */}
+			<section className="py-20 text-center border-t border-kuralis-100">
+				<p className="text-lg text-kuralis-700 mb-10 font-light tracking-wide">
+					家具のある暮らしを、もっと心地よく。
+				</p>
+				<Link
+					href="/signup"
+					className="inline-flex items-center gap-2 px-8 py-3 border border-kuralis-900 text-kuralis-900 text-base font-medium hover:bg-kuralis-900 hover:text-white transition-all duration-200 shadow-none"
+				>
+					無料ではじめる
+					<FiArrowRight className="w-5 h-5" />
+				</Link>
+			</section>
+
+			{/* フッター的な世界観説明（SEO用） */}
+			<section className="py-12 text-center text-kuralis-400 border-t border-kuralis-100">
+				<p className="text-sm leading-relaxed">
+					kuralis（クラリス）は、大切な家具との毎日をシンプルに、美しく管理できるサービスです。
+					<br />
+					あなたと家具の物語を、これからも。
+				</p>
+			</section>
+		</main>
 	);
 }

@@ -18,6 +18,9 @@ const NavLinks = () => {
 		}
 	};
 
+	if (typeof user === "undefined") {
+		return null;
+	}
 	return (
 		<>
 			<Link
@@ -48,7 +51,7 @@ const NavLinks = () => {
 				</button>
 			) : (
 				<Link
-					href="/login"
+					href="/auth/login"
 					className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom flex items-center"
 				>
 					<FiLogIn className="mr-2" />

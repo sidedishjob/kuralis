@@ -28,7 +28,7 @@ export default async function Page() {
 						<FiArrowRight className="w-5 h-5" />
 					</Link>
 					<Link
-						href="/login"
+						href="/auth/login"
 						className="inline-flex items-center gap-2 px-8 py-3 border border-kuralis-100 text-kuralis-400 text-base font-medium hover:bg-kuralis-100 hover:text-kuralis-700 transition-all duration-200 shadow-none"
 					>
 						Login

@@ -70,7 +70,7 @@ const MobileNavLinks = () => {
 							</button>
 						) : (
 							<Link
-								href="/login"
+								href="/auth/login"
 								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 							>
 								<FiLogIn className="mr-2" />

@@ -21,7 +21,7 @@ export default async function Page() {
 				</p>
 				<div className="flex flex-col md:flex-row gap-5 mt-6">
 					<Link
-						href="/signup"
+						href="/auth/signup"
 						className="inline-flex items-center gap-2 px-8 py-3 border border-kuralis-900 text-kuralis-900 text-base font-medium hover:bg-kuralis-900 hover:text-white transition-all duration-200 shadow-none"
 					>
 						Start Collection
@@ -70,7 +70,7 @@ export default async function Page() {
 					家具のある暮らしを、もっと心地よく。
 				</p>
 				<Link
-					href="/signup"
+					href="/auth/signup"
 					className="inline-flex items-center gap-2 px-8 py-3 border border-kuralis-900 text-kuralis-900 text-base font-medium hover:bg-kuralis-900 hover:text-white transition-all duration-200 shadow-none"
 				>
 					無料ではじめる

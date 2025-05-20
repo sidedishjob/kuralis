@@ -16,7 +16,7 @@ export function AuthForm() {
 						アカウントにログインして、コレクションを管理しましょう。
 					</p>
 					<Link
-						href="/signup"
+						href="/auth/signup"
 						className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 group font-normal tracking-tighter-custom"
 					>
 						<span>未登録の方はこちら</span>
@@ -26,10 +26,12 @@ export function AuthForm() {
 						/>
 					</Link>
 				</div>
+
 				<Auth
 					supabaseClient={supabase}
 					appearance={{ theme: ThemeSupa }}
 					view="sign_in"
+					showLinks={false}
 					localization={{
 						variables: {
 							sign_in: {
@@ -44,6 +46,13 @@ export function AuthForm() {
 					}}
 					providers={[]}
 				/>
+
+				{/* パスワードリセットリンク */}
+				<p className="text-sm text-center">
+					<Link href="/auth/reset-request" className="text-kuralis-600 hover:underline">
+						パスワードをお忘れですか？
+					</Link>
+				</p>
 			</div>
 		</div>
 	);

@@ -85,12 +85,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 							<div className="grid gap-3">
 								<div className="flex items-center">
 									<Label htmlFor="password">パスワード</Label>
-									<a
+									<Link
 										href="/auth/reset-request"
 										className="ml-auto text-sm underline-offset-4 hover:underline"
 									>
 										パスワードをお忘れですか？
-									</a>
+									</Link>
 								</div>
 								<Input
 									id="password"
@@ -111,9 +111,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
 						<div className="text-center text-sm">
 							アカウントをお持ちでないですか？{" "}
-							<a href="/auth/signup" className="underline underline-offset-4">
+							<Link href="/auth/signup" className="underline underline-offset-4">
 								サインアップ
-							</a>
+							</Link>
 						</div>
 					</div>
 				</CardContent>

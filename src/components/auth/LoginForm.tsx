@@ -87,7 +87,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 									<Label htmlFor="password">パスワード</Label>
 									<Link
 										href="/auth/reset-request"
-										className="ml-auto text-sm underline-offset-4 hover:underline"
+										className="ml-auto text-xs font-light text-muted-foreground underline-offset-4 hover:underline"
 									>
 										パスワードをお忘れですか？
 									</Link>

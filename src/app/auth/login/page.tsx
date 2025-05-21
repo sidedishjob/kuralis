@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthRedirect } from "@/hooks/use-auth-redirect";
-import { AuthForm } from "./AuthForm";
+import AuthForm from "./AuthForm";
 
 export default function LoginPage() {
 	useAuthRedirect();

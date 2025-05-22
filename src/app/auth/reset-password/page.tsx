@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
 								<Input
 									id="password"
 									type="password"
-									placeholder="8文字以上"
+									placeholder="6文字以上"
 									value={newPassword}
 									onChange={(e) => setNewPassword(e.target.value)}
 								/>

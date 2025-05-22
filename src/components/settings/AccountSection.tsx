@@ -14,18 +14,28 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { toast } from "@/hooks/use-toast";
 
 export const AccountSection = () => {
 	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
 	const handleDelete = async () => {
+		setLoading(true);
 		const res = await fetch("/api/delete-user", { method: "POST" });
 		if (!res.ok) {
 			alert("削除に失敗しました");
 			return;
 		}
 		await supabase.auth.signOut();
+		setLoading(false);
+
+		toast({
+			title: "アカウント削除完了",
+			description: "ご利用ありがとうございました。家具との記録はすべて削除されました。",
+		});
+
 		router.push("/");
 	};
 
@@ -57,8 +67,8 @@ export const AccountSection = () => {
 							<Button variant="outline" onClick={() => setOpen(false)}>
 								キャンセル
 							</Button>
-							<Button variant="destructive" onClick={handleDelete}>
-								削除する
+							<Button variant="destructive" onClick={handleDelete} disabled={loading}>
+								{loading ? "削除中..." : "削除する"}
 							</Button>
 						</DialogFooter>
 					</DialogContent>

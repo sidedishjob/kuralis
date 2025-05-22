@@ -20,16 +20,13 @@ export const AccountSection = () => {
 	const router = useRouter();
 
 	const handleDelete = async () => {
-		const { error } = await supabase.auth.admin.deleteUser(
-			(await supabase.auth.getUser()).data.user?.id || ""
-		);
-
-		if (error) {
+		const res = await fetch("/api/delete-user", { method: "POST" });
+		if (!res.ok) {
 			alert("削除に失敗しました");
 			return;
 		}
-
-		router.push("/goodbye");
+		await supabase.auth.signOut();
+		router.push("/");
 	};
 
 	return (

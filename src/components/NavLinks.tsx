@@ -36,6 +36,12 @@ const NavLinks = () => {
 				Maintenance
 			</Link>
 			<Link
+				href="/settings"
+				className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+			>
+				Settings
+			</Link>
+			<Link
 				href="/about"
 				className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 			>

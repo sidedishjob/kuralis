@@ -4,17 +4,18 @@ import Link from "next/link";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 const NavLinks = () => {
 	const { user, logout } = useAuth();
 	const { toast } = useToast();
+	const router = useRouter();
 
 	const handleLogout = async () => {
 		try {
 			await logout();
 			toast({ title: "ログアウトしました" });
-			router.push("/auth/login");
+			router.push("/");
 		} catch (error: any) {
 			console.error("Error loging out:", error.message);
 		}

@@ -6,17 +6,18 @@ import { SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 const MobileNavLinks = () => {
 	const { user, logout } = useAuth();
 	const { toast } = useToast();
+	const router = useRouter();
 
 	const handleLogout = async () => {
 		try {
 			await logout();
 			toast({ title: "ログアウトしました" });
-			router.push("/auth/login");
+			router.push("/");
 		} catch (error: any) {
 			console.error("Error loging out:", error.message);
 		}

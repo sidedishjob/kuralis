@@ -13,7 +13,7 @@ export function useAuthRedirect() {
 
 	useEffect(() => {
 		if (user) {
-			router.push("/furniture");
+			router.replace("/furniture");
 		}
 	}, [user, router]);
 }

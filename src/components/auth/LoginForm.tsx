@@ -29,7 +29,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 		setError(null);
 
 		const { error } = await supabase.auth.signInWithPassword({ email, password });
-		setLoading(false);
 
 		if (error) {
 			setError(error.message);

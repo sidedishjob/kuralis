@@ -8,6 +8,7 @@ import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
+import { useFurniture } from "@/hooks/useFurniture";
 
 export default function FurnitureListPage() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -16,6 +17,8 @@ export default function FurnitureListPage() {
 	const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 	const [isLocationOpen, setIsLocationOpen] = useState(false);
 	const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
+	const { data, isLoading, error } = useFurniture();
+
 	useEffect(() => {
 		const hasSeen = localStorage.getItem("hasSeenOnboarding");
 		setOnboardingStep(hasSeen ? null : 1);
@@ -58,6 +61,19 @@ export default function FurnitureListPage() {
 
 	return (
 		<div className="container mx-auto py-4 md:py-6 px-4 md:px-12">
+			<div className="p-6">
+				<h1 className="text-2xl font-bold mb-4">家具一覧</h1>
+				<ul className="space-y-2">
+					{data?.map((item) => (
+						<li key={item.id} className="p-4 border rounded shadow-sm">
+							<p className="font-semibold">{item.name}</p>
+							<p className="text-sm text-neutral-600">{item.brand}</p>
+							<p className="text-sm text-neutral-500">購入日: {item.purchased_at}</p>
+						</li>
+					))}
+				</ul>
+			</div>
+
 			{onboardingStep && (
 				<OnboardingOverlay
 					currentStep={onboardingStep}

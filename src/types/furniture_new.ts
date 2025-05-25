@@ -3,8 +3,8 @@ export interface Furniture {
 	user_id: string;
 	name: string;
 	brand: string;
-	category_id: string;
-	location_id: string;
+	category_id: number;
+	location_id: number;
 	image_url: string;
 	purchased_at: string;
 	purchased_from: string;

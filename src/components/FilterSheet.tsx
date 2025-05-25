@@ -3,14 +3,15 @@
 import React from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { FiFilter } from "react-icons/fi";
+import { Category, Location } from "@/types/furniture_meta";
 
 interface FilterSheetProps {
-	categories: string[];
-	locations: string[];
-	activeCategory: string;
-	activeLocation: string;
-	onCategorySelect: (category: string) => void;
-	onLocationSelect: (location: string) => void;
+	categories: Category[];
+	locations: Location[];
+	activeCategory: number | null;
+	activeLocation: number | null;
+	onCategorySelect: (category: number | null) => void;
+	onLocationSelect: (location: number | null) => void;
 }
 
 // FilterSheet はスマホ用のフィルター選択 UI（カテゴリ・設置場所）を表示するシート
@@ -45,9 +46,9 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 						</h2>
 						<div className="space-y-3 ml-2">
 							<button
-								onClick={() => onCategorySelect("")}
+								onClick={() => onCategorySelect(null)}
 								className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-									activeCategory === ""
+									activeCategory === null
 										? "text-kuralis-900"
 										: "text-kuralis-500 hover:text-kuralis-700"
 								}`}
@@ -56,15 +57,15 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 							</button>
 							{categories.map((category) => (
 								<button
-									key={category}
-									onClick={() => onCategorySelect(category)}
+									key={category.id}
+									onClick={() => onCategorySelect(category.id)}
 									className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeCategory === category
+										activeCategory === category.id
 											? "text-kuralis-900"
 											: "text-kuralis-500 hover:text-kuralis-700"
 									}`}
 								>
-									{category}
+									{category.name}
 								</button>
 							))}
 						</div>
@@ -77,9 +78,9 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 						</h2>
 						<div className="space-y-3 ml-2">
 							<button
-								onClick={() => onLocationSelect("")}
+								onClick={() => onLocationSelect(null)}
 								className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-									activeLocation === ""
+									activeLocation === null
 										? "text-kuralis-900"
 										: "text-kuralis-500 hover:text-kuralis-700"
 								}`}
@@ -88,15 +89,15 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 							</button>
 							{locations.map((location) => (
 								<button
-									key={location}
-									onClick={() => onLocationSelect(location)}
+									key={location.id}
+									onClick={() => onLocationSelect(location.id)}
 									className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeLocation === location
+										activeLocation === location.id
 											? "text-kuralis-900"
 											: "text-kuralis-500 hover:text-kuralis-700"
 									}`}
 								>
-									{location}
+									{location.name}
 								</button>
 							))}
 						</div>

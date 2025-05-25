@@ -3,20 +3,21 @@
 import React, { useState, useEffect, useMemo } from "react";
 import FurnitureCard from "@/components/FurnitureCard";
 import FilterSheet from "@/components/FilterSheet";
-import { sampleFurniture } from "@/data/sampleFurniture";
 import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { useFurniture } from "@/hooks/useFurniture";
+import { useFurnitureMeta } from "@/hooks/useFurnitureMeta";
 
 export default function FurnitureListPage() {
 	const [searchQuery, setSearchQuery] = useState("");
-	const [activeCategory, setActiveCategory] = useState<string>("");
-	const [activeLocation, setActiveLocation] = useState<string>("");
+	const [activeCategory, setActiveCategory] = useState<number | null>(null);
+	const [activeLocation, setActiveLocation] = useState<number | null>(null);
 	const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 	const [isLocationOpen, setIsLocationOpen] = useState(false);
 	const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
+
 	const { data, isLoading, error } = useFurniture();
 
 	useEffect(() => {
@@ -25,29 +26,25 @@ export default function FurnitureListPage() {
 	}, []);
 	const { user } = useAuth();
 
-	const categories = useMemo(
-		() => Array.from(new Set(sampleFurniture.map((f) => f.category))).sort(),
-		[]
-	);
-
-	const locations = useMemo(
-		() => Array.from(new Set(sampleFurniture.map((f) => f.location))).sort(),
-		[]
-	);
+	const { categories, locations } = useFurnitureMeta();
 
 	const filteredFurniture = useMemo(() => {
-		return sampleFurniture.filter((furniture) => {
+		if (!data) return [];
+
+		return data?.filter((furniture) => {
 			const matchesSearch =
 				searchQuery === "" ||
 				furniture.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				furniture.brand.toLowerCase().includes(searchQuery.toLowerCase());
 
-			const matchesCategory = activeCategory === "" || furniture.category === activeCategory;
-			const matchesLocation = activeLocation === "" || furniture.location === activeLocation;
+			const matchesCategory =
+				activeCategory === null || furniture.category_id === activeCategory;
+			const matchesLocation =
+				activeLocation === null || furniture.location_id === activeLocation;
 
 			return matchesSearch && matchesCategory && matchesLocation;
 		});
-	}, [searchQuery, activeCategory, activeLocation]);
+	}, [data, searchQuery, activeCategory, activeLocation]);
 
 	const handleOnboardingNext = () => setOnboardingStep((prev) => (prev ? prev + 1 : null));
 	const handleOnboardingSkip = () => {
@@ -61,19 +58,6 @@ export default function FurnitureListPage() {
 
 	return (
 		<div className="container mx-auto py-4 md:py-6 px-4 md:px-12">
-			<div className="p-6">
-				<h1 className="text-2xl font-bold mb-4">家具一覧</h1>
-				<ul className="space-y-2">
-					{data?.map((item) => (
-						<li key={item.id} className="p-4 border rounded shadow-sm">
-							<p className="font-semibold">{item.name}</p>
-							<p className="text-sm text-neutral-600">{item.brand}</p>
-							<p className="text-sm text-neutral-500">購入日: {item.purchased_at}</p>
-						</li>
-					))}
-				</ul>
-			</div>
-
 			{onboardingStep && (
 				<OnboardingOverlay
 					currentStep={onboardingStep}
@@ -112,9 +96,9 @@ export default function FurnitureListPage() {
 								}`}
 							>
 								<button
-									onClick={() => setActiveCategory("")}
+									onClick={() => setActiveCategory(null)}
 									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeCategory === ""
+										activeCategory === null
 											? "text-kuralis-900"
 											: "text-kuralis-500 hover:text-kuralis-700"
 									}`}
@@ -123,15 +107,15 @@ export default function FurnitureListPage() {
 								</button>
 								{categories.map((category) => (
 									<button
-										key={category}
-										onClick={() => setActiveCategory(category)}
+										key={category.id}
+										onClick={() => setActiveCategory(category.id)}
 										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-											activeCategory === category
+											activeCategory === category.id
 												? "text-kuralis-900"
 												: "text-kuralis-500 hover:text-kuralis-700"
 										}`}
 									>
-										{category}
+										{category.name}
 									</button>
 								))}
 							</div>
@@ -157,9 +141,9 @@ export default function FurnitureListPage() {
 								}`}
 							>
 								<button
-									onClick={() => setActiveLocation("")}
+									onClick={() => setActiveLocation(null)}
 									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeLocation === ""
+										activeLocation === null
 											? "text-kuralis-900"
 											: "text-kuralis-500 hover:text-kuralis-700"
 									}`}
@@ -168,15 +152,15 @@ export default function FurnitureListPage() {
 								</button>
 								{locations.map((location) => (
 									<button
-										key={location}
-										onClick={() => setActiveLocation(location)}
+										key={location.id}
+										onClick={() => setActiveLocation(location.id)}
 										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-											activeLocation === location
+											activeLocation === location.id
 												? "text-kuralis-900"
 												: "text-kuralis-500 hover:text-kuralis-700"
 										}`}
 									>
-										{location}
+										{location.name}
 									</button>
 								))}
 							</div>
@@ -221,7 +205,7 @@ export default function FurnitureListPage() {
 					</div>
 
 					<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-						{filteredFurniture.map((furniture) => (
+						{filteredFurniture?.map((furniture) => (
 							<FurnitureCard
 								key={furniture.id}
 								furniture={furniture}

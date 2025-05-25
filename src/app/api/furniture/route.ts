@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/server/auth";
+import { createSupabaseServerClient } from "@/lib/server/supabase";
 
 /**
  * 家具一覧を取得するAPI

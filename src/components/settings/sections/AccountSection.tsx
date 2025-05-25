@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase-client";
 import { toast } from "@/hooks/use-toast";
 import PasswordChangeForm from "@/components/auth/PasswordChangeForm";
 import { FiUser } from "react-icons/fi";

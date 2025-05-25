@@ -1,59 +1,57 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { useState, useEffect, useMemo } from "react";
 import FurnitureCard from "@/components/FurnitureCard";
 import FilterSheet from "@/components/FilterSheet";
-import OnboardingOverlay from "@/components/OnboardingOverlay";
+import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import Link from "next/link";
-import { FiChevronDown, FiPlus, FiSearch, FiX } from "react-icons/fi";
+import OnboardingOverlay from "@/components/OnboardingOverlay";
+import { User } from "@supabase/supabase-js";
+import { Furniture } from "@/types/furniture_new";
+import { Category, Location } from "@/types/furniture_meta";
 
-interface Furniture {
-	id: string;
-	name: string;
-	brand: string;
-	category: string;
-	location: string;
-	needsMaintenance: boolean;
-	imageUrl: string;
-}
-
-interface Props {
+type FurnitureListClientProps = {
+	user: User | null;
 	initialFurniture: Furniture[];
-}
+	initialCategories: Category[];
+	initialLocations: Location[];
+};
 
-export default function FurnitureListClient({ initialFurniture }: Props) {
+export default function FurnitureListClient({
+	user,
+	initialFurniture,
+	initialCategories,
+	initialLocations,
+}: FurnitureListClientProps) {
 	const [searchQuery, setSearchQuery] = useState("");
-	const [activeCategory, setActiveCategory] = useState<string>("");
-	const [activeLocation, setActiveLocation] = useState<string>("");
+	const [activeCategory, setActiveCategory] = useState<number | null>(null);
+	const [activeLocation, setActiveLocation] = useState<number | null>(null);
 	const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 	const [isLocationOpen, setIsLocationOpen] = useState(false);
 	const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
-	const { user } = useAuth();
+
+	// const { data, isLoading, error } = useFurniture();
 
 	useEffect(() => {
 		const hasSeen = localStorage.getItem("hasSeenOnboarding");
 		setOnboardingStep(hasSeen ? null : 1);
 	}, []);
 
-	const categories = useMemo(
-		() => Array.from(new Set(initialFurniture.map((f) => f.category))).sort(),
-		[initialFurniture]
-	);
-	const locations = useMemo(
-		() => Array.from(new Set(initialFurniture.map((f) => f.location))).sort(),
-		[initialFurniture]
-	);
+	// const { categories, locations } = useFurnitureMeta();
 
 	const filteredFurniture = useMemo(() => {
-		return initialFurniture.filter((furniture) => {
+		if (!initialFurniture) return [];
+
+		return initialFurniture?.filter((furniture) => {
 			const matchesSearch =
 				searchQuery === "" ||
 				furniture.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				furniture.brand.toLowerCase().includes(searchQuery.toLowerCase());
 
-			const matchesCategory = activeCategory === "" || furniture.category === activeCategory;
-			const matchesLocation = activeLocation === "" || furniture.location === activeLocation;
+			const matchesCategory =
+				activeCategory === null || furniture.category_id === activeCategory;
+			const matchesLocation =
+				activeLocation === null || furniture.location_id === activeLocation;
 
 			return matchesSearch && matchesCategory && matchesLocation;
 		});
@@ -62,11 +60,11 @@ export default function FurnitureListClient({ initialFurniture }: Props) {
 	const handleOnboardingNext = () => setOnboardingStep((prev) => (prev ? prev + 1 : null));
 	const handleOnboardingSkip = () => {
 		setOnboardingStep(null);
-		localStorage.setItem("hasSeenOnboarding", "true");
+		if (typeof window !== "undefined") localStorage.setItem("hasSeenOnboarding", "true");
 	};
 	const handleOnboardingComplete = () => {
 		setOnboardingStep(null);
-		localStorage.setItem("hasSeenOnboarding", "true");
+		if (typeof window !== "undefined") localStorage.setItem("hasSeenOnboarding", "true");
 	};
 
 	return (
@@ -98,25 +96,37 @@ export default function FurnitureListClient({ initialFurniture }: Props) {
 								<span>Category</span>
 								<FiChevronDown
 									size={16}
-									className={`transform transition-transform duration-300 ${isCategoryOpen ? "rotate-180" : ""}`}
+									className={`transform transition-transform duration-300 ${
+										isCategoryOpen ? "rotate-180" : ""
+									}`}
 								/>
 							</button>
 							<div
-								className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${isCategoryOpen ? "max-h-96" : "max-h-0"}`}
+								className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${
+									isCategoryOpen ? "max-h-96" : "max-h-0"
+								}`}
 							>
 								<button
-									onClick={() => setActiveCategory("")}
-									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${activeCategory === "" ? "text-kuralis-900" : "text-kuralis-500 hover:text-kuralis-700"}`}
+									onClick={() => setActiveCategory(null)}
+									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
+										activeCategory === null
+											? "text-kuralis-900"
+											: "text-kuralis-500 hover:text-kuralis-700"
+									}`}
 								>
 									All
 								</button>
-								{categories.map((category) => (
+								{initialCategories.map((category) => (
 									<button
-										key={category}
-										onClick={() => setActiveCategory(category)}
-										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${activeCategory === category ? "text-kuralis-900" : "text-kuralis-500 hover:text-kuralis-700"}`}
+										key={category.id}
+										onClick={() => setActiveCategory(category.id)}
+										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
+											activeCategory === category.id
+												? "text-kuralis-900"
+												: "text-kuralis-500 hover:text-kuralis-700"
+										}`}
 									>
-										{category}
+										{category.name}
 									</button>
 								))}
 							</div>
@@ -131,25 +141,37 @@ export default function FurnitureListClient({ initialFurniture }: Props) {
 								<span>Location</span>
 								<FiChevronDown
 									size={16}
-									className={`transform transition-transform duration-300 ${isLocationOpen ? "rotate-180" : ""}`}
+									className={`transform transition-transform duration-300 ${
+										isLocationOpen ? "rotate-180" : ""
+									}`}
 								/>
 							</button>
 							<div
-								className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${isLocationOpen ? "max-h-96" : "max-h-0"}`}
+								className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${
+									isLocationOpen ? "max-h-96" : "max-h-0"
+								}`}
 							>
 								<button
-									onClick={() => setActiveLocation("")}
-									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${activeLocation === "" ? "text-kuralis-900" : "text-kuralis-500 hover:text-kuralis-700"}`}
+									onClick={() => setActiveLocation(null)}
+									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
+										activeLocation === null
+											? "text-kuralis-900"
+											: "text-kuralis-500 hover:text-kuralis-700"
+									}`}
 								>
 									All
 								</button>
-								{locations.map((location) => (
+								{initialLocations.map((location) => (
 									<button
-										key={location}
-										onClick={() => setActiveLocation(location)}
-										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${activeLocation === location ? "text-kuralis-900" : "text-kuralis-500 hover:text-kuralis-700"}`}
+										key={location.id}
+										onClick={() => setActiveLocation(location.id)}
+										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
+											activeLocation === location.id
+												? "text-kuralis-900"
+												: "text-kuralis-500 hover:text-kuralis-700"
+										}`}
 									>
-										{location}
+										{location.name}
 									</button>
 								))}
 							</div>
@@ -182,8 +204,8 @@ export default function FurnitureListClient({ initialFurniture }: Props) {
 									</button>
 								)}
 								<FilterSheet
-									categories={categories}
-									locations={locations}
+									categories={initialCategories}
+									locations={initialLocations}
 									activeCategory={activeCategory}
 									activeLocation={activeLocation}
 									onCategorySelect={setActiveCategory}
@@ -194,7 +216,7 @@ export default function FurnitureListClient({ initialFurniture }: Props) {
 					</div>
 
 					<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-						{filteredFurniture.map((furniture) => (
+						{filteredFurniture?.map((furniture) => (
 							<FurnitureCard
 								key={furniture.id}
 								furniture={furniture}

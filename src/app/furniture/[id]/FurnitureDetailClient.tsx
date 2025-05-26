@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import { sampleFurniture } from "@/data/sampleFurniture";
-import FurnitureDetailImage from "./FurnitureDetailImage";
-import FurnitureDetailTabs from "./FurnitureDetailTabs";
 import Link from "next/link";
 import { FiArrowLeft, FiAlertCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useFurnitureById } from "@/hooks/useFurnitureById";
+import FurnitureDetailImage from "./FurnitureDetailImage";
+import FurnitureDetailTabs from "./FurnitureDetailTabs";
 import { Switch } from "@/components/ui/switch";
 import {
 	Dialog,
@@ -19,68 +19,76 @@ import {
 	DialogDescription,
 	DialogFooter,
 } from "@/components/ui/dialog";
+import { FurnitureWithExtras } from "@/types/furniture_new";
 
-interface Furniture {
-	id: string;
-	name: string;
-	brand: string;
-	category: string;
-	location: string;
-	imageUrl?: string;
-	needsMaintenance: boolean;
-	purchaseDate?: string;
-	purchaseLocation?: string;
-	maintenanceMethod?: string;
-	notes?: string;
+interface FurnitureDetailClientProps {
+	initialFurniture: FurnitureWithExtras;
 }
 
-interface Props {
-	initialFurniture: Furniture;
-}
-
-export default function FurnitureDetailClient({ initialFurniture }: Props) {
+export default function FurnitureDetailClient({ initialFurniture }: FurnitureDetailClientProps) {
 	const router = useRouter();
 	const { toast } = useToast();
 	const { user } = useAuth();
 
-	const [isEditing, setIsEditing] = useState(false);
-	const [furniture, setFurniture] = useState(initialFurniture);
-	const [editedFurniture, setEditedFurniture] = useState<Furniture>(initialFurniture);
-	const [selectedImage, setSelectedImage] = useState<File | null>(null);
-	const [needsMaintenance, setNeedsMaintenance] = useState(furniture.needsMaintenance);
+	const { furniture, updateFurniture, deleteFurniture, mutate, isLoading, error } =
+		useFurnitureById(initialFurniture.id, initialFurniture);
 
-	const handleDelete = () => {
-		const index = sampleFurniture.findIndex((item) => item.id === furniture.id);
-		if (index !== -1) {
-			sampleFurniture.splice(index, 1);
+	const [isEditing, setIsEditing] = useState(false);
+	const [editedFurniture, setEditedFurniture] = useState<FurnitureWithExtras>(initialFurniture);
+	const [selectedImage, setSelectedImage] = useState<File | null>(null);
+	// TODO:メンテナンス情報取得処理追加
+	const [needsMaintenance, setNeedsMaintenance] = useState(true);
+
+	const furnitureToUse = furniture ?? initialFurniture;
+
+	useEffect(() => {
+		if (furniture && !isEditing) {
+			setEditedFurniture(furniture);
+		}
+	}, [furniture, isEditing]);
+
+	const handleDelete = async () => {
+		try {
+			await deleteFurniture();
+			router.push("/furniture");
 			toast({
 				title: "家具を削除しました",
-				description: `${furniture.name} を削除しました。`,
+				description: `${furniture?.name} を削除しました。`,
 			});
-			router.push("/furniture");
+		} catch (err) {
+			toast({
+				title: "削除に失敗しました",
+				description: "もう一度お試しください",
+				variant: "destructive",
+			});
 		}
 	};
 
-	const handleSave = () => {
-		const index = sampleFurniture.findIndex((item) => item.id === furniture.id);
-		if (index !== -1) {
+	const handleSave = async () => {
+		try {
 			const updated = {
 				...editedFurniture,
-				imageUrl: selectedImage
-					? URL.createObjectURL(selectedImage)
-					: editedFurniture.imageUrl,
 				needsMaintenance,
 			};
-			sampleFurniture[index] = updated;
-			setFurniture(updated);
+			const result = await updateFurniture(updated);
 			setIsEditing(false);
 			setSelectedImage(null);
 			toast({
 				title: "変更を保存しました",
-				description: `${updated.name} を更新しました。`,
+				description: `${result.name} を更新しました。`,
+			});
+		} catch (err) {
+			toast({
+				title: "更新に失敗しました",
+				description: "もう一度お試しください",
+				variant: "destructive",
 			});
 		}
 	};
+
+	if (isLoading && !furniture) return <div>読み込み中...</div>;
+	if (error) return <div>エラーが発生しました</div>;
+	if (!furnitureToUse) return <div>家具データが見つかりません</div>;
 
 	return (
 		<div className="container mx-auto py-12 px-6 md:px-12">
@@ -98,7 +106,7 @@ export default function FurnitureDetailClient({ initialFurniture }: Props) {
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 				<FurnitureDetailImage
 					isEditing={isEditing}
-					imageUrl={furniture.imageUrl}
+					imageUrl={furnitureToUse.image_url}
 					selectedImage={selectedImage}
 					setSelectedImage={setSelectedImage}
 				/>
@@ -145,7 +153,8 @@ export default function FurnitureDetailClient({ initialFurniture }: Props) {
 										<DialogHeader>
 											<DialogTitle>家具を削除しますか？</DialogTitle>
 											<DialogDescription>
-												この操作は取り消せません。本当に {furniture.name}{" "}
+												この操作は取り消せません。本当に
+												{furnitureToUse.name}
 												を削除しますか？
 											</DialogDescription>
 										</DialogHeader>
@@ -164,7 +173,7 @@ export default function FurnitureDetailClient({ initialFurniture }: Props) {
 					</div>
 
 					<FurnitureDetailTabs
-						furniture={furniture}
+						furniture={furnitureToUse}
 						editedFurniture={editedFurniture}
 						setEditedFurniture={setEditedFurniture}
 						isEditing={isEditing}

@@ -11,3 +11,9 @@ export interface Furniture {
 	next_due_date: string;
 	notes: string;
 }
+
+export type FurnitureWithExtras = Furniture & {
+	category?: { id: number; name: string };
+	location?: { id: number; name: string };
+	needsMaintenance?: boolean;
+};

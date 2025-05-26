@@ -1,13 +1,12 @@
 "use client";
 
 import { FiMapPin } from "react-icons/fi";
-
-import { Furniture } from "@/types/furniture";
+import { FurnitureWithExtras } from "@/types/furniture_new";
 
 interface Props {
-	furniture: Furniture;
-	editedFurniture: Furniture;
-	setEditedFurniture: (f: Furniture) => void;
+	furniture: FurnitureWithExtras;
+	editedFurniture: FurnitureWithExtras;
+	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
 }
 
@@ -34,7 +33,7 @@ export default function FurnitureDetailBasicTab({
 							/>
 							<input
 								type="text"
-								value={editedFurniture.brand}
+								value={editedFurniture.brand || ""}
 								onChange={(e) =>
 									setEditedFurniture({
 										...editedFurniture,
@@ -62,6 +61,7 @@ export default function FurnitureDetailBasicTab({
 				<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4">
 					基本情報
 				</h2>
+
 				{/* Category */}
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
 					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
@@ -71,18 +71,22 @@ export default function FurnitureDetailBasicTab({
 					{isEditing ? (
 						<input
 							type="text"
-							value={editedFurniture.category}
+							value={editedFurniture.category?.name}
 							onChange={(e) =>
-								setEditedFurniture({ ...editedFurniture, category: e.target.value })
+								setEditedFurniture({
+									...editedFurniture,
+									category_id: Number(e.target.value),
+								})
 							}
 							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
 						/>
 					) : (
 						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
-							{furniture.category}
+							{furniture.category?.name}
 						</div>
 					)}
 				</div>
+
 				{/* Location */}
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
 					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
@@ -92,15 +96,18 @@ export default function FurnitureDetailBasicTab({
 					{isEditing ? (
 						<input
 							type="text"
-							value={editedFurniture.location}
+							value={editedFurniture.location?.name}
 							onChange={(e) =>
-								setEditedFurniture({ ...editedFurniture, location: e.target.value })
+								setEditedFurniture({
+									...editedFurniture,
+									location_id: Number(e.target.value),
+								})
 							}
 							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
 						/>
 					) : (
 						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
-							{furniture.location}
+							{furniture.location?.name}
 						</div>
 					)}
 				</div>

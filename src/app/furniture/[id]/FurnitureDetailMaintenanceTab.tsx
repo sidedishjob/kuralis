@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { FiTool, FiList } from "react-icons/fi";
-import { Furniture } from "@/types/furniture";
+import { FurnitureWithExtras } from "@/types/furniture_new";
 
 interface Props {
-	furniture: Furniture;
-	editedFurniture: Furniture;
-	setEditedFurniture: (f: Furniture) => void;
+	furniture: FurnitureWithExtras;
+	editedFurniture: FurnitureWithExtras;
+	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
 }
 
@@ -23,7 +23,7 @@ export default function FurnitureDetailMaintenanceTab({
 				メンテナンス情報
 			</h2>
 
-			{(isEditing || furniture.maintenanceMethod) && (
+			{(isEditing || furniture.needsMaintenance) && (
 				<div className="flex border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
 					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 font-normal tracking-tighter-custom">
 						<FiTool size={16} className="mr-2 inline-block" />
@@ -32,11 +32,11 @@ export default function FurnitureDetailMaintenanceTab({
 					{isEditing ? (
 						<input
 							type="text"
-							value={editedFurniture.maintenanceMethod || ""}
+							value={String(editedFurniture.needsMaintenance) || ""}
 							onChange={(e) =>
 								setEditedFurniture({
 									...editedFurniture,
-									maintenanceMethod: e.target.value,
+									needsMaintenance: Boolean(e.target.value),
 								})
 							}
 							className="flex-1 min-w-0 font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
@@ -44,7 +44,7 @@ export default function FurnitureDetailMaintenanceTab({
 					) : (
 						<div className="space-y-2">
 							<div className="font-normal tracking-tighter-custom break-words">
-								{furniture.maintenanceMethod}
+								{furniture.needsMaintenance}
 							</div>
 							<Link
 								href={`/furniture/${furniture.id}/maintenance`}

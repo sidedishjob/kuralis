@@ -12,8 +12,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 	const user = await getUserFromCookie();
 	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const supabase = await createSupabaseServerClient();
-
 	try {
 		const furniture = await getFurnitureById(id, user.id);
 		return NextResponse.json(furniture);

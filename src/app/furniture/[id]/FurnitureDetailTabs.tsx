@@ -5,63 +5,68 @@ import { FiInfo, FiShoppingBag, FiSettings } from "react-icons/fi";
 import FurnitureDetailBasicTab from "./FurnitureDetailBasicTab";
 import FurnitureDetailPurchaseTab from "./FurnitureDetailPurchaseTab";
 import FurnitureDetailMaintenanceTab from "./FurnitureDetailMaintenanceTab";
-
 import { FurnitureWithExtras } from "@/types/furniture_new";
+import { Location } from "@/types/furniture_meta";
 
 interface Props {
 	furniture: FurnitureWithExtras;
 	editedFurniture: FurnitureWithExtras;
 	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
+	locations: Location[];
 }
-
-const TABS = [
-	{
-		value: "basic",
-		title: "基本情報",
-		icon: FiInfo,
-		Component: FurnitureDetailBasicTab,
-	},
-	{
-		value: "purchase",
-		title: "購入情報",
-		icon: FiShoppingBag,
-		Component: FurnitureDetailPurchaseTab,
-	},
-	{
-		value: "maintenance",
-		title: "メンテナンス",
-		icon: FiSettings,
-		Component: FurnitureDetailMaintenanceTab,
-	},
-];
 
 export default function FurnitureDetailTabs({
 	furniture,
 	editedFurniture,
 	setEditedFurniture,
 	isEditing,
+	locations,
 }: Props) {
 	return (
 		<Tabs defaultValue="basic" className="w-full">
 			<TabsList className="w-full grid grid-cols-3 mb-8 bg-transparent p-0 gap-2">
-				{TABS.map(({ value, title, icon: Icon }) => (
-					<TabsTrigger key={value} value={value} className="flex items-center">
-						<Icon className="mr-2" /> {title}
-					</TabsTrigger>
-				))}
+				<TabsTrigger value="basic" className="flex items-center">
+					<FiInfo className="mr-2" />
+					基本情報
+				</TabsTrigger>
+				<TabsTrigger value="purchase" className="flex items-center">
+					<FiShoppingBag className="mr-2" />
+					購入情報
+				</TabsTrigger>
+				<TabsTrigger value="maintenance" className="flex items-center">
+					<FiSettings className="mr-2" />
+					メンテナンス
+				</TabsTrigger>
 			</TabsList>
 
-			{TABS.map(({ value, Component }) => (
-				<TabsContent key={value} value={value}>
-					<Component
-						furniture={furniture}
-						editedFurniture={editedFurniture}
-						setEditedFurniture={setEditedFurniture}
-						isEditing={isEditing}
-					/>
-				</TabsContent>
-			))}
+			<TabsContent value="basic">
+				<FurnitureDetailBasicTab
+					furniture={furniture}
+					editedFurniture={editedFurniture}
+					setEditedFurniture={setEditedFurniture}
+					isEditing={isEditing}
+					locations={locations}
+				/>
+			</TabsContent>
+
+			<TabsContent value="purchase">
+				<FurnitureDetailPurchaseTab
+					furniture={furniture}
+					editedFurniture={editedFurniture}
+					setEditedFurniture={setEditedFurniture}
+					isEditing={isEditing}
+				/>
+			</TabsContent>
+
+			<TabsContent value="maintenance">
+				<FurnitureDetailMaintenanceTab
+					furniture={furniture}
+					editedFurniture={editedFurniture}
+					setEditedFurniture={setEditedFurniture}
+					isEditing={isEditing}
+				/>
+			</TabsContent>
 		</Tabs>
 	);
 }

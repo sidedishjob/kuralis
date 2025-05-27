@@ -2,12 +2,14 @@
 
 import { FiMapPin } from "react-icons/fi";
 import { FurnitureWithExtras } from "@/types/furniture_new";
+import { Location } from "@/types/furniture_meta";
 
 interface Props {
 	furniture: FurnitureWithExtras;
 	editedFurniture: FurnitureWithExtras;
 	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
+	locations: Location[];
 }
 
 export default function FurnitureDetailBasicTab({
@@ -15,6 +17,7 @@ export default function FurnitureDetailBasicTab({
 	editedFurniture,
 	setEditedFurniture,
 	isEditing,
+	locations,
 }: Props) {
 	return (
 		<div className="space-y-8">
@@ -68,23 +71,9 @@ export default function FurnitureDetailBasicTab({
 						<FiMapPin size={16} className="mr-2" />
 						<span>カテゴリ</span>
 					</div>
-					{isEditing ? (
-						<input
-							type="text"
-							value={editedFurniture.category?.name}
-							onChange={(e) =>
-								setEditedFurniture({
-									...editedFurniture,
-									category_id: Number(e.target.value),
-								})
-							}
-							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
-						/>
-					) : (
-						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
-							{furniture.category?.name}
-						</div>
-					)}
+					<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
+						{furniture.category?.name}
+					</div>
 				</div>
 
 				{/* Location */}
@@ -94,9 +83,8 @@ export default function FurnitureDetailBasicTab({
 						<span>設置場所</span>
 					</div>
 					{isEditing ? (
-						<input
-							type="text"
-							value={editedFurniture.location?.name}
+						<select
+							value={editedFurniture.location_id || ""}
 							onChange={(e) =>
 								setEditedFurniture({
 									...editedFurniture,
@@ -104,7 +92,16 @@ export default function FurnitureDetailBasicTab({
 								})
 							}
 							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
-						/>
+						>
+							<option value="" disabled>
+								選択してください
+							</option>
+							{locations.map((loc) => (
+								<option key={loc.id} value={loc.id}>
+									{loc.name}
+								</option>
+							))}
+						</select>
 					) : (
 						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
 							{furniture.location?.name}

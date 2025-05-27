@@ -1,21 +1,20 @@
 "use client";
 
+import { useFurnitureMeta } from "@/hooks/useFurnitureMeta";
 import { FiArrowRight } from "react-icons/fi";
-
-const categories = ["ソファ", "テーブル", "チェア", "照明", "収納", "その他"];
-const locations = ["リビング", "寝室", "キッチン", "玄関", "書斎", "その他"];
+import { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
 	formData: {
-		category: string;
-		location: string;
+		category: Category | null;
+		location: Location | null;
 		name: string;
 		image: File | null;
 	};
 	setFormData: React.Dispatch<
 		React.SetStateAction<{
-			category: string;
-			location: string;
+			category: Category | null;
+			location: Location | null;
 			name: string;
 			image: File | null;
 		}>
@@ -23,16 +22,20 @@ interface Props {
 	onNext: () => void;
 }
 
-const Step1UI: React.FC<Props> = ({ formData, setFormData, onNext }) => {
-	const isValid = formData.category && formData.location;
+export default function Step1UI({ formData, setFormData, onNext }: Props) {
+	const isValid = !!formData.category && !!formData.location;
+	const { data, isLoading, error } = useFurnitureMeta();
 
-	const handleCategorySelect = (category: string) => {
+	const handleCategorySelect = (category: Category) => {
 		setFormData((prev) => ({ ...prev, category }));
 	};
 
-	const handleLocationSelect = (location: string) => {
+	const handleLocationSelect = (location: Location) => {
 		setFormData((prev) => ({ ...prev, location }));
 	};
+
+	if (isLoading) return <div>読み込み中...</div>;
+	if (error) return <div>データ取得エラー</div>;
 
 	return (
 		<div className="space-y-4 md:space-y-8">
@@ -45,22 +48,24 @@ const Step1UI: React.FC<Props> = ({ formData, setFormData, onNext }) => {
 						カテゴリ
 					</h2>
 					<div className="grid grid-cols-2 gap-4">
-						{categories.map((category) => (
+						{data?.categories.map((category) => (
 							<button
-								key={category}
+								key={category.id}
 								onClick={() => handleCategorySelect(category)}
 								className={`py-3 px-4 border rounded-sm transition-all duration-500 font-bold tracking-tighter-custom text-sm relative overflow-hidden group ${
-									formData.category === category
+									formData.category?.id === category.id
 										? "border-kuralis-900 text-kuralis-900 bg-kuralis-100"
 										: "border-kuralis-200 text-kuralis-600 hover:border-kuralis-400 hover:bg-kuralis-50"
 								}`}
 							>
 								<span
 									className={`absolute inset-0 bg-kuralis-100 transform origin-left transition-transform duration-500 ${
-										formData.category === category ? "scale-x-100" : "scale-x-0"
+										formData.category?.id === category.id
+											? "scale-x-100"
+											: "scale-x-0"
 									}`}
 								/>
-								<span className="relative z-10">{category}</span>
+								<span className="relative z-10">{category.name}</span>
 							</button>
 						))}
 					</div>
@@ -71,22 +76,24 @@ const Step1UI: React.FC<Props> = ({ formData, setFormData, onNext }) => {
 						設置場所
 					</h2>
 					<div className="grid grid-cols-2 gap-4">
-						{locations.map((location) => (
+						{data?.locations.map((location) => (
 							<button
-								key={location}
+								key={location.id}
 								onClick={() => handleLocationSelect(location)}
 								className={`py-3 px-4 border rounded-sm transition-all duration-500 font-bold tracking-tighter-custom text-sm relative overflow-hidden group ${
-									formData.location === location
+									formData.location?.id === location.id
 										? "border-kuralis-900 text-kuralis-900 bg-kuralis-100"
 										: "border-kuralis-200 text-kuralis-600 hover:border-kuralis-400 hover:bg-kuralis-50"
 								}`}
 							>
 								<span
 									className={`absolute inset-0 bg-kuralis-100 transform origin-left transition-transform duration-500 ${
-										formData.location === location ? "scale-x-100" : "scale-x-0"
+										formData.location?.id === location.id
+											? "scale-x-100"
+											: "scale-x-0"
 									}`}
 								/>
-								<span className="relative z-10">{location}</span>
+								<span className="relative z-10">{location.name}</span>
 							</button>
 						))}
 					</div>
@@ -111,6 +118,4 @@ const Step1UI: React.FC<Props> = ({ formData, setFormData, onNext }) => {
 			</div>
 		</div>
 	);
-};
-
-export default Step1UI;
+}

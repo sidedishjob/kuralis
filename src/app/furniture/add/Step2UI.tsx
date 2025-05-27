@@ -1,26 +1,26 @@
 "use client";
 
 import { FiUpload, FiX } from "react-icons/fi";
+import { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
 	formData: {
-		category: string;
-		location: string;
+		category: Category | null;
+		location: Location | null;
 		name: string;
 		image: File | null;
 	};
 	setFormData: React.Dispatch<
 		React.SetStateAction<{
-			category: string;
-			location: string;
+			category: Category | null;
+			location: Location | null;
 			name: string;
 			image: File | null;
 		}>
 	>;
 	onSubmit: () => void;
 }
-
-const Step2UI: React.FC<Props> = ({ formData, setFormData, onSubmit }) => {
+export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
 	const isValid = formData.name.trim().length > 0;
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,10 +51,10 @@ const Step2UI: React.FC<Props> = ({ formData, setFormData, onSubmit }) => {
 			{/* Summary */}
 			<div className="flex items-center space-x-4 mb-8 text-xs">
 				<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
-					{formData.category}
+					{formData.category?.name}
 				</div>
 				<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
-					{formData.location}
+					{formData.location?.name}
 				</div>
 			</div>
 
@@ -152,6 +152,4 @@ const Step2UI: React.FC<Props> = ({ formData, setFormData, onSubmit }) => {
 			</div>
 		</div>
 	);
-};
-
-export default Step2UI;
+}

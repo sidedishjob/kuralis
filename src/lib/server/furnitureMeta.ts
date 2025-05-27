@@ -1,9 +1,10 @@
 import { createSupabaseServerClient } from "@/lib/server/supabase";
+import { FurnitureMeta } from "@/types/furniture_meta";
 
 /**
  * SSR用：認証済ユーザーのカテゴリ・ロケーション一覧を取得
  */
-export async function getFurnitureMeta() {
+export async function getFurnitureMeta(): Promise<FurnitureMeta> {
 	const supabase = await createSupabaseServerClient();
 
 	// ユーザー取得（cookieから）

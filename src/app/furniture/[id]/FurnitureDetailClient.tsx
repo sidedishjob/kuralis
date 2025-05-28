@@ -188,7 +188,10 @@ export default function FurnitureDetailClient({
 					{isEditing && (
 						<div className="flex justify-end space-x-4 pt-8">
 							<button
-								onClick={() => setIsEditing(false)}
+								onClick={() => {
+									setIsEditing(false);
+									setSelectedImage(null);
+								}}
 								className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
 							>
 								キャンセル

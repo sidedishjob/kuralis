@@ -1,5 +1,6 @@
 module.exports = {
 	images: {
+		domains: ["vjrywcrqdwmywiojnxap.supabase.co"],
 		remotePatterns: [
 			{
 				protocol: "https",

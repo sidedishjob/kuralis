@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/server/supabase"; // SSR用Supabaseクライアント
+import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
 import type { FurnitureWithExtras } from "@/types/furniture_new";
 import { v4 as uuidv4 } from "uuid";
 

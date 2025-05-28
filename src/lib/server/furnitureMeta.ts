@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/server/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { FurnitureMeta } from "@/types/furniture_meta";
 
 /**

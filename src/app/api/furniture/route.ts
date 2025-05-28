@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/server/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserFromCookie } from "@/lib/server/auth";
 import { registerFurniture } from "@/lib/server/furniture";
 

@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { Database } from "../database.types"; // 既存の型定義を使用
+import { Database } from "../database.types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -28,4 +28,16 @@ export async function createSupabaseServerClient() {
 			},
 		},
 	});
+}
+
+/**
+ * cookiesからユーザー情報を取得
+ * 認証チェックなどで使用（App Router対応）
+ */
+export async function getUserFromCookie() {
+	const supabase = await createSupabaseServerClient();
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
+	return user;
 }

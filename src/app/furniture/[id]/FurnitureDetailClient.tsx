@@ -21,15 +21,18 @@ import {
 } from "@/components/ui/dialog";
 import type { FurnitureWithExtras } from "@/types/furniture_new";
 import type { Location } from "@/types/furniture_meta";
+import { MaintenanceSummary } from "@/types/maintenance";
 
 interface FurnitureDetailClientProps {
 	initialFurniture: FurnitureWithExtras;
 	initialLocations: Location[];
+	initialMaintenanceSummary: MaintenanceSummary | null;
 }
 
 export default function FurnitureDetailClient({
 	initialFurniture,
 	initialLocations,
+	initialMaintenanceSummary,
 }: FurnitureDetailClientProps) {
 	const router = useRouter();
 	const { toast } = useToast();
@@ -202,6 +205,7 @@ export default function FurnitureDetailClient({
 						setEditedFurniture={setEditedFurniture}
 						isEditing={isEditing}
 						locations={initialLocations}
+						summary={initialMaintenanceSummary}
 					/>
 
 					{isEditing && (

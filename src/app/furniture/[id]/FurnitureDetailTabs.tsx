@@ -7,6 +7,7 @@ import FurnitureDetailPurchaseTab from "./FurnitureDetailPurchaseTab";
 import FurnitureDetailMaintenanceTab from "./FurnitureDetailMaintenanceTab";
 import type { FurnitureWithExtras } from "@/types/furniture_new";
 import type { Location } from "@/types/furniture_meta";
+import { MaintenanceSummary } from "@/types/maintenance";
 
 interface Props {
 	furniture: FurnitureWithExtras;
@@ -14,6 +15,7 @@ interface Props {
 	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
 	locations: Location[];
+	summary: MaintenanceSummary | null;
 }
 
 export default function FurnitureDetailTabs({
@@ -22,6 +24,7 @@ export default function FurnitureDetailTabs({
 	setEditedFurniture,
 	isEditing,
 	locations,
+	summary,
 }: Props) {
 	return (
 		<Tabs defaultValue="basic" className="w-full">
@@ -65,6 +68,7 @@ export default function FurnitureDetailTabs({
 					editedFurniture={editedFurniture}
 					setEditedFurniture={setEditedFurniture}
 					isEditing={isEditing}
+					summary={summary}
 				/>
 			</TabsContent>
 		</Tabs>

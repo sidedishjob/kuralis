@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import FurnitureDetailClient from "./FurnitureDetailClient";
 import { getFurnitureById } from "@/lib/server/furniture";
-import { getUserFromCookie } from "@/lib/server/auth";
+import { getUserFromCookie } from "@/lib/supabase/server";
 import { getFurnitureMeta } from "@/lib/server/furnitureMeta";
 
 export default async function FurnitureDetailPage({ params }: { params: { id: string } }) {

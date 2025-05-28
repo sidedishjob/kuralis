@@ -1,6 +1,6 @@
 import { getFurniture } from "@/lib/server/furniture";
 import FurnitureListClient from "./FurnitureListClient";
-import { getUserFromCookie } from "@/lib/server/auth";
+import { getUserFromCookie } from "@/lib/supabase/server";
 import { getFurnitureMeta } from "@/lib/server/furnitureMeta";
 
 export default async function FurnitureListPage() {

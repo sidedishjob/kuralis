@@ -30,17 +30,16 @@ export function useFurnitureById(id: string, initialData?: FurnitureWithExtras) 
 	 * @returns 更新後の家具データ
 	 */
 	const updateFurniture = useCallback(
-		async (updatedData: Partial<Furniture>) => {
+		async (formData: FormData) => {
 			const res = await fetch(API_ROUTES.furnitureById(id), {
 				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(updatedData),
+				body: formData, // Content-Type 自動で multipart/form-data に設定される
 			});
 
 			if (!res.ok) throw new Error("更新に失敗しました");
 
 			const updated = await res.json();
-			mutate(updated); // ローカルキャッシュを更新
+			mutate(updated);
 			return updated;
 		},
 		[id, mutate]

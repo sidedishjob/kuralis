@@ -71,13 +71,32 @@ export default function FurnitureDetailClient({
 
 	const handleSave = async () => {
 		try {
-			const updated = {
-				...editedFurniture,
-				needsMaintenance,
-			};
-			const result = await updateFurniture(updated);
+			const formData = new FormData();
+			formData.append("name", editedFurniture.name);
+			formData.append("brand", editedFurniture.brand ?? "");
+			formData.append("location_id", String(editedFurniture.location_id));
+			formData.append("purchased_from", editedFurniture.purchased_from ?? "");
+			formData.append("needs_maintenance", String(needsMaintenance));
+			formData.append("notes", editedFurniture.notes ?? "");
+
+			// 購入日（Date → YYYY-MM-DD）
+			if (editedFurniture.purchased_at) {
+				formData.append(
+					"purchased_at",
+					new Date(editedFurniture.purchased_at).toISOString().split("T")[0] // フォーマット例: 2024-05-28
+				);
+			}
+
+			// 画像
+			if (selectedImage) {
+				formData.append("image", selectedImage);
+			}
+
+			const result = await updateFurniture(formData);
+
 			setIsEditing(false);
 			setSelectedImage(null);
+
 			toast({
 				title: "変更を保存しました",
 				description: `${result.name} を更新しました。`,

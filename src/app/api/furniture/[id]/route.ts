@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserFromCookie } from "@/lib/supabase/server";
 import { getFurnitureById } from "@/lib/server/furniture";
+import { updateFurniture } from "@/lib/server/updateFurniture";
 
 /**
  * 家具情報の取得（GET）
@@ -28,31 +29,20 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
  * 家具情報の更新（PUT）
  */
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
-	const user = await getUserFromCookie();
-	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	try {
+		const user = await getUserFromCookie();
+		if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const furnitureId = params.id;
-	const body = await req.json();
+		const { id } = await params;
 
-	const supabase = await createSupabaseServerClient();
+		const formData = await req.formData();
+		const updated = await updateFurniture(formData, user.id, id);
 
-	const { data, error } = await supabase
-		.from("furniture")
-		.update({
-			...body,
-			updated_at: new Date().toISOString(),
-		})
-		.eq("id", furnitureId)
-		.eq("user_id", user.id)
-		.select()
-		.single();
-
-	if (error) {
-		console.error("Update failed:", error.message);
-		return NextResponse.json({ error: error.message }, { status: 500 });
+		return NextResponse.json(updated, { status: 200 });
+	} catch (error) {
+		console.error("Update furniture error:", error);
+		return NextResponse.json({ error: (error as Error).message }, { status: 500 });
 	}
-
-	return NextResponse.json(data);
 }
 
 /**

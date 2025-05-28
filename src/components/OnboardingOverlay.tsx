@@ -77,7 +77,7 @@ const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
 					<div className="space-y-3 pt-4">
 						{currentStep === steps.length ? (
 							<Link
-								href="/furniture/add"
+								href="/furniture/register"
 								onClick={onComplete}
 								className="block w-full py-3 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
 							>

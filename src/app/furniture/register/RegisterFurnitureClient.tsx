@@ -17,7 +17,7 @@ interface FormData {
 	image: File | null;
 }
 
-export default function AddFurnitureClient() {
+export default function RegisterFurnitureClient() {
 	const router = useRouter();
 	const [step, setStep] = useState(1);
 	const [formData, setFormData] = useState<FormData>({

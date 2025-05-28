@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
 import type { FurnitureWithExtras } from "@/types/furniture_new";
-import { v4 as uuidv4 } from "uuid";
+import { uploadFurnitureImage } from "../storage/image";
 
 /**
  * SSR用：指定したユーザーの家具データを取得する
@@ -83,7 +83,7 @@ export async function getFurnitureById(id: string, userId: string) {
 export async function registerFurniture(formData: FormData, userId: string) {
 	const supabase = await createSupabaseServerClient();
 
-	const image = formData.get("image") as File | null;
+	// 必須項目の取得とバリデーション
 	const name = formData.get("name") as string;
 	const categoryId = Number(formData.get("category_id"));
 	const locationId = Number(formData.get("location_id"));
@@ -92,19 +92,12 @@ export async function registerFurniture(formData: FormData, userId: string) {
 		throw new Error("カテゴリ・設置場所・名前は必須です");
 	}
 
+	// 画像ファイルがある場合はアップロード
+	const image = formData.get("image") as File | null;
 	let imageUrl: string | null = null;
 
 	if (image) {
-		const safeFileName = sanitizeFileName(image.name);
-		const fileName = `${uuidv4()}-${safeFileName}`;
-
-		const { error: uploadError } = await supabase.storage
-			.from("furniture-images")
-			.upload(fileName, image, { contentType: image.type });
-
-		if (uploadError) throw new Error(`画像アップロード失敗: ${uploadError.message}`);
-
-		imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/furniture-images/${fileName}`;
+		imageUrl = await uploadFurnitureImage(image);
 	}
 
 	const { error: insertError } = await supabase.from("furniture").insert([
@@ -118,16 +111,4 @@ export async function registerFurniture(formData: FormData, userId: string) {
 	]);
 
 	if (insertError) throw new Error(`登録失敗: ${insertError.message}`);
-}
-
-/**
- * ファイル名を sanitize（安全な文字に変換）
- * @param name ファイル名
- * @returns
- */
-function sanitizeFileName(name: string): string {
-	return name
-		.normalize("NFKD") // 全角を半角に
-		.replace(/[^a-zA-Z0-9._-]/g, "-") // 英数字・.・_・- 以外をハイフンに
-		.replace(/-+/g, "-"); // ハイフンの連続を1つに
 }

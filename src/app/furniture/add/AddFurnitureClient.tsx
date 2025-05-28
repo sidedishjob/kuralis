@@ -8,6 +8,7 @@ import StepIndicator from "./StepIndicator";
 import Step1UI from "./Step1UI";
 import Step2UI from "./Step2UI";
 import { Category, Location } from "@/types/furniture_meta";
+import { useRegisterFurniture } from "@/hooks/useRegisterFurniture";
 
 interface FormData {
 	category: Category | null;
@@ -16,7 +17,7 @@ interface FormData {
 	image: File | null;
 }
 
-const AddFurnitureClient = () => {
+export default function AddFurnitureClient() {
 	const router = useRouter();
 	const [step, setStep] = useState(1);
 	const [formData, setFormData] = useState<FormData>({
@@ -25,52 +26,36 @@ const AddFurnitureClient = () => {
 		name: "",
 		image: null,
 	});
+	const { register, isLoading, error } = useRegisterFurniture();
 
 	const handleSubmit = async () => {
-		const form = new FormData();
-		form.append("name", formData.name);
-		form.append("category_id", String(formData.category?.id));
-		form.append("location_id", String(formData.location?.id));
-		if (formData.image) form.append("image", formData.image);
-
-		const res = await fetch("/api/furniture", {
-			method: "POST",
-			body: form,
-		});
-
-		const result = await res.json();
-		if (!res.ok) {
-			toast({ title: "登録失敗", description: result.error });
+		if (!formData.category || !formData.location || !formData.name) {
+			toast({ title: "入力不備", description: "全項目を入力してください" });
 			return;
 		}
 
-		toast({
-			title: "家具を登録しました",
-			description: `${formData.name}を${formData.location?.name}に登録しました。`,
-		});
-		router.push("/furniture");
+		const form = new FormData();
+		form.append("name", formData.name);
+		form.append("category_id", String(formData.category.id));
+		form.append("location_id", String(formData.location.id));
+		if (formData.image) form.append("image", formData.image);
+
+		try {
+			await register(form);
+			toast({
+				title: "家具を登録しました",
+				description: `${formData.name} を ${formData.location.name} に登録しました。`,
+			});
+			router.push("/furniture");
+		} catch (error) {
+			console.error("登録エラー:", error);
+			toast({
+				title: "登録失敗",
+				description:
+					error instanceof Error ? error.message : "予期しないエラーが発生しました",
+			});
+		}
 	};
-
-	// const handleSubmit = () => {
-	// 	const newFurniture = {
-	// 		id: (sampleFurniture.length + 1).toString(),
-	// 		name: formData.name,
-	// 		brand: "Unknown",
-	// 		category: formData.category,
-	// 		location: formData.location,
-	// 		needsMaintenance: false,
-	// 		imageUrl: formData.image ? URL.createObjectURL(formData.image) : undefined,
-	// 	};
-
-	// 	sampleFurniture.unshift(newFurniture);
-
-	// 	toast({
-	// 		title: "家具を登録しました",
-	// 		description: `${formData.name}を${formData.location}に登録しました。`,
-	// 	});
-
-	// 	router.push("/furniture");
-	// };
 
 	return (
 		<div className="flex flex-col from-white to-kuralis-50">
@@ -114,6 +99,4 @@ const AddFurnitureClient = () => {
 			</main>
 		</div>
 	);
-};
-
-export default AddFurnitureClient;
+}

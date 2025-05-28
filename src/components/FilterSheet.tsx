@@ -3,7 +3,7 @@
 import React from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { FiFilter } from "react-icons/fi";
-import { Category, Location } from "@/types/furniture_meta";
+import type { Category, Location } from "@/types/furniture_meta";
 
 interface FilterSheetProps {
 	categories: Category[];

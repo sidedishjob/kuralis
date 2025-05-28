@@ -2,7 +2,7 @@
 
 import { useFurnitureMeta } from "@/hooks/useFurnitureMeta";
 import { FiArrowRight } from "react-icons/fi";
-import { Category, Location } from "@/types/furniture_meta";
+import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
 	formData: {

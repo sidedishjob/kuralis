@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FiArrowLeft, FiCalendar, FiGrid } from "react-icons/fi";
-import { MaintenanceTask } from "@/types/maintenance";
+import type { MaintenanceTask } from "@/types/maintenance";
 import CalendarView from "./CalendarView";
 import BoardView from "./BoardView";
 import { getMaintenanceTasks } from "@/lib/queries/getMaintenanceTasks";

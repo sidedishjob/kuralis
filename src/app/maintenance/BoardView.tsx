@@ -2,7 +2,7 @@
 
 import React from "react";
 import { format, addDays } from "date-fns";
-import { MaintenanceTask } from "@/types/maintenance";
+import type { MaintenanceTask } from "@/types/maintenance";
 import { FiAlertCircle, FiCalendar } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 

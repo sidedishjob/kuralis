@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { Furniture } from "@/types/furniture_new";
+import type { Furniture } from "@/types/furniture_new";
 import { API_ROUTES } from "@/lib/api/route";
 import { fetcher } from "@/lib/fetcher";
 

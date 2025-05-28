@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/server/supabase";
-import { FurnitureMeta } from "@/types/furniture_meta";
+import type { FurnitureMeta } from "@/types/furniture_meta";
 
 /**
  * SSR用：認証済ユーザーのカテゴリ・ロケーション一覧を取得

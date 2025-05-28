@@ -19,8 +19,8 @@ import {
 	DialogDescription,
 	DialogFooter,
 } from "@/components/ui/dialog";
-import { FurnitureWithExtras } from "@/types/furniture_new";
-import { Location } from "@/types/furniture_meta";
+import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { Location } from "@/types/furniture_meta";
 
 interface FurnitureDetailClientProps {
 	initialFurniture: FurnitureWithExtras;

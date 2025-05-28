@@ -7,8 +7,8 @@ import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import Link from "next/link";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { User } from "@supabase/supabase-js";
-import { Furniture } from "@/types/furniture_new";
-import { Category, Location } from "@/types/furniture_meta";
+import type { Furniture } from "@/types/furniture_new";
+import type { Category, Location } from "@/types/furniture_meta";
 
 type FurnitureListClientProps = {
 	user: User | null;

@@ -11,7 +11,7 @@ import {
 	isSameMonth,
 } from "date-fns";
 import { ja } from "date-fns/locale";
-import { MaintenanceTask } from "@/types/maintenance";
+import type { MaintenanceTask } from "@/types/maintenance";
 import { useRouter } from "next/navigation";
 
 interface CalendarViewProps {

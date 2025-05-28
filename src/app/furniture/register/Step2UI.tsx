@@ -1,7 +1,7 @@
 "use client";
 
 import { FiUpload, FiX } from "react-icons/fi";
-import { Category, Location } from "@/types/furniture_meta";
+import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
 	formData: {

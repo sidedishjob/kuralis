@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import { useCallback } from "react";
-import { Furniture, FurnitureWithExtras } from "@/types/furniture_new";
+import type { Furniture, FurnitureWithExtras } from "@/types/furniture_new";
 import { API_ROUTES } from "@/lib/api/route";
 import { fetcher } from "@/lib/fetcher";
 

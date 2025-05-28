@@ -7,7 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import StepIndicator from "./StepIndicator";
 import Step1UI from "./Step1UI";
 import Step2UI from "./Step2UI";
-import { Category, Location } from "@/types/furniture_meta";
+import type { Category, Location } from "@/types/furniture_meta";
 import { useRegisterFurniture } from "@/hooks/useRegisterFurniture";
 
 interface FormData {

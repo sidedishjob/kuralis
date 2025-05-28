@@ -14,7 +14,7 @@ export async function getFurniture(userId: string) {
 		.from("furniture")
 		.select("*")
 		.eq("user_id", userId)
-		.order("purchased_at", { ascending: false });
+		.order("created_at", { ascending: false });
 
 	if (error) {
 		console.error("家具データの取得に失敗しました:", error.message);

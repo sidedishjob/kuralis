@@ -18,6 +18,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
 import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
+import { useAddMaintenanceTask } from "@/hooks/useAddMaintenanceTask";
 
 interface Props {
 	furniture: Furniture;
@@ -29,20 +30,43 @@ export default function MaintenanceClient({ furniture }: Props) {
 
 	const [isAddingItem, setIsAddingItem] = useState(false);
 	const [isAddingHistory, setIsAddingHistory] = useState<string | null>(null);
-	const [newItem, setNewItem] = useState({ method: "", cycle: "" });
+	const [newItem, setNewItem] = useState({ taskName: "", cycleValue: "", cycleUnit: "" });
 	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
 
 	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
 
+	const { addTask } = useAddMaintenanceTask(furniture.id);
 	const addRecord = useAddMaintenanceRecord();
 	const deleteRecord = useDeleteMaintenanceRecord();
 
-	const handleAddItem = () => {
-		if (!newItem.method) return;
+	const handleAddTask = async () => {
+		if (!newItem.taskName) return;
 
-		setNewItem({ method: "", cycle: "" });
-		setIsAddingItem(false);
-		toast({ title: "メンテナンス項目を追加しました" });
+		const cycleValue = parseInt(newItem.cycleValue);
+		if (newItem.cycleValue && (isNaN(cycleValue) || cycleValue < 0)) {
+			toast({ title: "周期は正の数値で入力してください" });
+			return;
+		}
+
+		try {
+			await addTask({
+				taskName: newItem.taskName,
+				cycleValue: newItem.cycleValue,
+				cycleUnit: newItem.cycleUnit,
+			});
+			await mutate();
+
+			setNewItem({ taskName: "", cycleValue: "", cycleUnit: "" });
+			setIsAddingItem(false);
+			toast({ title: "メンテナンス項目を追加しました" });
+		} catch (error) {
+			console.error(error);
+			toast({
+				title: "登録失敗",
+				description:
+					error instanceof Error ? error.message : "予期しないエラーが発生しました",
+			});
+		}
 	};
 
 	/**
@@ -251,9 +275,9 @@ export default function MaintenanceClient({ furniture }: Props) {
 								</label>
 								<input
 									type="text"
-									value={newItem.method}
+									value={newItem.taskName}
 									onChange={(e) =>
-										setNewItem({ ...newItem, method: e.target.value })
+										setNewItem({ ...newItem, taskName: e.target.value })
 									}
 									className="w-full px-3 py-2 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
 									placeholder="例：オイルメンテナンス"
@@ -261,17 +285,35 @@ export default function MaintenanceClient({ furniture }: Props) {
 							</div>
 							<div>
 								<label className="block text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
-									推奨周期
+									実施周期
 								</label>
 								<input
-									type="text"
-									value={newItem.cycle}
+									type="number"
+									value={newItem.cycleValue}
 									onChange={(e) =>
-										setNewItem({ ...newItem, cycle: e.target.value })
+										setNewItem({ ...newItem, cycleValue: e.target.value })
 									}
-									className="w-full px-3 py-2 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
-									placeholder="例：90日周期推奨"
+									className=" px-3 py-2 w-1/3 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
+									placeholder="例：90"
+									min="1"
+									step="1"
+									inputMode="numeric"
 								/>
+								<select
+									value={newItem.cycleUnit}
+									onChange={(e) =>
+										setNewItem({ ...newItem, cycleUnit: e.target.value })
+									}
+									className="ml-2 px-3 py-2 border border-kuralis-200 rounded-sm"
+								>
+									<option value="days">日</option>
+									<option value="weeks">週</option>
+									<option value="months">ヶ月</option>
+									<option value="years">年</option>
+								</select>
+								<span className="pl-1 text-sm text-kuralis-600">
+									ごとにメンテナンス
+								</span>
 							</div>
 						</div>
 						<DialogFooter>
@@ -282,8 +324,8 @@ export default function MaintenanceClient({ furniture }: Props) {
 								キャンセル
 							</button>
 							<button
-								onClick={handleAddItem}
-								disabled={!newItem.method}
+								onClick={() => handleAddTask()}
+								disabled={!newItem.taskName || !newItem.cycleValue}
 								className="px-4 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom disabled:bg-kuralis-200 disabled:cursor-not-allowed"
 							>
 								追加する

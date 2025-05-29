@@ -121,8 +121,5 @@ export async function getMaintenanceTasksWithRecords(
 		};
 	});
 
-	console.log(grouped);
-	console.log(grouped[0].records);
-
 	return grouped;
 }

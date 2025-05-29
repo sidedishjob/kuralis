@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import MaintenanceClient from "./MaintenanceClient";
-import type { Furniture } from "@/types/furniture_new";
 import { getFurnitureById } from "@/lib/server/furniture";
 import { getUserFromCookie } from "@/lib/supabase/server";
 
@@ -15,5 +14,5 @@ export default async function MaintenancePage({ params }: { params: { id: string
 		notFound();
 	}
 
-	return <MaintenanceClient furniture={furniture as Furniture} />;
+	return <MaintenanceClient furniture={furniture} />;
 }

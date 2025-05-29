@@ -3,20 +3,16 @@ import { API_ROUTES } from "@/lib/api/route";
 import { fetcher } from "@/lib/fetcher";
 import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
 
-export function useMaintenanceTasks(
-	furnitureId: string,
-	initialMaintenanceItems: MaintenanceTaskWithRecords[]
-) {
+export const useMaintenanceTasks = (furnitureId: string) => {
 	const { data, error, isLoading, mutate } = useSWR<MaintenanceTaskWithRecords[]>(
 		API_ROUTES.maintenanceTasks(furnitureId),
-		fetcher,
-		{ fallbackData: initialMaintenanceItems }
+		fetcher
 	);
 
 	return {
-		tasks: data,
+		tasks: data ?? [],
 		error,
 		isLoading,
 		mutate,
 	};
-}
+};

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiCalendar, FiPlus, FiTool } from "react-icons/fi";
 import { format } from "date-fns";
 import type { Furniture } from "@/types/furniture_new";
-import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
 import {
 	Dialog,
 	DialogContent,
@@ -16,28 +15,22 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
-import { API_ROUTES } from "@/lib/api/route";
 
 interface Props {
 	furniture: Furniture;
-	initialMaintenanceItems: MaintenanceTaskWithRecords[];
 }
 
-export default function MaintenanceClient({ furniture, initialMaintenanceItems }: Props) {
+export default function MaintenanceClient({ furniture }: Props) {
 	const router = useRouter();
 	const getTodayDate = () => new Date().toISOString().split("T")[0];
 
-	const [maintenanceItems, setMaintenanceItems] = useState(initialMaintenanceItems);
+	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
 
 	const [isAddingItem, setIsAddingItem] = useState(false);
 	const [isAddingHistory, setIsAddingHistory] = useState<string | null>(null);
 	const [newItem, setNewItem] = useState({ method: "", cycle: "" });
 	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
 
-	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(
-		furniture.id,
-		initialMaintenanceItems
-	);
 	const addRecord = useAddMaintenanceRecord();
 
 	const handleAddItem = () => {
@@ -74,6 +67,10 @@ export default function MaintenanceClient({ furniture, initialMaintenanceItems }
 		}
 	};
 
+	if (isLoading) return <p>読み込み中...</p>;
+	if (error) return <p className="text-red-500">エラーが発生しました</p>;
+	if (tasks.length === 0) return <p>メンテナンスタスクが存在しません</p>;
+
 	return (
 		<div className="container mx-auto py-12 px-6 md:px-12">
 			<button
@@ -101,7 +98,7 @@ export default function MaintenanceClient({ furniture, initialMaintenanceItems }
 					</button>
 				</div>
 
-				{maintenanceItems.length === 0 ? (
+				{tasks.length === 0 ? (
 					<div className="text-center py-12 border-2 border-dashed border-kuralis-200 rounded-sm">
 						<FiTool size={32} className="mx-auto text-kuralis-400 mb-4" />
 						<p className="text-kuralis-600 font-bold tracking-tighter-custom">
@@ -110,7 +107,7 @@ export default function MaintenanceClient({ furniture, initialMaintenanceItems }
 					</div>
 				) : (
 					<div className="space-y-4">
-						{maintenanceItems.map((task) => (
+						{tasks.map((task) => (
 							<div key={task.id} className="p-6 border border-kuralis-200 rounded-sm">
 								<div className="flex items-center space-x-3 mb-4">
 									<div className="text-kuralis-600">

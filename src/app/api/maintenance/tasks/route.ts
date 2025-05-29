@@ -11,7 +11,7 @@ export async function GET(req: Request) {
 
 	try {
 		const data = await getMaintenanceTasksWithRecords(furnitureId);
-		return NextResponse.json(data);
+		return NextResponse.json(data, { status: 200 });
 	} catch (e) {
 		console.error(e);
 		return NextResponse.json({ message: "取得に失敗しました" }, { status: 500 });

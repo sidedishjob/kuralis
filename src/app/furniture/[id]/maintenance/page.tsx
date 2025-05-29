@@ -3,7 +3,6 @@ import MaintenanceClient from "./MaintenanceClient";
 import type { Furniture } from "@/types/furniture_new";
 import { getFurnitureById } from "@/lib/server/furniture";
 import { getUserFromCookie } from "@/lib/supabase/server";
-import { getMaintenanceTasksWithRecords } from "@/lib/server/maintenance";
 
 export default async function MaintenancePage({ params }: { params: { id: string } }) {
 	const user = await getUserFromCookie();
@@ -12,16 +11,9 @@ export default async function MaintenancePage({ params }: { params: { id: string
 
 	const furniture = await getFurnitureById(id, user.id);
 
-	if (!furniture || !furniture.image_url) {
+	if (!furniture) {
 		notFound();
 	}
 
-	const maintenanceItems = await getMaintenanceTasksWithRecords(id);
-
-	return (
-		<MaintenanceClient
-			furniture={furniture as Furniture}
-			initialMaintenanceItems={maintenanceItems}
-		/>
-	);
+	return <MaintenanceClient furniture={furniture as Furniture} />;
 }

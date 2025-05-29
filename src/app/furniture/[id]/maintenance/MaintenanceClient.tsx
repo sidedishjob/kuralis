@@ -2,14 +2,10 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-	FiArrowLeft,
-	FiCalendar,
-	FiTool,
-	FiPlus,
-	FiTrash2,
-	FiTool as FiToolIcon,
-} from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiPlus, FiTool } from "react-icons/fi";
+import { format } from "date-fns";
+import type { Furniture } from "@/types/furniture_new";
+import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
 import {
 	Dialog,
 	DialogContent,
@@ -17,115 +13,65 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import { addDays, format, parseISO } from "date-fns";
-import type { Furniture } from "@/types/furniture";
-import type { MaintenanceItem } from "@/types/maintenance";
+import { toast } from "@/hooks/use-toast";
+import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
+import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
+import { API_ROUTES } from "@/lib/api/route";
 
-// props 型定義
 interface Props {
 	furniture: Furniture;
-	initialMaintenanceItems: MaintenanceItem[];
+	initialMaintenanceItems: MaintenanceTaskWithRecords[];
 }
 
-// 周期文字列から日数を抽出するユーティリティ関数
-const parseCycle = (cycleText: string) => {
-	const match = cycleText.match(/(\d+)日/);
-	if (match) {
-		return {
-			days: parseInt(match[1], 10),
-			text: cycleText,
-		};
-	}
-	return null;
-};
-
-// 次回予定日を計算するユーティリティ関数
-const calculateNextDate = (lastDate: string, cycleDays: number): Date => {
-	return addDays(parseISO(lastDate.replace(/\//g, "-")), cycleDays);
-};
-
-// メンテナンス画面のクライアントコンポーネント
-const MaintenanceClient: React.FC<Props> = ({ furniture, initialMaintenanceItems }) => {
+export default function MaintenanceClient({ furniture, initialMaintenanceItems }: Props) {
 	const router = useRouter();
-	const { user } = useAuth();
-	const { toast } = useToast();
+	const getTodayDate = () => new Date().toISOString().split("T")[0];
 
-	const [maintenanceItems, setMaintenanceItems] = useState<MaintenanceItem[]>(
-		initialMaintenanceItems.map((item) => ({
-			...item,
-			icon: <FiToolIcon className="w-5 h-5" />,
-			nextDate:
-				item.history.length > 0 && parseCycle(item.cycle)
-					? calculateNextDate(item.history[0].date, parseCycle(item.cycle)?.days || 0)
-					: undefined,
-		}))
-	);
+	const [maintenanceItems, setMaintenanceItems] = useState(initialMaintenanceItems);
 
 	const [isAddingItem, setIsAddingItem] = useState(false);
 	const [isAddingHistory, setIsAddingHistory] = useState<string | null>(null);
 	const [newItem, setNewItem] = useState({ method: "", cycle: "" });
-	const [newHistoryDate, setNewHistoryDate] = useState("");
+	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
+
+	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(
+		furniture.id,
+		initialMaintenanceItems
+	);
+	const addRecord = useAddMaintenanceRecord();
 
 	const handleAddItem = () => {
 		if (!newItem.method) return;
 
-		const item: MaintenanceItem = {
-			id: Math.random().toString(),
-			icon: <FiTool className="w-5 h-5" />,
-			method: newItem.method,
-			cycle: newItem.cycle,
-			history: [],
-		};
-
-		setMaintenanceItems([...maintenanceItems, item]);
 		setNewItem({ method: "", cycle: "" });
 		setIsAddingItem(false);
 		toast({ title: "メンテナンス項目を追加しました" });
 	};
 
-	const handleAddHistory = (itemId: string) => {
+	/**
+	 * メンテナンス履歴登録
+	 * @param taskId
+	 * @returns
+	 */
+	const handleAddHistory = async (taskId: string) => {
 		if (!newHistoryDate) return;
 
-		const targetItem = maintenanceItems.find((item) => item.id === itemId);
-		const cycleInfo = targetItem ? parseCycle(targetItem.cycle) : null;
+		try {
+			await addRecord(taskId, newHistoryDate);
+			// 成功時：stateに追加 or mutate()
+			await mutate();
 
-		setMaintenanceItems((items) =>
-			items.map((item) =>
-				item.id === itemId
-					? {
-							...item,
-							history: [
-								...item.history,
-								{ id: Math.random().toString(), date: newHistoryDate },
-							].sort(
-								(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-							),
-							nextDate: cycleInfo
-								? calculateNextDate(newHistoryDate, cycleInfo.days)
-								: undefined,
-						}
-					: item
-			)
-		);
-
-		setNewHistoryDate("");
-		setIsAddingHistory(null);
-		toast({ title: "メンテナンス履歴を追加しました" });
-	};
-
-	const handleDeleteHistory = (itemId: string, historyId: string) => {
-		setMaintenanceItems((items) =>
-			items.map((item) =>
-				item.id === itemId
-					? {
-							...item,
-							history: item.history.filter((h) => h.id !== historyId),
-						}
-					: item
-			)
-		);
+			setNewHistoryDate(getTodayDate);
+			setIsAddingHistory(null);
+			toast({ title: "メンテナンス履歴を追加しました" });
+		} catch (error) {
+			console.error("登録エラー:", error);
+			toast({
+				title: "登録失敗",
+				description:
+					error instanceof Error ? error.message : "予期しないエラーが発生しました",
+			});
+		}
 	};
 
 	return (
@@ -146,15 +92,13 @@ const MaintenanceClient: React.FC<Props> = ({ furniture, initialMaintenanceItems
 					<h1 className="text-2xl font-bold tracking-tighter-custom">
 						{furniture.name}のメンテナンス記録
 					</h1>
-					{user && (
-						<button
-							onClick={() => setIsAddingItem(true)}
-							className="inline-flex items-center px-4 py-2 bg-kuralis-900 text-white hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
-						>
-							<FiPlus size={16} className="mr-2" />
-							<span>新しい項目を追加</span>
-						</button>
-					)}
+					<button
+						onClick={() => setIsAddingItem(true)}
+						className="inline-flex items-center px-4 py-2 bg-kuralis-900 text-white hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
+					>
+						<FiPlus size={16} className="mr-2" />
+						<span>新しい項目を追加</span>
+					</button>
 				</div>
 
 				{maintenanceItems.length === 0 ? (
@@ -163,31 +107,29 @@ const MaintenanceClient: React.FC<Props> = ({ furniture, initialMaintenanceItems
 						<p className="text-kuralis-600 font-bold tracking-tighter-custom">
 							メンテナンス項目がありません
 						</p>
-						{user && (
-							<button
-								onClick={() => setIsAddingItem(true)}
-								className="mt-4 text-kuralis-900 hover:text-kuralis-700 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
-							>
-								項目を追加する
-							</button>
-						)}
 					</div>
 				) : (
 					<div className="space-y-4">
-						{maintenanceItems.map((item) => (
-							<div key={item.id} className="p-6 border border-kuralis-200 rounded-sm">
+						{maintenanceItems.map((task) => (
+							<div key={task.id} className="p-6 border border-kuralis-200 rounded-sm">
 								<div className="flex items-center space-x-3 mb-4">
-									<div className="text-kuralis-600">{item.icon}</div>
+									<div className="text-kuralis-600">
+										<FiTool className="w-5 h-5" />
+									</div>
 									<div className="flex-grow">
 										<h3 className="font-bold tracking-tighter-custom text-lg">
-											{item.method}
+											{task.name}
 										</h3>
-										<p className="text-sm text-kuralis-600">{item.cycle}</p>
+										<p className="text-sm text-kuralis-600">
+											{task.cycle_value}
+											{task.cycle_unit === "days" ? "日" : task.cycle_unit}
+											ごと
+										</p>
 									</div>
-									{item.history.length > 0 && item.nextDate && (
+									{task.next_due_date && (
 										<div
 											className={`px-3 py-2 rounded-sm text-sm ${
-												item.nextDate < new Date()
+												new Date(task.next_due_date) < new Date()
 													? "bg-accent-50 text-accent-500"
 													: "bg-kuralis-50 text-kuralis-600"
 											}`}
@@ -196,75 +138,59 @@ const MaintenanceClient: React.FC<Props> = ({ furniture, initialMaintenanceItems
 												次回予定日
 											</div>
 											<div className="mt-1">
-												{format(item.nextDate, "yyyy/MM/dd")}
+												{format(new Date(task.next_due_date), "yyyy/MM/dd")}
 											</div>
 										</div>
 									)}
 								</div>
-
 								<div className="space-y-2 ml-8">
-									{item.history.map((h) => (
+									{task.records.map((record) => (
 										<div
-											key={h.id}
-											className="flex items-center justify-between group"
+											key={record.id}
+											className="flex items-center space-x-2 text-sm text-kuralis-600"
 										>
-											<div className="flex items-center space-x-2 text-sm text-kuralis-600">
-												<FiCalendar size={14} />
-												<span className="font-bold tracking-tighter-custom">
-													{h.date}
-												</span>
-												<span className="text-kuralis-400">実施</span>
-											</div>
-											{user && (
-												<button
-													onClick={() =>
-														handleDeleteHistory(item.id, h.id)
-													}
-													className="opacity-0 group-hover:opacity-100 text-kuralis-400 hover:text-accent-500 transition-all duration-300"
-												>
-													<FiTrash2 size={14} />
-												</button>
-											)}
+											<FiCalendar size={14} />
+											<span className="font-bold tracking-tighter-custom">
+												{record.performed_at}
+											</span>
+											<span className="text-kuralis-400">実施</span>
 										</div>
 									))}
 
-									{user &&
-										(isAddingHistory === item.id ? (
-											<div className="flex items-center space-x-2">
-												<input
-													type="date"
-													value={newHistoryDate}
-													onChange={(e) =>
-														setNewHistoryDate(e.target.value)
-													}
-													className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
-												/>
-												<button
-													onClick={() => handleAddHistory(item.id)}
-													disabled={!newHistoryDate}
-													className="text-sm text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400 transition-colors duration-300 font-bold tracking-tighter-custom"
-												>
-													追加
-												</button>
-												<button
-													onClick={() => {
-														setIsAddingHistory(null);
-														setNewHistoryDate("");
-													}}
-													className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-												>
-													キャンセル
-												</button>
-											</div>
-										) : (
+									{isAddingHistory === task.id ? (
+										<div className="flex items-center space-x-2">
+											<input
+												type="date"
+												value={newHistoryDate}
+												onChange={(e) => setNewHistoryDate(e.target.value)}
+												className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
+											/>
 											<button
-												onClick={() => setIsAddingHistory(item.id)}
-												className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom inline-flex items-center"
+												onClick={() => handleAddHistory(task.id)}
+												disabled={!newHistoryDate}
+												className="text-sm text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400 transition-colors duration-300 font-bold tracking-tighter-custom"
 											>
-												<FiPlus size={14} className="mr-1" />
-												<span>新しい履歴を追加</span>
+												追加
 											</button>
-										))}
+											<button
+												onClick={() => {
+													setIsAddingHistory(null);
+													setNewHistoryDate(getTodayDate);
+												}}
+												className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+											>
+												キャンセル
+											</button>
+										</div>
+									) : (
+										<button
+											onClick={() => setIsAddingHistory(task.id)}
+											className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom inline-flex items-center"
+										>
+											<FiPlus size={14} className="mr-1" />
+											<span>新しい履歴を追加</span>
+										</button>
+									)}
 								</div>
 							</div>
 						))}
@@ -327,6 +253,4 @@ const MaintenanceClient: React.FC<Props> = ({ furniture, initialMaintenanceItems
 			</div>
 		</div>
 	);
-};
-
-export default MaintenanceClient;
+}

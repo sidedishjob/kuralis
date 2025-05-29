@@ -1,24 +1,27 @@
 import { notFound } from "next/navigation";
 import MaintenanceClient from "./MaintenanceClient";
-import { getSampleFurniture } from "@/lib/queries/getSampleFurniture";
-import { getSampleMaintenanceItems } from "@/lib/queries/getSampleMaintenanceItems";
-import type { Furniture } from "@/types/furniture";
+import type { Furniture } from "@/types/furniture_new";
+import { getFurnitureById } from "@/lib/server/furniture";
+import { getUserFromCookie } from "@/lib/supabase/server";
+import { getMaintenanceTasksWithRecords } from "@/lib/server/maintenance";
 
 export default async function MaintenancePage({ params }: { params: { id: string } }) {
-	const id = Array.isArray(params.id) ? params.id[0] : params.id;
-	const furnitureList = await getSampleFurniture();
-	const furniture = furnitureList.find((item) => item.id === id);
+	const user = await getUserFromCookie();
+	const { id } = await params;
+	if (!user) return notFound();
 
-	if (!furniture || !furniture.imageUrl) {
+	const furniture = await getFurnitureById(id, user.id);
+
+	if (!furniture || !furniture.image_url) {
 		notFound();
 	}
 
-	const initialMaintenanceItems = await getSampleMaintenanceItems();
+	const maintenanceItems = await getMaintenanceTasksWithRecords(id);
 
 	return (
 		<MaintenanceClient
 			furniture={furniture as Furniture}
-			initialMaintenanceItems={initialMaintenanceItems}
+			initialMaintenanceItems={maintenanceItems}
 		/>
 	);
 }

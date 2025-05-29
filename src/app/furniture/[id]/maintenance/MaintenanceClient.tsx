@@ -2,19 +2,22 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiArrowLeft, FiCalendar, FiPlus, FiTool } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiPlus, FiTool, FiTrash2 } from "react-icons/fi";
 import { format } from "date-fns";
 import type { Furniture } from "@/types/furniture_new";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
+import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
 
 interface Props {
 	furniture: Furniture;
@@ -24,14 +27,15 @@ export default function MaintenanceClient({ furniture }: Props) {
 	const router = useRouter();
 	const getTodayDate = () => new Date().toISOString().split("T")[0];
 
-	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
-
 	const [isAddingItem, setIsAddingItem] = useState(false);
 	const [isAddingHistory, setIsAddingHistory] = useState<string | null>(null);
 	const [newItem, setNewItem] = useState({ method: "", cycle: "" });
 	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
 
+	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
+
 	const addRecord = useAddMaintenanceRecord();
+	const deleteRecord = useDeleteMaintenanceRecord();
 
 	const handleAddItem = () => {
 		if (!newItem.method) return;
@@ -43,15 +47,12 @@ export default function MaintenanceClient({ furniture }: Props) {
 
 	/**
 	 * メンテナンス履歴登録
-	 * @param taskId
-	 * @returns
 	 */
 	const handleAddHistory = async (taskId: string) => {
 		if (!newHistoryDate) return;
 
 		try {
 			await addRecord(taskId, newHistoryDate);
-			// 成功時：stateに追加 or mutate()
 			await mutate();
 
 			setNewHistoryDate(getTodayDate);
@@ -64,6 +65,20 @@ export default function MaintenanceClient({ furniture }: Props) {
 				description:
 					error instanceof Error ? error.message : "予期しないエラーが発生しました",
 			});
+		}
+	};
+
+	/**
+	 * メンテナンス履歴削除
+	 */
+	const handleDeleteHistory = async (recordId: string) => {
+		try {
+			await deleteRecord(recordId);
+			await mutate();
+			toast({ title: "メンテナンス履歴を削除しました" });
+		} catch (err) {
+			console.error(err);
+			toast({ title: "削除失敗", description: "もう一度お試しください" });
 		}
 	};
 
@@ -144,13 +159,42 @@ export default function MaintenanceClient({ furniture }: Props) {
 									{task.records.map((record) => (
 										<div
 											key={record.id}
-											className="flex items-center space-x-2 text-sm text-kuralis-600"
+											className="flex items-center justify-between group"
 										>
-											<FiCalendar size={14} />
-											<span className="font-bold tracking-tighter-custom">
-												{record.performed_at}
-											</span>
-											<span className="text-kuralis-400">実施</span>
+											<div className="flex items-center space-x-2 text-sm text-kuralis-600">
+												<FiCalendar size={18} />
+												<span className="font-bold tracking-tighter-custom">
+													{record.performed_at}
+												</span>
+												<span className="text-kuralis-400">実施</span>
+											</div>
+											<Dialog>
+												<DialogTrigger asChild>
+													<button className="opacity-0 group-hover:opacity-100 text-kuralis-400 hover:text-accent-500 transition-all duration-300">
+														<FiTrash2 size={18} />
+													</button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>
+															メンテナンス履歴を削除しますか？
+														</DialogTitle>
+														<DialogDescription>
+															この操作は取り消せません。本当に削除しますか？
+														</DialogDescription>
+													</DialogHeader>
+													<DialogFooter className="mt-4">
+														<button
+															onClick={() =>
+																handleDeleteHistory(record.id)
+															}
+															className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+														>
+															削除する
+														</button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
 										</div>
 									))}
 

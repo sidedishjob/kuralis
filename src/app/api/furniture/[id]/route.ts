@@ -52,14 +52,10 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
 	const user = await getUserFromCookie();
 	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const furnitureId = params.id;
+	const { id } = await params;
 	const supabase = await createSupabaseServerClient();
 
-	const { error } = await supabase
-		.from("furniture")
-		.delete()
-		.eq("id", furnitureId)
-		.eq("user_id", user.id);
+	const { error } = await supabase.from("furniture").delete().eq("id", id).eq("user_id", user.id);
 
 	if (error) {
 		console.error("Delete failed:", error.message);

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiCalendar, FiPlus, FiTool, FiTrash2 } from "react-icons/fi";
 import { format } from "date-fns";
 import type { Furniture } from "@/types/furniture_new";
@@ -19,12 +18,14 @@ import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
 import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
 import { useAddMaintenanceTask } from "@/hooks/useAddMaintenanceTask";
+import Link from "next/link";
+import { MaintenanceCycleUnit } from "@/types/maintenance";
 
 interface Props {
 	furniture: Furniture;
 }
 
-const unitMap: Record<string, string> = {
+const unitMap: Record<MaintenanceCycleUnit, string> = {
 	days: "日",
 	weeks: "週",
 	months: "ヶ月",
@@ -32,7 +33,6 @@ const unitMap: Record<string, string> = {
 };
 
 export default function MaintenanceClient({ furniture }: Props) {
-	const router = useRouter();
 	const getTodayDate = () => new Date().toISOString().split("T")[0];
 
 	const [isAddingItem, setIsAddingItem] = useState(false);
@@ -41,7 +41,6 @@ export default function MaintenanceClient({ furniture }: Props) {
 	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
 
 	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
-
 	const { addTask } = useAddMaintenanceTask(furniture.id);
 	const addRecord = useAddMaintenanceRecord();
 	const deleteRecord = useDeleteMaintenanceRecord();
@@ -115,12 +114,11 @@ export default function MaintenanceClient({ furniture }: Props) {
 
 	if (isLoading) return <p>読み込み中...</p>;
 	if (error) return <p className="text-red-500">エラーが発生しました</p>;
-	if (tasks.length === 0) return <p>メンテナンスタスクが存在しません</p>;
 
 	return (
 		<div className="container mx-auto py-12 px-6 md:px-12">
-			<button
-				onClick={() => router.push(`/furniture/${furniture.id}`)}
+			<Link
+				href={`/furniture/${furniture.id}`}
 				className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
 			>
 				<FiArrowLeft
@@ -128,7 +126,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 					className="mr-2 transform translate-x-0 group-hover:-translate-x-1 transition-all duration-400 ease-natural"
 				/>
 				<span>家具の詳細に戻る</span>
-			</button>
+			</Link>
 
 			<div className="max-w-3xl mx-auto">
 				<div className="flex items-center justify-between mb-8">
@@ -313,10 +311,11 @@ export default function MaintenanceClient({ furniture }: Props) {
 									}
 									className="ml-2 px-3 py-2 border border-kuralis-200 rounded-sm"
 								>
-									<option value="days">日</option>
-									<option value="weeks">週</option>
-									<option value="months">ヶ月</option>
-									<option value="years">年</option>
+									{Object.entries(unitMap).map(([key, value]) => (
+										<option value={key} key={key}>
+											{value}
+										</option>
+									))}
 								</select>
 								<span className="pl-1 text-sm text-kuralis-600">
 									ごとにメンテナンス

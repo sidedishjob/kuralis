@@ -24,6 +24,13 @@ interface Props {
 	furniture: Furniture;
 }
 
+const unitMap: Record<string, string> = {
+	days: "日",
+	weeks: "週",
+	months: "ヶ月",
+	years: "年",
+};
+
 export default function MaintenanceClient({ furniture }: Props) {
 	const router = useRouter();
 	const getTodayDate = () => new Date().toISOString().split("T")[0];
@@ -158,7 +165,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 										</h3>
 										<p className="text-sm text-kuralis-600">
 											{task.cycle_value}
-											{task.cycle_unit === "days" ? "日" : task.cycle_unit}
+											{unitMap[task.cycle_unit] ?? task.cycle_unit}
 											ごと
 										</p>
 									</div>

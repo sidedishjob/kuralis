@@ -1,7 +1,7 @@
 "use client";
 
 import { FiMapPin } from "react-icons/fi";
-import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
 
 interface Props {

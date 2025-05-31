@@ -19,7 +19,7 @@ import {
 	DialogDescription,
 	DialogFooter,
 } from "@/components/ui/dialog";
-import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
 import { MaintenanceSummary } from "@/types/maintenance";
 

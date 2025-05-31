@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FiArrowLeft, FiCalendar, FiPlus, FiTool, FiTrash2 } from "react-icons/fi";
 import { format } from "date-fns";
-import type { Furniture } from "@/types/furniture_new";
+import type { Furniture } from "@/types/furniture";
 import {
 	Dialog,
 	DialogContent,

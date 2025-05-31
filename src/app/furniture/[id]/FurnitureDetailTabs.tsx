@@ -5,7 +5,7 @@ import { FiInfo, FiShoppingBag, FiSettings } from "react-icons/fi";
 import FurnitureDetailBasicTab from "./FurnitureDetailBasicTab";
 import FurnitureDetailPurchaseTab from "./FurnitureDetailPurchaseTab";
 import FurnitureDetailMaintenanceTab from "./FurnitureDetailMaintenanceTab";
-import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
 import { MaintenanceSummary } from "@/types/maintenance";
 

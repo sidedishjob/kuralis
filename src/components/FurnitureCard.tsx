@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { FiCheckCircle, FiAlertCircle } from "react-icons/fi";
-import type { Furniture } from "@/types/furniture_new";
+import type { Furniture } from "@/types/furniture";
 import DemoView from "./DemoView";
 
 interface FurnitureCardProps {

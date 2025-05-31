@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FiTool, FiList, FiCalendar } from "react-icons/fi";
-import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { FurnitureWithExtras } from "@/types/furniture";
 import { MaintenanceSummary } from "@/types/maintenance";
 
 interface Props {

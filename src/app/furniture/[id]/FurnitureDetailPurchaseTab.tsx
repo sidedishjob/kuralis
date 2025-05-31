@@ -1,7 +1,7 @@
 "use client";
 
 import { FiCalendar, FiMapPin } from "react-icons/fi";
-import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { FurnitureWithExtras } from "@/types/furniture";
 
 interface Props {
 	furniture: FurnitureWithExtras;

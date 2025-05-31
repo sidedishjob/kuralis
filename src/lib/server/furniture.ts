@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
-import type { FurnitureWithExtras } from "@/types/furniture_new";
+import type { FurnitureWithExtras } from "@/types/furniture";
 import { uploadFurnitureImage } from "../storage/image";
 
 /**

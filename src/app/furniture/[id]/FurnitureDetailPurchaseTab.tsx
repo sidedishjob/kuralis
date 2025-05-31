@@ -58,6 +58,7 @@ export default function FurnitureDetailPurchaseTab({
 					{isEditing ? (
 						<input
 							type="text"
+							placeholder="購入店舗"
 							value={editedFurniture.purchased_from || ""}
 							onChange={(e) =>
 								setEditedFurniture({

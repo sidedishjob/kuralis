@@ -28,6 +28,7 @@ export default function FurnitureDetailBasicTab({
 						<div>
 							<input
 								type="text"
+								placeholder="家具名"
 								value={editedFurniture.name}
 								onChange={(e) =>
 									setEditedFurniture({ ...editedFurniture, name: e.target.value })
@@ -36,6 +37,7 @@ export default function FurnitureDetailBasicTab({
 							/>
 							<input
 								type="text"
+								placeholder="ブランド名"
 								value={editedFurniture.brand || ""}
 								onChange={(e) =>
 									setEditedFurniture({

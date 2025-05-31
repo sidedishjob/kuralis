@@ -276,7 +276,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 						<div className="space-y-4 py-4">
 							<div>
 								<label className="block text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
-									メンテナンス項目名 *
+									メンテナンス項目名
 								</label>
 								<input
 									type="text"

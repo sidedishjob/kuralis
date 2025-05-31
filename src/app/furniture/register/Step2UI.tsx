@@ -76,6 +76,9 @@ export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
 			<div>
 				<label className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4 block">
 					写真
+					<span className="ml-2 text-xs font-medium text-kuralis-500 bg-kuralis-100 rounded px-2 py-0.5">
+						任意
+					</span>
 				</label>
 				<div
 					onDrop={handleDrop}

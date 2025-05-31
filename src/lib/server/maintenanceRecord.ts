@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { addDays, addMonths, addYears } from "date-fns";
 import { MaintenanceHistory } from "@/types/maintenance";
+import { calculateNextDueDate } from "../utils/maintenance";
 
 export async function addMaintenanceRecord({ taskId, performedAt }: MaintenanceHistory) {
 	const supabase = await createSupabaseServerClient();
@@ -15,8 +16,7 @@ export async function addMaintenanceRecord({ taskId, performedAt }: MaintenanceH
 	if (!task) throw new Error("タスクが存在しません");
 
 	// 次回予定日を算出
-	const baseDate = new Date(performedAt);
-	const nextDueDate = addDays(baseDate, task.cycle_value); // 仮：日単位のみ対応（後で改善）
+	const nextDueDate = calculateNextDueDate(performedAt, task.cycle_value, task.cycle_unit);
 
 	// INSERT 実行
 	const { data, error } = await supabase

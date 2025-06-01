@@ -34,7 +34,28 @@ export default function Step1UI({ formData, setFormData, onNext }: Props) {
 		setFormData((prev) => ({ ...prev, location }));
 	};
 
-	if (isLoading) return <div>読み込み中...</div>;
+	if (isLoading) {
+		return (
+			<div className="space-y-6 animate-pulse">
+				<div className="h-10 bg-kuralis-100 rounded-sm" />
+				<div className="h-6 w-1/3 bg-kuralis-100 rounded-sm" />
+				<div className="grid grid-cols-2 gap-4">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<div key={i} className="h-12 bg-kuralis-100 rounded-sm" />
+					))}
+				</div>
+				<div className="h-6 w-1/3 bg-kuralis-100 rounded-sm" />
+				<div className="grid grid-cols-2 gap-4">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<div key={i} className="h-12 bg-kuralis-100 rounded-sm" />
+					))}
+				</div>
+				<div className="pt-6">
+					<div className="h-10 bg-kuralis-100 rounded-sm" />
+				</div>
+			</div>
+		);
+	}
 	if (error) return <div>データ取得エラー</div>;
 
 	return (

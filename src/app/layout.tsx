@@ -17,14 +17,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="ja" className={`${inter.variable} ${notoSansJP.variable}`}>
 			<body>
-				<Header />
 				<AuthProvider>
+					<Header />
 					<div className="min-h-screen bg-white text-kuralis-900 flex flex-col">
 						<main className="flex-grow">{children}</main>
 						<Toaster />
 					</div>
+					<Footer />
 				</AuthProvider>
-				<Footer />
 			</body>
 		</html>
 	);

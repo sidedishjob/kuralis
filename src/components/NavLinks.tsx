@@ -6,8 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-const NavLinks = () => {
-	const { user, logout } = useAuth();
+export default function NavLinks() {
+	const { user, loading, logout } = useAuth();
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -21,9 +21,6 @@ const NavLinks = () => {
 		}
 	};
 
-	if (typeof user === "undefined") {
-		return null;
-	}
 	return (
 		<>
 			<Link
@@ -50,10 +47,12 @@ const NavLinks = () => {
 			>
 				About
 			</Link>
-			{user ? (
+			{loading ? (
+				<div className="w-24 h-4 bg-gray-200 rounded-sm animate-pulse mx-auto" />
+			) : user ? (
 				<button
 					onClick={handleLogout}
-					className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom flex items-center"
+					className="w-24 text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom flex items-center"
 				>
 					<FiLogOut className="mr-2" />
 					ログアウト
@@ -69,6 +68,4 @@ const NavLinks = () => {
 			)}
 		</>
 	);
-};
-
-export default NavLinks;
+}

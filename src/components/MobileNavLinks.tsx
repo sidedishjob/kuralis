@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useRouter } from "next/navigation";
 
-const MobileNavLinks = () => {
+export default function MobileNavLinks() {
 	const { user, logout } = useAuth();
 	const { toast } = useToast();
 	const router = useRouter();
@@ -89,6 +89,4 @@ const MobileNavLinks = () => {
 			</div>
 		</div>
 	);
-};
-
-export default MobileNavLinks;
+}

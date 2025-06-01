@@ -130,105 +130,133 @@ export default function FurnitureDetailClient({
 				<span>Back to Collection</span>
 			</Link>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-				<FurnitureDetailImage
-					isEditing={isEditing}
-					imageUrl={furnitureToUse.image_url}
-					selectedImage={selectedImage}
-					setSelectedImage={setSelectedImage}
-				/>
+			{isLoading ? (
+				// ローディング中のSkeleton表示
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+					{/* 左カラム：画像部分 */}
+					<div className="w-full max-w-[500px] aspect-[4/3] bg-kuralis-100 rounded-sm animate-pulse" />
 
-				<div className="space-y-8">
-					{/* バッジ・編集削除ボタンをタブの外に表示 */}
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-4">
-							{!isEditing && needsMaintenance && (
-								<div className="px-3 py-1.5 bg-accent-50 text-accent-500 rounded-full text-sm font-bold tracking-tighter-custom flex items-center shadow-sm hover:shadow-md transition-all duration-300">
-									<FiAlertCircle size={14} className="mr-1.5" />
-									<span>メンテナンスが必要です</span>
-								</div>
-							)}
-							{isEditing && (
-								<div className="flex items-center space-x-2">
-									<Switch
-										checked={needsMaintenance}
-										onCheckedChange={setNeedsMaintenance}
-										className="data-[state=checked]:bg-accent-500"
-									/>
-									<span className="text-sm font-bold tracking-tighter-custom text-kuralis-600">
-										メンテナンスが必要
-									</span>
+					{/* 右カラム：タブなどの情報部分のSkeleton */}
+					<div className="space-y-6">
+						{/* メンテナンスバッジ or スイッチのSkeleton */}
+						<div className="flex justify-between items-center">
+							<div className="h-6 w-48 bg-kuralis-100 rounded-sm animate-pulse" />
+							<div className="h-6 w-12 bg-kuralis-100 rounded-sm animate-pulse" />
+						</div>
+
+						{/* タブ部分 Skeleton */}
+						<div className="space-y-4">
+							<div className="flex justify-between items-center">
+								<div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
+								<div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
+								<div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
+							</div>
+							<div className="h-32 w-full bg-kuralis-100 rounded-sm animate-pulse" />
+							<div className="h-24 w-full bg-kuralis-100 rounded-sm animate-pulse" />
+						</div>
+					</div>
+				</div>
+			) : (
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[70vw] mx-auto">
+					<FurnitureDetailImage
+						isEditing={isEditing}
+						imageUrl={furnitureToUse.image_url}
+						selectedImage={selectedImage}
+						setSelectedImage={setSelectedImage}
+					/>
+
+					<div className="space-y-8">
+						{/* バッジ・編集削除ボタンをタブの外に表示 */}
+						<div className="flex items-center justify-between">
+							<div className="flex items-center space-x-4">
+								{!isEditing && needsMaintenance && (
+									<div className="px-3 py-1.5 bg-accent-50 text-accent-500 rounded-full text-sm font-bold tracking-tighter-custom flex items-center shadow-sm hover:shadow-md transition-all duration-300">
+										<FiAlertCircle size={14} className="mr-1.5" />
+										<span>メンテナンスが必要です</span>
+									</div>
+								)}
+								{isEditing && (
+									<div className="flex items-center space-x-2">
+										<Switch
+											checked={needsMaintenance}
+											onCheckedChange={setNeedsMaintenance}
+											className="data-[state=checked]:bg-accent-500"
+										/>
+										<span className="text-sm font-bold tracking-tighter-custom text-kuralis-600">
+											メンテナンスが必要
+										</span>
+									</div>
+								)}
+							</div>
+
+							{user && !isEditing && (
+								<div className="flex items-center space-x-3">
+									<button
+										onClick={() => setIsEditing(true)}
+										className="p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
+									>
+										<FiEdit2 size={18} />
+									</button>
+									<Dialog>
+										<DialogTrigger asChild>
+											<button className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50">
+												<FiTrash2 size={18} />
+											</button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>家具を削除しますか？</DialogTitle>
+												<DialogDescription>
+													この操作は取り消せません。本当に
+													{furnitureToUse.name}
+													を削除しますか？
+												</DialogDescription>
+											</DialogHeader>
+											<DialogFooter className="mt-4">
+												<button
+													onClick={handleDelete}
+													className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+												>
+													削除する
+												</button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
 								</div>
 							)}
 						</div>
 
-						{user && !isEditing && (
-							<div className="flex items-center space-x-3">
+						<FurnitureDetailTabs
+							furniture={furnitureToUse}
+							editedFurniture={editedFurniture}
+							setEditedFurniture={setEditedFurniture}
+							isEditing={isEditing}
+							locations={initialLocations}
+							summary={initialMaintenanceSummary}
+						/>
+
+						{isEditing && (
+							<div className="flex justify-end space-x-4 pt-8">
 								<button
-									onClick={() => setIsEditing(true)}
-									className="p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
+									onClick={() => {
+										setIsEditing(false);
+										setSelectedImage(null);
+									}}
+									className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
 								>
-									<FiEdit2 size={18} />
+									キャンセル
 								</button>
-								<Dialog>
-									<DialogTrigger asChild>
-										<button className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50">
-											<FiTrash2 size={18} />
-										</button>
-									</DialogTrigger>
-									<DialogContent>
-										<DialogHeader>
-											<DialogTitle>家具を削除しますか？</DialogTitle>
-											<DialogDescription>
-												この操作は取り消せません。本当に
-												{furnitureToUse.name}
-												を削除しますか？
-											</DialogDescription>
-										</DialogHeader>
-										<DialogFooter className="mt-4">
-											<button
-												onClick={handleDelete}
-												className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-											>
-												削除する
-											</button>
-										</DialogFooter>
-									</DialogContent>
-								</Dialog>
+								<button
+									onClick={handleSave}
+									className="px-6 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+								>
+									保存する
+								</button>
 							</div>
 						)}
 					</div>
-
-					<FurnitureDetailTabs
-						furniture={furnitureToUse}
-						editedFurniture={editedFurniture}
-						setEditedFurniture={setEditedFurniture}
-						isEditing={isEditing}
-						locations={initialLocations}
-						summary={initialMaintenanceSummary}
-					/>
-
-					{isEditing && (
-						<div className="flex justify-end space-x-4 pt-8">
-							<button
-								onClick={() => {
-									setIsEditing(false);
-									setSelectedImage(null);
-								}}
-								className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-							>
-								キャンセル
-							</button>
-							<button
-								onClick={handleSave}
-								className="px-6 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-							>
-								保存する
-							</button>
-						</div>
-					)}
 				</div>
-			</div>
+			)}
 		</div>
 	);
 }

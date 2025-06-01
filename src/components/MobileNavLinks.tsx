@@ -19,7 +19,7 @@ export default function MobileNavLinks() {
 			toast({ title: "ログアウトしました" });
 			router.push("/");
 		} catch (error: any) {
-			console.error("Error loging out:", error.message);
+			console.error("Error logging out:", error.message);
 		}
 	};
 
@@ -38,49 +38,74 @@ export default function MobileNavLinks() {
 
 			<nav className="flex-1 p-6">
 				<div className="space-y-6">
-					<SheetClose asChild>
-						<Link
-							href="/furniture"
-							className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-						>
-							Collection
-						</Link>
-					</SheetClose>
-					<SheetClose asChild>
-						<Link
-							href="/maintenance"
-							className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-						>
-							Maintenance
-						</Link>
-					</SheetClose>
-					<SheetClose asChild>
-						<Link
-							href="/about"
-							className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-						>
-							About
-						</Link>
-					</SheetClose>
-					<SheetClose asChild>
-						{user ? (
-							<button
-								onClick={handleLogout}
-								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-							>
-								<FiLogOut className="mr-2" />
-								ログアウト
-							</button>
-						) : (
-							<Link
-								href="/auth/login"
-								className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-							>
-								<FiLogIn className="mr-2" />
-								ログイン
-							</Link>
-						)}
-					</SheetClose>
+					{user && (
+						<>
+							<SheetClose asChild>
+								<Link
+									href="/furniture"
+									className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									家具一覧
+								</Link>
+							</SheetClose>
+							<SheetClose asChild>
+								<Link
+									href="/maintenance"
+									className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									メンテナンス予定
+								</Link>
+							</SheetClose>
+							<SheetClose asChild>
+								<Link
+									href="/settings"
+									className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									設定
+								</Link>
+							</SheetClose>
+							<SheetClose asChild>
+								<Link
+									href="/about"
+									className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									アプリについて
+								</Link>
+							</SheetClose>
+							<SheetClose asChild>
+								<button
+									onClick={handleLogout}
+									className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									<FiLogOut className="mr-2" />
+									ログアウト
+								</button>
+							</SheetClose>
+						</>
+					)}
+
+					{!user && (
+						<>
+							<SheetClose asChild>
+								<Link
+									href="/about"
+									className="block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									アプリについて
+								</Link>
+							</SheetClose>
+							<SheetClose asChild>
+								<Link
+									href="/auth/login"
+									className="flex items-center text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+									// className="flex items-center h-10 px-2 text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								>
+									<FiLogIn className="mr-2" />
+									ログイン
+								</Link>
+							</SheetClose>
+						</>
+					)}
 				</div>
 			</nav>
 

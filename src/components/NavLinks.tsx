@@ -76,13 +76,13 @@ export default function NavLinks() {
 				<>
 					<Link
 						href="/about"
-						className="text-sm text-kuralis-600 hover:text-kuralis-900 underline hover:no-underline transition-colors duration-300 font-bold tracking-tighter-custom"
+						className="inline-flex items-center h-10 text-sm text-kuralis-600 hover:text-kuralis-900 underline hover:no-underline transition-colors duration-300 font-bold tracking-tighter-custom"
 					>
 						アプリについて
 					</Link>
 					<Link
 						href="/auth/login"
-						className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom flex items-center"
+						className="inline-flex items-center h-10 text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
 					>
 						<FiLogIn className="mr-2" />
 						ログイン

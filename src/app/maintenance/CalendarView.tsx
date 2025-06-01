@@ -11,13 +11,13 @@ import {
 	isSameMonth,
 } from "date-fns";
 import { ja } from "date-fns/locale";
-import type { MaintenanceTask } from "@/types/maintenance";
-import { useRouter } from "next/navigation";
+import type { MaintenanceSummaryItem } from "@/types/maintenance";
+import Link from "next/link";
 
 interface CalendarViewProps {
 	selectedDate: Date;
 	setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-	maintenanceTasks: MaintenanceTask[];
+	maintenanceTasks: MaintenanceSummaryItem[];
 }
 
 /**
@@ -28,19 +28,15 @@ export default function CalendarView({
 	setSelectedDate,
 	maintenanceTasks,
 }: CalendarViewProps) {
-	const router = useRouter();
-
 	const days = eachDayOfInterval({
 		start: startOfMonth(selectedDate),
 		end: endOfMonth(selectedDate),
 	});
 
 	const getTasksForDate = (date: Date) =>
-		maintenanceTasks.filter((task) => isSameDay(task.nextDate, date));
-
-	const handleLink = (furnitureId: string) => {
-		router.push(`/furniture/${furnitureId}/maintenance`);
-	};
+		maintenanceTasks.filter(
+			(task) => task.nextDueDate !== null && isSameDay(new Date(task.nextDueDate), date)
+		);
 
 	return (
 		<div className="bg-white rounded-lg shadow">
@@ -102,18 +98,18 @@ export default function CalendarView({
 
 							<div className="space-y-1">
 								{tasks.map((task) => (
-									<button
-										key={task.id}
-										onClick={() => handleLink(task.furnitureId)}
-										className="w-full text-left text-[10px] md:text-xs p-0.5 md:p-1 bg-accent-50 text-accent-500 rounded-sm hover:bg-accent-100 transition-colors duration-300 truncate"
+									<Link
+										key={task.taskId}
+										href={`/furniture/${task.furnitureId}/maintenance`}
+										className="block w-full text-left text-[10px] md:text-xs p-0.5 md:p-1 bg-accent-50 text-accent-500 rounded-sm hover:bg-accent-100 transition-colors duration-300 truncate"
 									>
 										<span className="hidden md:inline">
 											{task.furnitureName}
 											<br />
-											{task.method}
+											{task.taskName}
 										</span>
-										<span className="md:hidden">{task.method}</span>
-									</button>
+										<span className="md:hidden">{task.taskName}</span>
+									</Link>
 								))}
 							</div>
 						</div>

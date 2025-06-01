@@ -1,10 +1,20 @@
-// サマリー表示用（SSRで取得される概要情報）
+// 家具詳細画面サマリー表示用（SSRで取得される概要情報）
 export type MaintenanceSummary = {
 	activeTaskCount: number; // アクティブなメンテナンスタスク数
 	nearestTaskName: string | null; // 最も近い次回予定のタスク名
 	nearestDueDate: string | null; // 最も近い次回予定日（ISO文字列）
 	latestPerformedAt: string | null; // 最終実施日（ISO文字列）
 };
+
+// メンテナンス予定画面サマリー表示用（SSRで取得される概要情報）
+export interface MaintenanceSummaryItem {
+	furnitureId: string;
+	furnitureName: string;
+	taskId: string;
+	taskName: string;
+	lastPerformedAt: string;
+	nextDueDate: string | null;
+}
 
 // // タスク（maintenance_tasks）構造
 // export type MaintenanceTask = {

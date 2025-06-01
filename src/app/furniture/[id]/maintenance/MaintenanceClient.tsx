@@ -112,7 +112,6 @@ export default function MaintenanceClient({ furniture }: Props) {
 		}
 	};
 
-	if (isLoading) return <p>読み込み中...</p>;
 	if (error) return <p className="text-red-500">エラーが発生しました</p>;
 
 	return (
@@ -141,8 +140,14 @@ export default function MaintenanceClient({ furniture }: Props) {
 						<span>新しい項目を追加</span>
 					</button>
 				</div>
-
-				{tasks.length === 0 ? (
+				{isLoading ? (
+					// 🅰 ローディング中のSkeletonやプレースホルダー
+					<div className="space-y-2">
+						{Array.from({ length: 3 }).map((_, i) => (
+							<div key={i} className="h-14 bg-kuralis-100 rounded-sm animate-pulse" />
+						))}
+					</div>
+				) : tasks.length === 0 ? (
 					<div className="text-center py-12 border-2 border-dashed border-kuralis-200 rounded-sm">
 						<FiTool size={32} className="mx-auto text-kuralis-400 mb-4" />
 						<p className="text-kuralis-600 font-bold tracking-tighter-custom">

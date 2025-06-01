@@ -76,7 +76,7 @@ export default function NavLinks() {
 				<>
 					<Link
 						href="/about"
-						className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+						className="text-sm text-kuralis-600 hover:text-kuralis-900 underline hover:no-underline transition-colors duration-300 font-bold tracking-tighter-custom"
 					>
 						アプリについて
 					</Link>

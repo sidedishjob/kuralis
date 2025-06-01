@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
+import { User } from "@supabase/supabase-js";
+import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import FurnitureCard from "@/components/FurnitureCard";
 import FilterSheet from "@/components/FilterSheet";
-import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
-import Link from "next/link";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
-import { User } from "@supabase/supabase-js";
 import type { Furniture } from "@/types/furniture";
 import type { Category, Location } from "@/types/furniture_meta";
 
@@ -30,14 +30,10 @@ export default function FurnitureListClient({
 	const [isLocationOpen, setIsLocationOpen] = useState(false);
 	const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
 
-	// const { data, isLoading, error } = useFurniture();
-
 	useEffect(() => {
 		const hasSeen = localStorage.getItem("hasSeenOnboarding");
 		setOnboardingStep(hasSeen ? null : 1);
 	}, []);
-
-	// const { categories, locations } = useFurnitureMeta();
 
 	const filteredFurniture = useMemo(() => {
 		if (!initialFurniture) return [];

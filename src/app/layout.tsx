@@ -1,6 +1,9 @@
 import "./globals.css";
 import { Inter, Noto_Sans_JP } from "next/font/google";
-import ClientRoot from "@/components/ClientRoot";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"], weight: ["700"], variable: "--font-inter" });
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], weight: ["700"], variable: "--font-noto" });
@@ -14,7 +17,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="ja" className={`${inter.variable} ${notoSansJP.variable}`}>
 			<body>
-				<ClientRoot>{children}</ClientRoot>
+				<Header />
+				<AuthProvider>
+					<div className="min-h-screen bg-white text-kuralis-900 flex flex-col">
+						<main className="flex-grow">{children}</main>
+						<Toaster />
+					</div>
+				</AuthProvider>
+				<Footer />
 			</body>
 		</html>
 	);

@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
-import { MaintenanceSummary, MaintenanceTaskWithRecords } from "@/types/maintenance";
+import { MaintenanceSummary } from "@/types/maintenance";
 
 /**
  * 家具IDに紐づくメンテナンスタスクと記録の概要情報を取得

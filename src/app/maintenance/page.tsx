@@ -7,7 +7,6 @@ export default async function MaintenancePage() {
 	const user = await getUserFromCookie();
 	if (!user) return redirect("/auth/login");
 	const summary = await getAllMaintenanceSummary(user.id);
-	console.log(summary);
 
 	return <MaintenanceClient summary={summary} />;
 }

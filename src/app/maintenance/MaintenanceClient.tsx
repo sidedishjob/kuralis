@@ -6,6 +6,7 @@ import { FiCalendar, FiGrid } from "react-icons/fi";
 import type { MaintenanceSummaryItem } from "@/types/maintenance";
 import CalendarView from "./CalendarView";
 import BoardView from "./BoardView";
+import Link from "next/link";
 
 interface MaintenanceClientProps {
 	/** SSR／サーバー関数で取得したメンテナンスサマリー一覧 */
@@ -28,7 +29,18 @@ export default function MaintenanceClient({ summary }: MaintenanceClientProps) {
 					</p>
 				</div>
 			</div>
-
+			{summary.length === 0 && (
+				<div className="pb-2 text-center text-sm text-kuralis-500 mt-12 col-span-full">
+					メンテナンス予定がありません。
+					<br className="block md:hidden" />
+					<Link
+						href="/furniture"
+						className="text-kuralis-700 underline underline-offset-2 hover:text-kuralis-900 ml-1"
+					>
+						家具のメンテナンスタスクを登録してください
+					</Link>
+				</div>
+			)}
 			{/* タブ切り替え */}
 			<Tabs defaultValue="calendar" className="w-full">
 				<TabsList className="mb-6">

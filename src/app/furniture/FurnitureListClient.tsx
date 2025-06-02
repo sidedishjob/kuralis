@@ -219,6 +219,17 @@ export default function FurnitureListClient({
 								isDemo={!user}
 							/>
 						))}
+						{filteredFurniture.length === 0 && (
+							<div className="text-center text-sm text-kuralis-500 mt-12 col-span-full">
+								家具が登録されていません。
+								<Link
+									href="/furniture/register"
+									className="text-kuralis-700 underline underline-offset-2 hover:text-kuralis-900 ml-1"
+								>
+									家具を登録する
+								</Link>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

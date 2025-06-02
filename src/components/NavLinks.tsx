@@ -37,13 +37,13 @@ export default function NavLinks() {
 				<>
 					<Link
 						href="/furniture"
-						className="inline-flex items-center h-10 text-sm text-kuralis-600 hover:text-kuralis-900 underline hover:no-underline transition-colors duration-300 font-bold tracking-tighter-custom"
+						className="inline-flex items-center h-10 text-sm text-kuralis-500 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
 					>
 						家具一覧
 					</Link>
 					<Link
 						href="/maintenance"
-						className="inline-flex items-center h-10 text-sm text-kuralis-600 hover:text-kuralis-900 underline hover:no-underline transition-colors duration-300 font-bold tracking-tighter-custom"
+						className="inline-flex items-center h-10 text-sm text-kuralis-500 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
 					>
 						メンテナンス予定
 					</Link>
@@ -51,7 +51,7 @@ export default function NavLinks() {
 						<DropdownMenuTrigger asChild>
 							<Button
 								variant="ghost"
-								className="text-sm text-kuralis-600 hover:text-kuralis-900 font-semibold"
+								className="text-sm text-kuralis-500 hover:text-kuralis-900"
 							>
 								<FiUser />
 								{user.email}
@@ -76,13 +76,13 @@ export default function NavLinks() {
 				<>
 					<Link
 						href="/about"
-						className="inline-flex items-center h-10 text-sm text-kuralis-600 hover:text-kuralis-900 underline hover:no-underline transition-colors duration-300 font-bold tracking-tighter-custom"
+						className="inline-flex items-center h-10 text-sm text-kuralis-500 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
 					>
 						アプリについて
 					</Link>
 					<Link
 						href="/auth/login"
-						className="inline-flex items-center h-10 text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+						className="inline-flex items-center h-10 text-sm text-kuralis-500 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
 					>
 						<FiLogIn className="mr-2" />
 						ログイン

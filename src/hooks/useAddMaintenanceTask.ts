@@ -1,17 +1,21 @@
 import useSWRMutation from "swr/mutation";
 import { API_ROUTES } from "@/lib/api/route";
+import type { MaintenanceTaskPayload } from "@/types/maintenance";
 
+/**
+ * 指定された家具IDに対して、メンテナンスタスクを追加するためのカスタムフック
+ */
 export function useAddMaintenanceTask(furnitureId: string) {
-	const addTask = async (
-		_: string,
-		{ arg }: { arg: { taskName: string; cycleValue: string; cycleUnit: string } }
-	) => {
+	const addTask = async (_: string, { arg }: { arg: MaintenanceTaskPayload }) => {
 		const res = await fetch(API_ROUTES.maintenanceTasks(furnitureId), {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(arg),
 		});
-		if (!res.ok) throw new Error("メンテナンス項目の登録に失敗しました");
+		if (!res.ok) {
+			const error = await res.json();
+			throw new Error(error.message || "メンテナンス項目の登録に失敗しました");
+		}
 		return res.json();
 	};
 

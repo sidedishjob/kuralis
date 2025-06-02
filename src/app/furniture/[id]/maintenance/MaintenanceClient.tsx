@@ -13,7 +13,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/useToast";
 import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
 import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
@@ -42,8 +42,8 @@ export default function MaintenanceClient({ furniture }: Props) {
 
 	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
 	const { addTask } = useAddMaintenanceTask(furniture.id);
-	const addRecord = useAddMaintenanceRecord();
-	const deleteRecord = useDeleteMaintenanceRecord();
+	const { addRecord } = useAddMaintenanceRecord();
+	const { deleteRecord } = useDeleteMaintenanceRecord();
 
 	const handleAddTask = async () => {
 		if (!newItem.taskName) return;

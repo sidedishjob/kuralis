@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 /**
- * 認証済みユーザーを自動で家具一覧ページへリダイレクトするカスタムフック
+ * ログイン済みのユーザーがアクセスした場合に
+ * 自動で /furniture へリダイレクトさせるカスタムフック
  */
 export function useAuthRedirect() {
 	const { user } = useAuth();

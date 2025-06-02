@@ -8,7 +8,7 @@ import {
 	ToastTitle,
 	ToastViewport,
 } from "@/components/ui/toast";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 
 // Toaster コンポーネントは、useToast() により得られた toast キューを表示するためのクライアントコンポーネントです。
 export function Toaster() {

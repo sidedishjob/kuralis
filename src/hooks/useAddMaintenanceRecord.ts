@@ -1,8 +1,11 @@
-import { API_ROUTES } from "@/lib/api/route";
 import { useCallback } from "react";
+import { API_ROUTES } from "@/lib/api/route";
 
+/**
+ * メンテナンス履歴を追加するカスタムフック
+ */
 export function useAddMaintenanceRecord() {
-	return useCallback(async (taskId: string, date: string) => {
+	const addRecord = useCallback(async (taskId: string, date: string) => {
 		const res = await fetch(API_ROUTES.maintenanceRecord, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -16,4 +19,6 @@ export function useAddMaintenanceRecord() {
 
 		return res.json();
 	}, []);
+
+	return { addRecord };
 }

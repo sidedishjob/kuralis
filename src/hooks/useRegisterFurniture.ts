@@ -18,10 +18,15 @@ export function useRegisterFurniture() {
 				body: formData,
 			});
 			const result = await res.json();
-			if (!res.ok) throw new Error(result.error);
+
+			if (!res.ok) {
+				const msg = result?.error || result?.message || "家具の登録に失敗しました";
+				throw new Error(msg);
+			}
+
 			return result;
 		} catch (err) {
-			const message = err instanceof Error ? err.message : "不明なエラー";
+			const message = err instanceof Error ? err.message : "不明なエラーが発生しました";
 			setError(message);
 			throw err;
 		} finally {

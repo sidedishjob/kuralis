@@ -1,21 +1,6 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserFromCookie } from "@/lib/supabase/server";
 import { registerFurniture } from "@/lib/server/furniture";
-
-/**
- * 家具一覧を取得するAPI
- */
-export async function GET() {
-	const supabase = await createSupabaseServerClient();
-	const { data, error } = await supabase.from("furniture").select("*");
-
-	if (error) {
-		return NextResponse.json({ error: error.message }, { status: 500 });
-	}
-
-	return NextResponse.json(data);
-}
 
 /**
  * 家具を登録するAPI

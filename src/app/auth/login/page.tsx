@@ -2,7 +2,7 @@
 
 import { LoginForm } from "@/components/auth/LoginForm";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAuthRedirect } from "@/hooks/use-auth-redirect";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export default function LoginPage() {
 	const { user, loading } = useAuth();

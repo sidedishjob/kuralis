@@ -71,3 +71,12 @@ export interface MaintenanceTaskWithRecords {
 	records: MaintenanceRecord[];
 	next_due_date: string | null;
 }
+
+/**
+ * メンテナンスタスク登録APIに送信するリクエストの型
+ */
+export interface MaintenanceTaskPayload {
+	taskName: string;
+	cycleValue: string;
+	cycleUnit: string;
+}

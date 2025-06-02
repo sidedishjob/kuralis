@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { MaintenanceTaskWithRecords } from "@/types/maintenance";
+import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
 
 const VALID_UNITS = ["days", "weeks", "months", "years"];
 

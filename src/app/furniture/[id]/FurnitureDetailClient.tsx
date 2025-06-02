@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiArrowLeft, FiAlertCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { useToast } from "@/hooks/useToast";
-import { useAuth } from "@/contexts/AuthContext";
 import { useFurnitureById } from "@/hooks/useFurnitureById";
+import { useDeleteFurniture } from "@/hooks/useDeleteFurniture";
+import { useUpdateFurniture } from "@/hooks/useUpdateFurniture";
+import { useAuth } from "@/contexts/AuthContext";
 import FurnitureDetailImage from "./FurnitureDetailImage";
 import FurnitureDetailTabs from "./FurnitureDetailTabs";
 import { Switch } from "@/components/ui/switch";
@@ -21,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
-import { MaintenanceSummary } from "@/types/maintenance";
+import type { MaintenanceSummary } from "@/types/maintenance";
 
 interface FurnitureDetailClientProps {
 	initialFurniture: FurnitureWithExtras;
@@ -38,8 +40,12 @@ export default function FurnitureDetailClient({
 	const { toast } = useToast();
 	const { user } = useAuth();
 
-	const { furniture, updateFurniture, deleteFurniture, mutate, isLoading, error } =
-		useFurnitureById(initialFurniture.id, initialFurniture);
+	const { furniture, mutate, isLoading, error } = useFurnitureById(
+		initialFurniture.id,
+		initialFurniture
+	);
+	const { updateFurniture } = useUpdateFurniture(initialFurniture.id, mutate);
+	const { deleteFurniture } = useDeleteFurniture(initialFurniture.id);
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedFurniture, setEditedFurniture] = useState<FurnitureWithExtras>(initialFurniture);

@@ -35,7 +35,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
-		const furnitureId = params.id;
+		const { id } = await params;
 		const supabase = await createSupabaseServerClient();
 		const formData = await req.formData();
 
@@ -81,7 +81,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 		const { data, error } = await supabase
 			.from("furniture")
 			.update(updates)
-			.eq("id", furnitureId)
+			.eq("id", id)
 			.eq("user_id", user.id)
 			.select()
 			.single();

@@ -24,12 +24,13 @@ export async function getFurnitureMeta(): Promise<FurnitureMeta> {
 		.select("id, name")
 		.order("name", { ascending: true });
 
-	// ロケーション一覧（そのユーザー専用）
+	// ロケーション一覧（デフォルト & そのユーザー専用）
 	const { data: locations, error: locationsError } = await supabase
 		.from("locations")
 		.select("id, name")
-		.eq("user_id", user.id)
-		.order("name", { ascending: true });
+		.or(`user_id.eq.${user.id},user_id.is.null`)
+		.order("user_id", { ascending: true, nullsFirst: true })
+		.order("id", { ascending: true });
 
 	if (categoriesError) {
 		console.error("カテゴリ取得失敗:", categoriesError.message);

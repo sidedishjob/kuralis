@@ -27,7 +27,7 @@ CREATE TABLE categories (
 -- Locations table (user-specific)
 CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL
 );
 

@@ -31,6 +31,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 		const { error } = await supabase.auth.signInWithPassword({ email, password });
 
 		if (error) {
+			setLoading(false);
 			setError(error.message);
 		} else {
 			router.push("/furniture");

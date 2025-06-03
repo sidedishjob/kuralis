@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FiArrowLeft, FiAlertCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiArrowLeft, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { useToast } from "@/hooks/useToast";
 import { useFurnitureById } from "@/hooks/useFurnitureById";
 import { useDeleteFurniture } from "@/hooks/useDeleteFurniture";
@@ -11,7 +11,6 @@ import { useUpdateFurniture } from "@/hooks/useUpdateFurniture";
 import { useAuth } from "@/contexts/AuthContext";
 import FurnitureDetailImage from "./FurnitureDetailImage";
 import FurnitureDetailTabs from "./FurnitureDetailTabs";
-import { Switch } from "@/components/ui/switch";
 import {
 	Dialog,
 	DialogTrigger,
@@ -50,8 +49,6 @@ export default function FurnitureDetailClient({
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedFurniture, setEditedFurniture] = useState<FurnitureWithExtras>(initialFurniture);
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
-	// TODO:メンテナンス情報取得処理追加
-	const [needsMaintenance, setNeedsMaintenance] = useState(true);
 
 	const furnitureToUse = isEditing ? editedFurniture : (furniture ?? initialFurniture);
 
@@ -85,7 +82,6 @@ export default function FurnitureDetailClient({
 			formData.append("brand", editedFurniture.brand ?? "");
 			formData.append("location_id", String(editedFurniture.location_id));
 			formData.append("purchased_from", editedFurniture.purchased_from ?? "");
-			formData.append("needs_maintenance", String(needsMaintenance));
 			formData.append("notes", editedFurniture.notes ?? "");
 
 			// 購入日（Date → YYYY-MM-DD）
@@ -103,11 +99,6 @@ export default function FurnitureDetailClient({
 
 			const result = await updateFurniture(formData);
 			mutate(result, false);
-
-			// 楽観的UI: まずキャッシュを即時更新
-			// await mutate(async () => result, false);
-			// その後、サーバーから再フェッチしてキャッシュを最新化
-			// await mutate();
 
 			setIsEditing(false);
 			setSelectedImage(null);
@@ -178,29 +169,8 @@ export default function FurnitureDetailClient({
 					/>
 
 					<div className="space-y-8">
-						{/* バッジ・編集削除ボタンをタブの外に表示 */}
+						{/* 編集削除ボタンをタブの外に表示 */}
 						<div className="flex items-center justify-between">
-							<div className="flex items-center space-x-4">
-								{!isEditing && needsMaintenance && (
-									<div className="px-3 py-1.5 bg-accent-50 text-accent-500 rounded-full text-sm font-bold tracking-tighter-custom flex items-center shadow-sm hover:shadow-md transition-all duration-300">
-										<FiAlertCircle size={14} className="mr-1.5" />
-										<span>メンテナンスが必要です</span>
-									</div>
-								)}
-								{isEditing && (
-									<div className="flex items-center space-x-2">
-										<Switch
-											checked={needsMaintenance}
-											onCheckedChange={setNeedsMaintenance}
-											className="data-[state=checked]:bg-accent-500"
-										/>
-										<span className="text-sm font-bold tracking-tighter-custom text-kuralis-600">
-											メンテナンスが必要
-										</span>
-									</div>
-								)}
-							</div>
-
 							{user && !isEditing && (
 								<div className="flex items-center space-x-3">
 									<button

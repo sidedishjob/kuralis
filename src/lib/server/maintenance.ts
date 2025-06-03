@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
-import { MaintenanceSummary } from "@/types/maintenance";
+import type { MaintenanceSummary } from "@/types/maintenance";
 
 /**
  * 家具IDに紐づくメンテナンスタスクと記録の概要情報を取得
@@ -16,7 +16,7 @@ export async function getMaintenanceSummary(
 	try {
 		const supabase = await createSupabaseServerClient();
 
-		// タスク一覧を取得
+		// 1. 家具に紐づくタスク一覧を取得
 		const { data: tasks, error: taskError } = await supabase
 			.from("maintenance_tasks")
 			.select("id, name, is_active")
@@ -31,41 +31,53 @@ export async function getMaintenanceSummary(
 		const activeTaskCount = tasks.filter((t) => t.is_active).length;
 
 		if (taskIds.length === 0) {
-			return null;
+			return {
+				activeTaskCount,
+				nearestTaskName: null,
+				nearestDueDate: null,
+			};
 		}
 
-		// 最も近い next_due_date を持つレコード
-		const { data: nextRecord, error: nextError } = await supabase
+		// 2. 該当タスクに紐づく記録（履歴）を取得
+		const { data: records, error: recordError } = await supabase
 			.from("maintenance_records")
-			.select("next_due_date, task_name")
+			.select("task_id, performed_at, next_due_date, task_name")
 			.in("task_id", taskIds)
-			.gte("next_due_date", new Date().toISOString())
-			.order("next_due_date", { ascending: true })
-			.limit(1)
-			.single();
+			.not("next_due_date", "is", null);
 
-		if (nextError && nextError.code !== "PGRST116") {
-			console.error("[getMaintenanceSummary] 次回予定取得エラー:", nextError);
+		if (recordError || !records || records.length === 0) {
+			console.error("[getMaintenanceSummary] 記録取得エラー:", recordError);
+			return {
+				activeTaskCount,
+				nearestTaskName: null,
+				nearestDueDate: null,
+			};
 		}
 
-		// 最も最近の performed_at を持つレコード
-		const { data: latestRecord, error: latestError } = await supabase
-			.from("maintenance_records")
-			.select("performed_at, task_name")
-			.in("task_id", taskIds)
-			.order("performed_at", { ascending: false })
-			.limit(1)
-			.single();
+		// 3. 各タスクごとに「最新の記録（最も新しい performed_at）」を抽出
+		const latestPerTask = Object.values(
+			records.reduce(
+				(acc, record) => {
+					const existing = acc[record.task_id];
+					const current = new Date(record.performed_at);
+					if (!existing || new Date(existing.performed_at) < current) {
+						acc[record.task_id] = record;
+					}
+					return acc;
+				},
+				{} as Record<string, (typeof records)[0]>
+			)
+		);
 
-		if (latestError && latestError.code !== "PGRST116") {
-			console.error("[getMaintenanceSummary] 最終実施取得エラー:", latestError);
-		}
+		// 4. 全タスクの中から「最も古い next_due_date」 を持つレコードを選択
+		const nearestRecord = latestPerTask.sort(
+			(a, b) => new Date(a.next_due_date).getTime() - new Date(b.next_due_date).getTime()
+		)[0];
 
 		return {
 			activeTaskCount,
-			nearestTaskName: nextRecord?.task_name ?? null,
-			nearestDueDate: nextRecord?.next_due_date ?? null,
-			latestPerformedAt: latestRecord?.performed_at ?? null,
+			nearestTaskName: nearestRecord?.task_name ?? null,
+			nearestDueDate: nearestRecord?.next_due_date ?? null,
 		};
 	} catch (err) {
 		console.error("[getMaintenanceSummary] 予期しないエラー:", err);

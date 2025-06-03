@@ -27,6 +27,10 @@ export default function FurnitureDetailMaintenanceTab({
 	const formattedTaskCount =
 		summary?.activeTaskCount !== undefined ? `${summary.activeTaskCount} 件` : "未設定";
 
+	const isOverdue =
+		summary?.nearestDueDate &&
+		new Date(summary.nearestDueDate).getTime() < new Date().getTime();
+
 	return (
 		<div className="space-y-6">
 			{/* メンテナンス概要 */}
@@ -39,7 +43,11 @@ export default function FurnitureDetailMaintenanceTab({
 						<FiCalendar className="mr-2" size={14} />
 						次回予定
 					</div>
-					<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
+					<div
+						className={`flex-1 min-w-0 font-normal tracking-tighter-custom truncate ${
+							isOverdue ? "text-red-500" : ""
+						}`}
+					>
 						{formattedNextDue}
 					</div>
 				</div>
@@ -58,8 +66,13 @@ export default function FurnitureDetailMaintenanceTab({
 					className="inline-flex items-center px-4 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
 				>
 					<FiList size={14} className="mr-2" />
-					<span>メンテナンス履歴を管理</span>
+					<span>メンテナンスを管理</span>
 				</Link>
+				{isOverdue && (
+					<div className="text-sm text-red-500 bg-red-50 border border-red-200 px-4 py-3 rounded-sm font-bold tracking-tighter-custom">
+						次回予定日が過去になっています。早急にメンテナンスを実施してください。
+					</div>
+				)}
 			</div>
 
 			{/* 備考欄 */}

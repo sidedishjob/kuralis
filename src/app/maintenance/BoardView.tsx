@@ -29,7 +29,11 @@ export default function BoardView({ maintenanceTasks }: BoardViewProps) {
 					期限切れ
 				</h3>
 				{tasksWithDueDate
-					.filter((t) => t.nextDueDate !== null && new Date(t.nextDueDate) < now)
+					.filter(
+						(t) =>
+							t.nextDueDate !== null &&
+							new Date(t.nextDueDate).setHours(0, 0, 0, 0) < now.setHours(0, 0, 0, 0)
+					)
 					.map((task) => (
 						<Link
 							key={task.taskId}

@@ -172,7 +172,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 						</p>
 					</div>
 				) : (
-					<div className="space-y-4">
+					<div className="grid grid-cols-1 gap-4">
 						{tasks.map((task) => (
 							<div
 								key={task.id}
@@ -187,23 +187,11 @@ export default function MaintenanceClient({ furniture }: Props) {
 											{task.name}
 										</h3>
 										<p className="text-sm text-kuralis-600">
+											実施周期：
 											{task.cycle_value}
 											{unitMap[task.cycle_unit] ?? task.cycle_unit}
 											ごと
 										</p>
-									</div>
-									<div className="grid place-items-center text-center gap-1">
-										<span className="text-sm text-kuralis-600">
-											タスクの状態
-										</span>
-										<Switch
-											checked={task.is_active}
-											onCheckedChange={(checked) =>
-												handleUpdateTaskActive(task.id, checked)
-											}
-											aria-label={`「${task.name}」を${task.is_active ? "無効" : "有効"}にする`}
-											className="data-[state=checked]:bg-kuralis-900"
-										/>
 									</div>
 									{task.next_due_date && (
 										<div
@@ -222,83 +210,100 @@ export default function MaintenanceClient({ furniture }: Props) {
 										</div>
 									)}
 								</div>
-								<div className="space-y-2 ml-8">
-									{task.records.map((record) => (
-										<div
-											key={record.id}
-											className="flex items-center justify-start group"
-										>
-											<div className="flex items-center space-x-2 text-sm text-kuralis-600">
-												<FiCalendar size={18} />
-												<span className="font-bold tracking-tighter-custom">
-													{record.performed_at}
-												</span>
-												<span className="text-kuralis-400">実施</span>
-											</div>
-											<Dialog>
-												<DialogTrigger asChild>
-													<button className="ml-3 md:opacity-0 group-hover:opacity-100 text-kuralis-400 hover:text-accent-500 transition-all duration-300">
-														<FiTrash2 size={18} />
-													</button>
-												</DialogTrigger>
-												<DialogContent>
-													<DialogHeader>
-														<DialogTitle>
-															メンテナンス履歴を削除しますか？
-														</DialogTitle>
-														<DialogDescription>
-															この操作は取り消せません。本当に削除しますか？
-														</DialogDescription>
-													</DialogHeader>
-													<DialogFooter className="mt-4">
-														<button
-															onClick={() =>
-																handleDeleteHistory(record.id)
-															}
-															className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-														>
-															削除する
+								<div className="flex items-start justify-between space-y-2 ml-8">
+									<div>
+										{task.records.map((record) => (
+											<div
+												key={record.id}
+												className="flex items-center justify-start group"
+											>
+												<div className="flex items-center space-x-2 text-sm text-kuralis-600">
+													<FiCalendar size={18} />
+													<span className="font-bold tracking-tighter-custom">
+														{record.performed_at}
+													</span>
+													<span className="text-kuralis-400">実施</span>
+												</div>
+												<Dialog>
+													<DialogTrigger asChild>
+														<button className="ml-3 md:opacity-0 group-hover:opacity-100 text-kuralis-400 hover:text-accent-500 transition-all duration-300">
+															<FiTrash2 size={18} />
 														</button>
-													</DialogFooter>
-												</DialogContent>
-											</Dialog>
-										</div>
-									))}
+													</DialogTrigger>
+													<DialogContent>
+														<DialogHeader>
+															<DialogTitle>
+																メンテナンス履歴を削除しますか？
+															</DialogTitle>
+															<DialogDescription>
+																この操作は取り消せません。本当に削除しますか？
+															</DialogDescription>
+														</DialogHeader>
+														<DialogFooter className="mt-4">
+															<button
+																onClick={() =>
+																	handleDeleteHistory(record.id)
+																}
+																className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+															>
+																削除する
+															</button>
+														</DialogFooter>
+													</DialogContent>
+												</Dialog>
+											</div>
+										))}
 
-									{isAddingHistory === task.id ? (
-										<div className="flex items-center space-x-2">
-											<input
-												type="date"
-												value={newHistoryDate}
-												onChange={(e) => setNewHistoryDate(e.target.value)}
-												className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
-											/>
+										{isAddingHistory === task.id ? (
+											<div className="flex items-center space-x-2">
+												<input
+													type="date"
+													value={newHistoryDate}
+													onChange={(e) =>
+														setNewHistoryDate(e.target.value)
+													}
+													className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
+												/>
+												<button
+													onClick={() => handleAddHistory(task.id)}
+													disabled={!newHistoryDate}
+													className="text-sm text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400 transition-colors duration-300 font-bold tracking-tighter-custom"
+												>
+													追加
+												</button>
+												<button
+													onClick={() => {
+														setIsAddingHistory(null);
+														setNewHistoryDate(getTodayDate);
+													}}
+													className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+												>
+													キャンセル
+												</button>
+											</div>
+										) : (
 											<button
-												onClick={() => handleAddHistory(task.id)}
-												disabled={!newHistoryDate}
-												className="text-sm text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400 transition-colors duration-300 font-bold tracking-tighter-custom"
+												onClick={() => setIsAddingHistory(task.id)}
+												className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom inline-flex items-center"
 											>
-												追加
+												<FiPlus size={14} className="mr-1" />
+												<span>新しい履歴を追加</span>
 											</button>
-											<button
-												onClick={() => {
-													setIsAddingHistory(null);
-													setNewHistoryDate(getTodayDate);
-												}}
-												className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-											>
-												キャンセル
-											</button>
-										</div>
-									) : (
-										<button
-											onClick={() => setIsAddingHistory(task.id)}
-											className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom inline-flex items-center"
-										>
-											<FiPlus size={14} className="mr-1" />
-											<span>新しい履歴を追加</span>
-										</button>
-									)}
+										)}
+									</div>
+									<div className="grid place-items-center text-center gap-1">
+										<span className="text-sm text-kuralis-600">
+											タスクの状態
+										</span>
+										<Switch
+											checked={task.is_active}
+											onCheckedChange={(checked) =>
+												handleUpdateTaskActive(task.id, checked)
+											}
+											aria-label={`「${task.name}」を${task.is_active ? "無効" : "有効"}にする`}
+											className="data-[state=checked]:bg-kuralis-900"
+										/>
+									</div>
 								</div>
 							</div>
 						))}

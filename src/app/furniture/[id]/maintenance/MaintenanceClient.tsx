@@ -20,6 +20,8 @@ import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
 import { useAddMaintenanceTask } from "@/hooks/useAddMaintenanceTask";
 import Link from "next/link";
 import { MaintenanceCycleUnit } from "@/types/maintenance";
+import { Switch } from "@/components/ui/switch";
+import { useUpdateMaintenanceTask } from "@/hooks/useUpdateMaintenanceTask";
 
 interface Props {
 	furniture: Furniture;
@@ -44,6 +46,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 	const { addTask } = useAddMaintenanceTask(furniture.id);
 	const { addRecord } = useAddMaintenanceRecord();
 	const { deleteRecord } = useDeleteMaintenanceRecord();
+	const { updateTaskActive } = useUpdateMaintenanceTask(furniture.id);
 
 	const handleAddTask = async () => {
 		if (!newItem.taskName) return;
@@ -112,6 +115,20 @@ export default function MaintenanceClient({ furniture }: Props) {
 		}
 	};
 
+	/**
+	 * メンテナンス状態の更新
+	 */
+	const handleUpdateTaskActive = async (taskId: string, checked: boolean) => {
+		try {
+			await updateTaskActive(taskId, checked);
+			await mutate();
+			toast({ title: "状態を更新しました" });
+		} catch (err) {
+			console.error(err);
+			toast({ title: "更新失敗", variant: "destructive" });
+		}
+	};
+
 	if (error) return <p className="text-red-500">エラーが発生しました</p>;
 
 	return (
@@ -130,7 +147,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 			<div className="max-w-3xl mx-auto">
 				<div className="flex items-center justify-between mb-8">
 					<h1 className="text-2xl font-bold tracking-tighter-custom">
-						{furniture.name}のメンテナンス記録
+						{furniture.name}のメンテナンス管理
 					</h1>
 					<button
 						onClick={() => setIsAddingItem(true)}
@@ -157,7 +174,10 @@ export default function MaintenanceClient({ furniture }: Props) {
 				) : (
 					<div className="space-y-4">
 						{tasks.map((task) => (
-							<div key={task.id} className="p-6 border border-kuralis-200 rounded-sm">
+							<div
+								key={task.id}
+								className={`p-6 border border-kuralis-200 rounded-sm ${task.is_active ? "" : "opacity-50"}`}
+							>
 								<div className="flex items-center space-x-3 mb-4">
 									<div className="text-kuralis-600">
 										<FiTool className="w-5 h-5" />
@@ -171,6 +191,19 @@ export default function MaintenanceClient({ furniture }: Props) {
 											{unitMap[task.cycle_unit] ?? task.cycle_unit}
 											ごと
 										</p>
+									</div>
+									<div className="grid place-items-center text-center gap-1">
+										<span className="text-sm text-kuralis-600">
+											タスクの状態
+										</span>
+										<Switch
+											checked={task.is_active}
+											onCheckedChange={(checked) =>
+												handleUpdateTaskActive(task.id, checked)
+											}
+											aria-label={`「${task.name}」を${task.is_active ? "無効" : "有効"}にする`}
+											className="data-[state=checked]:bg-kuralis-900"
+										/>
 									</div>
 									{task.next_due_date && (
 										<div
@@ -193,7 +226,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 									{task.records.map((record) => (
 										<div
 											key={record.id}
-											className="flex items-center justify-between group"
+											className="flex items-center justify-start group"
 										>
 											<div className="flex items-center space-x-2 text-sm text-kuralis-600">
 												<FiCalendar size={18} />
@@ -204,7 +237,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 											</div>
 											<Dialog>
 												<DialogTrigger asChild>
-													<button className="opacity-0 group-hover:opacity-100 text-kuralis-400 hover:text-accent-500 transition-all duration-300">
+													<button className="ml-3 md:opacity-0 group-hover:opacity-100 text-kuralis-400 hover:text-accent-500 transition-all duration-300">
 														<FiTrash2 size={18} />
 													</button>
 												</DialogTrigger>

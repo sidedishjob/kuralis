@@ -19,7 +19,8 @@ export async function getMaintenanceSummary(
 		// 1. 家具に紐づくタスク一覧を取得
 		const { data: tasks, error: taskError } = await supabase
 			.from("maintenance_tasks")
-			.select("id, name, is_active")
+			.select("id, name")
+			.eq("is_active", true)
 			.eq("furniture_id", furnitureId);
 
 		if (taskError || !tasks) {
@@ -28,7 +29,7 @@ export async function getMaintenanceSummary(
 		}
 
 		const taskIds = tasks.map((t) => t.id);
-		const activeTaskCount = tasks.filter((t) => t.is_active).length;
+		const activeTaskCount = tasks.length;
 
 		if (taskIds.length === 0) {
 			return {

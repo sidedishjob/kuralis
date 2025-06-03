@@ -21,7 +21,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 			.from("maintenance_tasks")
 			.select("id, name, cycle_value, cycle_unit, description, is_active, created_at")
 			.eq("furniture_id", id)
-			.eq("is_active", true)
+			// .eq("is_active", true)
 			.order("created_at", { ascending: true });
 
 		if (taskError) {

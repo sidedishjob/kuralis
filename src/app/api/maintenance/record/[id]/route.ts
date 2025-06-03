@@ -7,9 +7,9 @@ import { NextResponse } from "next/server";
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
 	const supabase = await createSupabaseServerClient();
 
-	// const { id } = await params;
+	const { id } = await params;
 
-	const { error } = await supabase.from("maintenance_records").delete().eq("id", params.id);
+	const { error } = await supabase.from("maintenance_records").delete().eq("id", id);
 
 	if (error) {
 		return NextResponse.json({ error: error.message }, { status: 500 });

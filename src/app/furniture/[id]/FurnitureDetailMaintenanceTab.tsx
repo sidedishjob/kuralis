@@ -29,7 +29,7 @@ export default function FurnitureDetailMaintenanceTab({
 
 	const isOverdue =
 		summary?.nearestDueDate &&
-		new Date(summary.nearestDueDate).getTime() < new Date().getTime();
+		new Date(summary.nearestDueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
 
 	return (
 		<div className="space-y-6">

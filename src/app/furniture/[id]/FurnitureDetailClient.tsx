@@ -44,7 +44,7 @@ export default function FurnitureDetailClient({
 		initialFurniture.id,
 		initialFurniture
 	);
-	const { updateFurniture } = useUpdateFurniture(initialFurniture.id, mutate);
+	const { updateFurniture } = useUpdateFurniture(initialFurniture.id);
 	const { deleteFurniture } = useDeleteFurniture(initialFurniture.id);
 
 	const [isEditing, setIsEditing] = useState(false);
@@ -53,7 +53,7 @@ export default function FurnitureDetailClient({
 	// TODO:メンテナンス情報取得処理追加
 	const [needsMaintenance, setNeedsMaintenance] = useState(true);
 
-	const furnitureToUse = furniture ?? initialFurniture;
+	const furnitureToUse = isEditing ? editedFurniture : (furniture ?? initialFurniture);
 
 	useEffect(() => {
 		if (furniture && !isEditing) {
@@ -102,6 +102,12 @@ export default function FurnitureDetailClient({
 			}
 
 			const result = await updateFurniture(formData);
+			mutate(result, false);
+
+			// 楽観的UI: まずキャッシュを即時更新
+			// await mutate(async () => result, false);
+			// その後、サーバーから再フェッチしてキャッシュを最新化
+			// await mutate();
 
 			setIsEditing(false);
 			setSelectedImage(null);

@@ -5,10 +5,7 @@ import type { FurnitureWithExtras } from "@/types/furniture";
 /**
  * 家具情報を更新するカスタムフック
  */
-export function useUpdateFurniture(
-	id: string,
-	mutate: (data?: FurnitureWithExtras, shouldRevalidate?: boolean) => void
-) {
+export function useUpdateFurniture(id: string) {
 	const updateFurniture = useCallback(
 		async (formData: FormData): Promise<FurnitureWithExtras> => {
 			const res = await fetch(API_ROUTES.furnitureById(id), {
@@ -22,10 +19,10 @@ export function useUpdateFurniture(
 			}
 
 			const updated: FurnitureWithExtras = await res.json();
-			mutate(updated, false);
+
 			return updated;
 		},
-		[id, mutate]
+		[id]
 	);
 
 	return { updateFurniture };

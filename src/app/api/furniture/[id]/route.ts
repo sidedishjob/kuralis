@@ -86,9 +86,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 			.select()
 			.single();
 
+		// 4. レスポンス用のデータ取得
+		const enriched = await getFurnitureById(id, user.id);
+
 		if (error) throw new Error(`更新失敗: ${error.message}`);
 
-		return NextResponse.json(data, { status: 200 });
+		return NextResponse.json(enriched, { status: 200 });
 	} catch (error) {
 		console.error("[PUT /api/furniture/[id]] Update error:", error);
 		return NextResponse.json({ error: (error as Error).message }, { status: 500 });

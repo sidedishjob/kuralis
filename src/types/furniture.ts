@@ -17,3 +17,14 @@ export type FurnitureWithExtras = Furniture & {
 	location?: { id: number; name: string };
 	needsMaintenance?: boolean;
 };
+
+export type UpdateFurniturePayload = {
+	name: string;
+	location_id: number;
+	updated_at: string;
+	brand?: string;
+	image_url?: string;
+	purchased_at?: string;
+	purchased_from?: string;
+	notes?: string;
+};

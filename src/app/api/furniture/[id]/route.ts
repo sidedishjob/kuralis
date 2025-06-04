@@ -5,6 +5,7 @@ import { getFurnitureById } from "@/lib/server/furniture";
 import { uploadFurnitureImage } from "@/lib/storage/image";
 import { ApiError } from "@/lib/errors/ApiError";
 import { handleApiError } from "@/lib/utils/handleApiError";
+import type { UpdateFurniturePayload } from "@/types/furniture";
 
 /**
  * GET: 家具情報の取得
@@ -55,7 +56,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 		}
 
 		// 2. 更新内容構築
-		const updates: Record<string, any> = {
+		const updates: UpdateFurniturePayload = {
 			name,
 			location_id: locationId,
 			updated_at: new Date().toISOString(),

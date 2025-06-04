@@ -1,4 +1,3 @@
-import { TOAST_REMOVE_DELAY } from "./constants";
 import { reducer, type Action, type State, type ToasterToast } from "./reducer";
 
 let count = 0;
@@ -10,23 +9,10 @@ function genId() {
 const listeners: Array<(state: State) => void> = [];
 let memoryState: State = { toasts: [] };
 
-const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
-
 function dispatch(action: Action) {
 	memoryState = reducer(memoryState, action);
 	listeners.forEach((listener) => listener(memoryState));
 }
-
-const addToRemoveQueue = (toastId: string) => {
-	if (toastTimeouts.has(toastId)) return;
-
-	const timeout = setTimeout(() => {
-		toastTimeouts.delete(toastId);
-		dispatch({ type: "REMOVE_TOAST", toastId });
-	}, TOAST_REMOVE_DELAY);
-
-	toastTimeouts.set(toastId, timeout);
-};
 
 type Toast = Omit<ToasterToast, "id">;
 
@@ -57,6 +43,5 @@ export function useToastCore() {
 		memoryState,
 		listeners,
 		dispatch,
-		addToRemoveQueue,
 	};
 }

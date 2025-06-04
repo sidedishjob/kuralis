@@ -4,7 +4,7 @@ import * as React from "react";
 import { toast, useToastCore } from "@/lib/toast/core";
 
 export function useToast() {
-	const { memoryState, listeners, dispatch, addToRemoveQueue } = useToastCore();
+	const { memoryState, listeners, dispatch } = useToastCore();
 	const [state, setState] = React.useState(memoryState);
 
 	React.useEffect(() => {

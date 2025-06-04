@@ -1,10 +1,11 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { MaintenanceSummaryItem } from "@/types/maintenance";
+import type { PostgrestError } from "@supabase/supabase-js";
 
 /**
  * Supabase のエラーを共通で処理
  */
-function checkSupabaseError<T>(data: T | null, error: any, name: string): T {
+function checkSupabaseError<T>(data: T | null, error: PostgrestError | null, name: string): T {
 	if (error) throw new Error(`${name} error: ${error.message}`);
 	if (!data) throw new Error(`${name} not found`);
 	return data;

@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiArrowLeft, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useFurnitureById } from "@/hooks/useFurnitureById";
 import { useDeleteFurniture } from "@/hooks/useDeleteFurniture";
 import { useUpdateFurniture } from "@/hooks/useUpdateFurniture";
-import { useAuth } from "@/contexts/AuthContext";
 import FurnitureDetailImage from "./FurnitureDetailImage";
 import FurnitureDetailTabs from "./FurnitureDetailTabs";
 import {

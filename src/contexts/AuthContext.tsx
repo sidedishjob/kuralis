@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -10,10 +10,10 @@ interface AuthContextType {
 	logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
 	user: null,
 	loading: true,
-	logout: async () => {}, // fallback
+	logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -44,5 +44,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		<AuthContext.Provider value={{ user, loading, logout }}>{children}</AuthContext.Provider>
 	);
 };
-
-export const useAuth = () => useContext(AuthContext);

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FiLogIn, FiLogOut, FiUser } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import {
 	DropdownMenu,

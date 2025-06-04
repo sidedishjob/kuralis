@@ -1,7 +1,7 @@
 "use client";
 
 import { LoginForm } from "@/components/auth/LoginForm";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export default function LoginPage() {

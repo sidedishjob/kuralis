@@ -5,7 +5,7 @@ import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 

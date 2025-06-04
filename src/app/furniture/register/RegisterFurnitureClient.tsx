@@ -50,6 +50,7 @@ export default function RegisterFurnitureClient() {
 				description: `${formData.name} を ${formData.location.name} に登録しました。`,
 			});
 			router.push("/furniture");
+			router.refresh();
 		} catch (error: unknown) {
 			console.error("家具登録エラー:", error);
 			toast({

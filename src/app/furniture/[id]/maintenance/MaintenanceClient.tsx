@@ -22,6 +22,7 @@ import Link from "next/link";
 import { MaintenanceCycleUnit } from "@/types/maintenance";
 import { Switch } from "@/components/ui/switch";
 import { useUpdateMaintenanceTask } from "@/hooks/useUpdateMaintenanceTask";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 interface Props {
 	furniture: Furniture;
@@ -69,12 +70,12 @@ export default function MaintenanceClient({ furniture }: Props) {
 			setNewItem({ taskName: "", cycleValue: "", cycleUnit: "" });
 			setIsAddingItem(false);
 			toast({ title: "メンテナンス項目を追加しました" });
-		} catch (error) {
-			console.error(error);
+		} catch (error: unknown) {
+			console.error("メンテナンス項目登録エラー:", error);
 			toast({
-				title: "登録失敗",
-				description:
-					error instanceof Error ? error.message : "予期しないエラーが発生しました",
+				title: "メンテナンス項目の登録に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
 			});
 		}
 	};
@@ -92,12 +93,12 @@ export default function MaintenanceClient({ furniture }: Props) {
 			setNewHistoryDate(getTodayDate);
 			setIsAddingHistory(null);
 			toast({ title: "メンテナンス履歴を追加しました" });
-		} catch (error) {
-			console.error("登録エラー:", error);
+		} catch (error: unknown) {
+			console.error("メンテナンス履歴登録エラー:", error);
 			toast({
-				title: "登録失敗",
-				description:
-					error instanceof Error ? error.message : "予期しないエラーが発生しました",
+				title: "メンテナンス履歴の登録に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
 			});
 		}
 	};
@@ -110,9 +111,13 @@ export default function MaintenanceClient({ furniture }: Props) {
 			await deleteRecord(recordId);
 			await mutate();
 			toast({ title: "メンテナンス履歴を削除しました" });
-		} catch (err) {
-			console.error(err);
-			toast({ title: "削除失敗", description: "もう一度お試しください" });
+		} catch (error: unknown) {
+			console.error("メンテナンス履歴削除エラー:", error);
+			toast({
+				title: "メンテナンス履歴の削除に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
+			});
 		}
 	};
 
@@ -123,10 +128,14 @@ export default function MaintenanceClient({ furniture }: Props) {
 		try {
 			await updateTaskActive(taskId, checked);
 			await mutate();
-			toast({ title: "状態を更新しました" });
-		} catch (err) {
-			console.error(err);
-			toast({ title: "更新失敗", variant: "destructive" });
+			toast({ title: "メンテナンス状態を更新しました" });
+		} catch (error: unknown) {
+			console.error("メンテナンス状態更新エラー:", error);
+			toast({
+				title: "メンテナンス状態の更新に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
+			});
 		}
 	};
 

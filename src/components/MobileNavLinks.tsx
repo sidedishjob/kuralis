@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useRouter } from "next/navigation";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export default function MobileNavLinks() {
 	const { user, logout } = useAuth();
@@ -18,8 +19,13 @@ export default function MobileNavLinks() {
 			await logout();
 			toast({ title: "ログアウトしました" });
 			router.push("/");
-		} catch (error: any) {
-			console.error("Error logging out:", error.message);
+		} catch (error: unknown) {
+			console.error("ログアウトエラー:", error);
+			toast({
+				title: "ログアウトに失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
+			});
 		}
 	};
 

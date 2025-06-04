@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { API_ROUTES } from "@/lib/api/route";
-import { useToast } from "@/hooks/useToast";
 
+/**
+ * メンテナンス状態のを更新するカスタムフック
+ */
 export function useUpdateMaintenanceTask(id: string) {
-	const { toast } = useToast();
-
 	const updateTaskActive = useCallback(
 		async (taskId: string, isActive: boolean) => {
 			const res = await fetch(API_ROUTES.maintenanceTasksById(id, taskId), {
@@ -14,8 +14,7 @@ export function useUpdateMaintenanceTask(id: string) {
 			});
 
 			if (!res.ok) {
-				toast({ title: "更新失敗", variant: "destructive" });
-				throw new Error(await res.text());
+				throw new Error((await res.text()) || "メンテナンス状態の更新に失敗しました");
 			}
 		},
 		[id]

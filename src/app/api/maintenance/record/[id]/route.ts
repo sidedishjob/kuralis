@@ -1,19 +1,22 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { handleApiError } from "@/lib/utils/handleApiError";
 
 /**
- * 家具の削除（DELETE）
+ * メンテナンス履歴の削除
  */
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
-	const supabase = await createSupabaseServerClient();
-
 	const { id } = await params;
 
-	const { error } = await supabase.from("maintenance_records").delete().eq("id", id);
+	try {
+		const supabase = await createSupabaseServerClient();
+		const { error } = await supabase.from("maintenance_records").delete().eq("id", id);
 
-	if (error) {
-		return NextResponse.json({ error: error.message }, { status: 500 });
+		if (error) {
+			throw new Error(`メンテナンス履歴削除エラー: ${error.message}`);
+		}
+		return NextResponse.json({ success: true });
+	} catch (error: unknown) {
+		return handleApiError(error, "メンテナンス履歴の削除に失敗しました");
 	}
-
-	return NextResponse.json({ message: "削除成功" });
 }

@@ -9,6 +9,7 @@ import Step1UI from "./Step1UI";
 import Step2UI from "./Step2UI";
 import type { Category, Location } from "@/types/furniture_meta";
 import { useRegisterFurniture } from "@/hooks/useRegisterFurniture";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 interface FormData {
 	category: Category | null;
@@ -28,7 +29,7 @@ export default function RegisterFurnitureClient() {
 	});
 
 	const { toast } = useToast();
-	const { register, isLoading, error } = useRegisterFurniture();
+	const { register } = useRegisterFurniture();
 
 	const handleSubmit = async () => {
 		if (!formData.category || !formData.location || !formData.name) {
@@ -49,12 +50,12 @@ export default function RegisterFurnitureClient() {
 				description: `${formData.name} を ${formData.location.name} に登録しました。`,
 			});
 			router.push("/furniture");
-		} catch (error) {
-			console.error("登録エラー:", error);
+		} catch (error: unknown) {
+			console.error("家具登録エラー:", error);
 			toast({
-				title: "登録失敗",
-				description:
-					error instanceof Error ? error.message : "予期しないエラーが発生しました",
+				title: "家具の登録に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
 			});
 		}
 	};

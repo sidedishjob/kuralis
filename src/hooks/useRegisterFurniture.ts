@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { API_ROUTES } from "@/lib/api/route";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 /**
  * 家具情報を登録するフック
@@ -20,15 +21,15 @@ export function useRegisterFurniture() {
 			const result = await res.json();
 
 			if (!res.ok) {
-				const msg = result?.error || result?.message || "家具の登録に失敗しました";
-				throw new Error(msg);
+				const message = result?.error || result?.message || "家具の登録に失敗しました";
+				throw new Error(message);
 			}
 
 			return result;
-		} catch (err) {
-			const message = err instanceof Error ? err.message : "不明なエラーが発生しました";
+		} catch (error: unknown) {
+			const message = getErrorMessage(error, "もう一度お試しください");
 			setError(message);
-			throw err;
+			throw new Error(message);
 		} finally {
 			setIsLoading(false);
 		}

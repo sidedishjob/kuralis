@@ -23,6 +23,7 @@ import {
 import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
 import type { MaintenanceSummary } from "@/types/maintenance";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 interface FurnitureDetailClientProps {
 	initialFurniture: FurnitureWithExtras;
@@ -66,10 +67,11 @@ export default function FurnitureDetailClient({
 				title: "家具を削除しました",
 				description: `${furniture?.name} を削除しました。`,
 			});
-		} catch (err) {
+		} catch (error: unknown) {
+			console.error("家具削除エラー:", error);
 			toast({
-				title: "削除に失敗しました",
-				description: "もう一度お試しください",
+				title: "家具の削除に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
 		}
@@ -107,10 +109,11 @@ export default function FurnitureDetailClient({
 				title: "変更を保存しました",
 				description: `${result.name} を更新しました。`,
 			});
-		} catch (err) {
+		} catch (error: unknown) {
+			console.error("家具更新エラー:", error);
 			toast({
-				title: "更新に失敗しました",
-				description: "もう一度お試しください",
+				title: "家具の更新に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
 		}

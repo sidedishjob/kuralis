@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { MaintenanceSummary } from "@/types/maintenance";
 
 /**
@@ -16,28 +16,25 @@ export async function getMaintenanceSummary(
 	try {
 		const supabase = await createSupabaseServerClient();
 
-		// 1. 家具に紐づくタスク一覧を取得
+		// 1. 家具に紐づくアクティブなタスク一覧を取得
 		const { data: tasks, error: taskError } = await supabase
 			.from("maintenance_tasks")
 			.select("id, name")
 			.eq("is_active", true)
 			.eq("furniture_id", furnitureId);
 
-		if (taskError || !tasks) {
-			console.error("[getMaintenanceSummary] タスク取得エラー:", taskError);
-			return null;
-		}
+		if (taskError) throw new Error(`タスク取得失敗: ${taskError.message}`);
 
-		const taskIds = tasks.map((t) => t.id);
-		const activeTaskCount = tasks.length;
-
-		if (taskIds.length === 0) {
+		if (!tasks || tasks.length === 0) {
 			return {
-				activeTaskCount,
+				activeTaskCount: 0,
 				nearestTaskName: null,
 				nearestDueDate: null,
 			};
 		}
+
+		const taskIds = tasks.map((t) => t.id);
+		const activeTaskCount = tasks.length;
 
 		// 2. 該当タスクに紐づく記録（履歴）を取得
 		const { data: records, error: recordError } = await supabase
@@ -46,8 +43,8 @@ export async function getMaintenanceSummary(
 			.in("task_id", taskIds)
 			.not("next_due_date", "is", null);
 
-		if (recordError || !records || records.length === 0) {
-			console.error("[getMaintenanceSummary] 記録取得エラー:", recordError);
+		if (recordError) throw new Error(`記録取得失敗: ${recordError.message}`);
+		if (!records || records.length === 0) {
 			return {
 				activeTaskCount,
 				nearestTaskName: null,
@@ -80,8 +77,8 @@ export async function getMaintenanceSummary(
 			nearestTaskName: nearestRecord?.task_name ?? null,
 			nearestDueDate: nearestRecord?.next_due_date ?? null,
 		};
-	} catch (err) {
-		console.error("[getMaintenanceSummary] 予期しないエラー:", err);
+	} catch (error: unknown) {
+		console.error("メンテナンス取得エラー:", error);
 		return null;
 	}
 }

@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { FiLogIn, FiLogOut, FiUser } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
-import { useRouter } from "next/navigation";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,6 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export default function NavLinks() {
 	const { user, loading, logout } = useAuth();
@@ -24,8 +25,13 @@ export default function NavLinks() {
 			await logout();
 			toast({ title: "ログアウトしました" });
 			router.push("/");
-		} catch (error: any) {
-			console.error("Error loging out:", error.message);
+		} catch (error: unknown) {
+			console.error("ログアウトエラー:", error);
+			toast({
+				title: "ログアウトに失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
+				variant: "destructive",
+			});
 		}
 	};
 

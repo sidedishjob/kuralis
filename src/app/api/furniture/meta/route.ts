@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getFurnitureMeta } from "@/lib/server/furnitureMeta";
+import { handleApiError } from "@/lib/utils/handleApiError";
 
 /**
- * 家具メタ情報（カテゴリー・設置場所）の取得（GET）
+ * 家具メタ情報（カテゴリー・設置場所）の取得
  *
  */
 export async function GET() {
@@ -10,15 +11,11 @@ export async function GET() {
 		const { categories, locations } = await getFurnitureMeta();
 
 		if (categories.length === 0 && locations.length === 0) {
-			return NextResponse.json({ error: "取得失敗" }, { status: 500 });
+			throw new Error("家具メタ情報取得エラー:");
 		}
 
 		return NextResponse.json({ categories, locations });
-	} catch (err) {
-		if (err instanceof Error) {
-			console.error("家具メタ情報取得エラー:", err.message);
-			return NextResponse.json({ error: err.message }, { status: 500 });
-		}
-		return NextResponse.json({ error: "不明なエラーが発生しました" }, { status: 500 });
+	} catch (error: unknown) {
+		return handleApiError(error, "カテゴリー・設置場所の取得に失敗しました");
 	}
 }

@@ -6,8 +6,14 @@ import type { PostgrestError } from "@supabase/supabase-js";
  * Supabase のエラーを共通で処理
  */
 function checkSupabaseError<T>(data: T | null, error: PostgrestError | null, name: string): T {
-	if (error) throw new Error(`${name} error: ${error.message}`);
-	if (!data) throw new Error(`${name} not found`);
+	if (error) {
+		console.error(`[getAllMaintenanceSummary] ${name}エラー:`, error.message);
+		throw new Error(`${name}エラー: ${error.message}`);
+	}
+	if (!data) {
+		console.error(`[getAllMaintenanceSummary] ${name}データがnull`);
+		throw new Error(`${name}エラー: データが取得できませんでした`);
+	}
 	return data;
 }
 
@@ -25,7 +31,7 @@ export async function getAllMaintenanceSummary(userId: string): Promise<Maintena
 	const safeFurnitures = checkSupabaseError(furnitures, furnError, "furnitures");
 	if (safeFurnitures.length === 0) return [];
 
-	// 2. 家具に紐づくタスクを取得
+	// 2. 家具に紐づくタスク一覧を取得
 	const furnitureIds = safeFurnitures.map((f) => f.id);
 	const { data: tasks, error: taskError } = await supabase
 		.from("maintenance_tasks")
@@ -34,7 +40,7 @@ export async function getAllMaintenanceSummary(userId: string): Promise<Maintena
 	const safeTasks = checkSupabaseError(tasks, taskError, "tasks");
 	if (safeTasks.length === 0) return [];
 
-	// 3. タスクに紐づく履歴を取得
+	// 3. タスクに紐づく履歴一覧を取得
 	const taskIds = safeTasks.map((t) => t.id);
 	const { data: records, error: recordError } = await supabase
 		.from("maintenance_records")
@@ -52,24 +58,12 @@ export async function getAllMaintenanceSummary(userId: string): Promise<Maintena
 		}
 	}
 
-	// 5. 最新履歴から集約データ作成
-	type Aggregate = {
-		lastPerformed: Date;
-		upcoming: Date | null;
-	};
-	const aggMap = new Map<string, Aggregate>();
-	for (const [taskId, rec] of latestRecordsMap.entries()) {
-		aggMap.set(taskId, {
-			lastPerformed: new Date(rec.performed_at),
-			upcoming: rec.next_due_date ? new Date(rec.next_due_date) : null,
-		});
-	}
-
-	// 6. 各タスクと家具情報を結合して整形
+	// 5. 最新履歴とタスク・家具情報を結合して集約データ作成
 	const result: MaintenanceSummaryItem[] = [];
-	for (const task of safeTasks) {
-		const agg = aggMap.get(task.id);
-		if (!agg) continue;
+
+	for (const [taskId, record] of latestRecordsMap.entries()) {
+		const task = safeTasks.find((t) => t.id === taskId);
+		if (!task) continue;
 
 		const furniture = safeFurnitures.find((f) => f.id === task.furniture_id);
 		if (!furniture) continue;
@@ -79,8 +73,10 @@ export async function getAllMaintenanceSummary(userId: string): Promise<Maintena
 			furnitureName: furniture.name,
 			taskId: task.id,
 			taskName: task.name,
-			lastPerformedAt: agg.lastPerformed.toISOString().split("T")[0],
-			nextDueDate: agg.upcoming ? agg.upcoming.toISOString().split("T")[0] : null,
+			lastPerformedAt: new Date(record.performed_at).toISOString().split("T")[0],
+			nextDueDate: record.next_due_date
+				? new Date(record.next_due_date).toISOString().split("T")[0]
+				: null,
 		});
 	}
 

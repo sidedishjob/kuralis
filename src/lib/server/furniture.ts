@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server"; // SSR用Supabaseクライアント
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import { uploadFurnitureImage } from "../storage/image";
 
@@ -17,7 +17,7 @@ export async function getFurniture(userId: string) {
 		.order("created_at", { ascending: false });
 
 	if (error) {
-		console.error("家具データの取得に失敗しました:", error.message);
+		console.error("家具一覧取得エラー:", error.message);
 		return [];
 	}
 
@@ -59,7 +59,7 @@ export async function getFurnitureById(id: string, userId: string) {
 		.single();
 
 	if (error || !data) {
-		console.error("getFurnitureById error:", error);
+		console.error("家具取得エラー:", error);
 		return null;
 	}
 

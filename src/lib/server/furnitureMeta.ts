@@ -14,7 +14,7 @@ export async function getFurnitureMeta(): Promise<FurnitureMeta> {
 	} = await supabase.auth.getUser();
 
 	if (userError || !user) {
-		console.error("ユーザー取得失敗:", userError?.message);
+		console.error("ユーザー取得エラー:", userError?.message);
 		return { categories: [], locations: [] };
 	}
 
@@ -33,10 +33,10 @@ export async function getFurnitureMeta(): Promise<FurnitureMeta> {
 		.order("id", { ascending: true });
 
 	if (categoriesError) {
-		console.error("カテゴリ取得失敗:", categoriesError.message);
+		console.error("カテゴリ取得エラー:", categoriesError.message);
 	}
 	if (locationsError) {
-		console.error("ロケーション取得失敗:", locationsError.message);
+		console.error("ロケーション取得エラー:", locationsError.message);
 	}
 
 	return {

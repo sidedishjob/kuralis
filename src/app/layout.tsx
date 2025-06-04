@@ -1,17 +1,12 @@
 import "./globals.css";
-import { Inter, Noto_Sans_JP } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
+import { inter, notoSansJP } from "@/constants/fonts";
+import { siteMetadata } from "@/constants/metadata";
 
-const inter = Inter({ subsets: ["latin"], weight: ["700"], variable: "--font-inter" });
-const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], weight: ["700"], variable: "--font-noto" });
-
-export const metadata = {
-	title: "kuralis | 使い手として、家具と暮らす。",
-	description: "家具と暮らすための記録アプリ",
-};
+export const metadata = siteMetadata;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FiUpload, FiX } from "react-icons/fi";
 import type { Category, Location } from "@/types/furniture_meta";
 
@@ -95,10 +96,13 @@ export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
 					{formData.image ? (
 						<div className="space-y-2">
 							<div className="relative w-full aspect-[4/3] overflow-hidden rounded-sm bg-kuralis-50">
-								<img
+								<Image
 									src={URL.createObjectURL(formData.image)}
 									alt="Preview"
+									width={400}
+									height={300}
 									className="w-full h-full object-cover"
+									unoptimized
 								/>
 								<button
 									onClick={(e) => {

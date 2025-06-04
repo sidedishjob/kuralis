@@ -68,10 +68,13 @@ export default function FurnitureDetailImage({
 		if (selectedImage) {
 			// プレビュー表示（新規選択時）
 			return (
-				<img
+				<Image
 					src={URL.createObjectURL(selectedImage)}
 					alt="プレビュー画像"
-					className="w-full h-full object-cover object-center transition-transform duration-700 ease-natural group-hover:scale-105"
+					width={400}
+					height={300}
+					className="w-full h-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
+					unoptimized
 				/>
 			);
 		} else if (publicUrl) {
@@ -83,7 +86,7 @@ export default function FurnitureDetailImage({
 						alt="家具画像"
 						fill
 						sizes="(max-width: 768px) 100vw, 33vw"
-						className="object-cover object-center transition-transform duration-700 ease-natural group-hover:scale-105"
+						className="w-full h-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
 					/>
 				</div>
 			);

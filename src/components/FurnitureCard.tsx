@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { Furniture } from "@/types/furniture";
 import DemoView from "./DemoView";
@@ -15,10 +16,13 @@ const FurnitureCard: React.FC<FurnitureCardProps> = ({ furniture, isDemo = false
 		<div className="block group relative overflow-hidden">
 			<div className="aspect-[4/3] transform group-hover:-translate-y-8 transition-transform duration-700 ease-natural">
 				{furniture.image_url ? (
-					<img
+					<Image
 						src={furniture.image_url}
 						alt={furniture.name}
-						className="w-full h-full object-cover object-center"
+						width={400}
+						height={300}
+						className="w-full h-full object-cover"
+						unoptimized
 					/>
 				) : (
 					<div className="w-full h-full flex items-center justify-center text-kuralis-400 bg-kuralis-50">

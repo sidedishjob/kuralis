@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
-import { toast } from "@/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 import PasswordChangeForm from "@/components/auth/PasswordChangeForm";
 import { FiUser } from "react-icons/fi";
 
@@ -23,6 +23,8 @@ export const AccountSection = () => {
 	const [loading, setLoading] = useState(false);
 	const [isGoogleUser, setIsGoogleUser] = useState(false);
 	const router = useRouter();
+
+	const { toast } = useToast();
 
 	useEffect(() => {
 		const checkProvider = async () => {

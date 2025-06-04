@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
-import { toast } from "@/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 import StepIndicator from "./StepIndicator";
 import Step1UI from "./Step1UI";
 import Step2UI from "./Step2UI";
@@ -26,6 +26,8 @@ export default function RegisterFurnitureClient() {
 		name: "",
 		image: null,
 	});
+
+	const { toast } = useToast();
 	const { register, isLoading, error } = useRegisterFurniture();
 
 	const handleSubmit = async () => {

@@ -6,7 +6,7 @@ import { z } from "zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/lib/supabase/client";
 
 const schema = z
@@ -28,6 +28,7 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 export default function PasswordChangeForm() {
+	const { toast } = useToast();
 	const {
 		register,
 		handleSubmit,

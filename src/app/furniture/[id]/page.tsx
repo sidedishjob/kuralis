@@ -5,7 +5,7 @@ import { getUserFromCookie } from "@/lib/supabase/server";
 import { getFurnitureMeta } from "@/lib/server/furnitureMeta";
 import { getMaintenanceSummary } from "@/lib/server/maintenance";
 
-export default async function FurnitureDetailPage({ params }: { params: { id: string } }) {
+export default async function FurnitureDetailPage({ params }: { params: Promise<{ id: string }> }) {
 	const user = await getUserFromCookie();
 	if (!user) return redirect("/auth/login");
 

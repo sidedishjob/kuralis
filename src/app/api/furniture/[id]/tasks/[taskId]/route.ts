@@ -5,7 +5,10 @@ import { handleApiError } from "@/lib/utils/handleApiError";
 /**
  * メンテナンスタスクのアクティブ状態を更新
  */
-export async function PATCH(req: Request, { params }: { params: { id: string; taskId: string } }) {
+export async function PATCH(
+	req: Request,
+	{ params }: { params: Promise<{ id: string; taskId: string }> }
+) {
 	const { id, taskId } = await params;
 	const body = await req.json();
 

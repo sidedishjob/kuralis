@@ -27,7 +27,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 /**
  * PUT: 家具情報の更新
  */
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
 	try {
 		const user = await getUserFromCookie();
 		if (!user) throw new ApiError(401, "未認証のため更新できません");
@@ -97,7 +97,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 /**
  * DELETE: 家具の削除
  */
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
 	try {
 		const user = await getUserFromCookie();
 		if (!user) throw new ApiError(401, "未認証のため削除できません");

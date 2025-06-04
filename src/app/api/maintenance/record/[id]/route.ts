@@ -5,7 +5,7 @@ import { handleApiError } from "@/lib/utils/handleApiError";
 /**
  * メンテナンス履歴の削除
  */
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
 	try {

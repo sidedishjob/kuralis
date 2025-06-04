@@ -8,7 +8,7 @@ const VALID_UNITS = ["days", "weeks", "months", "years"];
 /**
  * GET: 家具IDに紐づくメンテナンスタスクと履歴の取得
  */
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
 	if (!id) {
@@ -58,7 +58,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 /**
  * POST: メンテナンスタスクの登録
  */
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
 	if (!id) {

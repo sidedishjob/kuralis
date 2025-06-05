@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/useToast";
 import { Label } from "@/components/ui/label";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export default function ResetRequestPage() {
 	const [email, setEmail] = useState("");
@@ -23,8 +24,11 @@ export default function ResetRequestPage() {
 
 		if (error) {
 			toast({
-				title: "送信エラー",
-				description: error.message,
+				title: "メールの送信に失敗しました",
+				description: getErrorMessage(
+					error,
+					"メールの送信に失敗しました。時間をおいて再度お試しください"
+				),
 				variant: "destructive",
 			});
 		} else {

@@ -45,7 +45,7 @@ export const AccountSection = () => {
 		setLoading(false);
 
 		toast({
-			title: "アカウント削除完了",
+			title: "アカウント削除完了しました",
 			description: "ご利用ありがとうございました。家具との記録はすべて削除されました。",
 		});
 

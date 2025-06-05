@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { signupSchema, type SignupSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,29 +14,35 @@ import { Label } from "@/components/ui/label";
 import { Icons } from "@/constants/icons";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const [authError, setAuthError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
 
-	const handleSignup = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<SignupSchema>({
+		resolver: zodResolver(signupSchema),
+	});
+
+	const onSubmit = async (data: SignupSchema) => {
 		setLoading(true);
-		setError(null);
+		setAuthError(null);
 		setMessage(null);
 
 		const { error } = await supabase.auth.signUp({
-			email,
-			password,
+			email: data.email,
+			password: data.password,
 			options: {
-				emailRedirectTo: `${location.origin}/auth/callback`, // 確認メールリンク（必要に応じて）
+				emailRedirectTo: `${location.origin}/auth/callback`,
 			},
 		});
+
 		setLoading(false);
 
 		if (error) {
-			setError(error.message);
+			setAuthError(error.message);
 		} else {
 			setMessage("確認メールを送信しました。メールをご確認ください。");
 		}
@@ -63,17 +72,18 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 							</span>
 						</div>
 
-						<form onSubmit={handleSignup} className="grid gap-6">
+						<form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
 							<div className="grid gap-3">
 								<Label htmlFor="email">メールアドレス</Label>
 								<Input
 									id="email"
 									type="email"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
 									placeholder="Enter your email"
-									required
+									{...register("email")}
 								/>
+								{errors.email && (
+									<p className="text-sm text-red-500">{errors.email.message}</p>
+								)}
 							</div>
 
 							<div className="grid gap-3">
@@ -81,14 +91,17 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 								<Input
 									id="password"
 									type="password"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
 									placeholder="Enter your password"
-									required
+									{...register("password")}
 								/>
+								{errors.password && (
+									<p className="text-sm text-red-500">
+										{errors.password.message}
+									</p>
+								)}
 							</div>
 
-							{error && <p className="text-sm text-red-500">{error}</p>}
+							{authError && <p className="text-sm text-red-500">{authError}</p>}
 							{message && <p className="text-sm text-green-600">{message}</p>}
 
 							<Button type="submit" className="w-full" disabled={loading}>
@@ -97,7 +110,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 						</form>
 
 						<div className="text-center text-sm">
-							すでにアカウントをお持ちですか？{" "}
+							すでにアカウントをお持ちですか？
 							<Link href="/auth/login" className="underline underline-offset-4">
 								ログイン
 							</Link>

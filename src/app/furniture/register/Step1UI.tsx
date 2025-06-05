@@ -5,34 +5,16 @@ import { FiArrowRight } from "react-icons/fi";
 import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
-	formData: {
-		category: Category | null;
-		location: Location | null;
-		name: string;
-		image: File | null;
-	};
-	setFormData: React.Dispatch<
-		React.SetStateAction<{
-			category: Category | null;
-			location: Location | null;
-			name: string;
-			image: File | null;
-		}>
-	>;
+	category: Category | null;
+	location: Location | null;
+	setCategory: (category: Category) => void;
+	setLocation: (location: Location) => void;
 	onNext: () => void;
 }
 
-export default function Step1UI({ formData, setFormData, onNext }: Props) {
-	const isValid = !!formData.category && !!formData.location;
+export default function Step1UI({ category, location, setCategory, setLocation, onNext }: Props) {
+	const isValid = !!category && !!location;
 	const { data, isLoading, error } = useFurnitureMeta();
-
-	const handleCategorySelect = (category: Category) => {
-		setFormData((prev) => ({ ...prev, category }));
-	};
-
-	const handleLocationSelect = (location: Location) => {
-		setFormData((prev) => ({ ...prev, location }));
-	};
 
 	if (isLoading) {
 		return (
@@ -69,24 +51,22 @@ export default function Step1UI({ formData, setFormData, onNext }: Props) {
 						カテゴリ
 					</h2>
 					<div className="grid grid-cols-2 gap-4">
-						{data?.categories.map((category) => (
+						{data?.categories.map((c) => (
 							<button
-								key={category.id}
-								onClick={() => handleCategorySelect(category)}
+								key={c.id}
+								onClick={() => setCategory(c)}
 								className={`py-3 px-4 border rounded-sm transition-all duration-500 font-bold tracking-tighter-custom text-sm relative overflow-hidden group ${
-									formData.category?.id === category.id
+									category?.id === c.id
 										? "border-kuralis-900 text-kuralis-900 bg-kuralis-100"
 										: "border-kuralis-200 text-kuralis-600 hover:border-kuralis-400 hover:bg-kuralis-50"
 								}`}
 							>
 								<span
 									className={`absolute inset-0 bg-kuralis-100 transform origin-left transition-transform duration-500 ${
-										formData.category?.id === category.id
-											? "scale-x-100"
-											: "scale-x-0"
+										category?.id === c.id ? "scale-x-100" : "scale-x-0"
 									}`}
 								/>
-								<span className="relative z-10">{category.name}</span>
+								<span className="relative z-10">{c.name}</span>
 							</button>
 						))}
 					</div>
@@ -97,24 +77,22 @@ export default function Step1UI({ formData, setFormData, onNext }: Props) {
 						設置場所
 					</h2>
 					<div className="grid grid-cols-2 gap-4">
-						{data?.locations.map((location) => (
+						{data?.locations.map((l) => (
 							<button
-								key={location.id}
-								onClick={() => handleLocationSelect(location)}
+								key={l.id}
+								onClick={() => setLocation(l)}
 								className={`py-3 px-4 border rounded-sm transition-all duration-500 font-bold tracking-tighter-custom text-sm relative overflow-hidden group ${
-									formData.location?.id === location.id
+									location?.id === l.id
 										? "border-kuralis-900 text-kuralis-900 bg-kuralis-100"
 										: "border-kuralis-200 text-kuralis-600 hover:border-kuralis-400 hover:bg-kuralis-50"
 								}`}
 							>
 								<span
 									className={`absolute inset-0 bg-kuralis-100 transform origin-left transition-transform duration-500 ${
-										formData.location?.id === location.id
-											? "scale-x-100"
-											: "scale-x-0"
+										location?.id === l.id ? "scale-x-100" : "scale-x-0"
 									}`}
 								/>
-								<span className="relative z-10">{location.name}</span>
+								<span className="relative z-10">{l.name}</span>
 							</button>
 						))}
 					</div>

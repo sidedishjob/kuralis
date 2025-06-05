@@ -1,53 +1,63 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
-import { useToast } from "@/hooks/useToast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { registerFurnitureSchema, type RegisterFurnitureSchema } from "@/lib/validation";
 import StepIndicator from "./StepIndicator";
 import Step1UI from "./Step1UI";
 import Step2UI from "./Step2UI";
-import type { Category, Location } from "@/types/furniture_meta";
+import { useToast } from "@/hooks/useToast";
 import { useRegisterFurniture } from "@/hooks/useRegisterFurniture";
-import { getErrorMessage } from "@/lib/utils/getErrorMessage";
-
-interface FormData {
-	category: Category | null;
-	location: Location | null;
-	name: string;
-	image: File | null;
-}
+import type { Category, Location } from "@/types/furniture_meta";
 
 export default function RegisterFurnitureClient() {
 	const router = useRouter();
 	const [step, setStep] = useState(1);
-	const [formData, setFormData] = useState<FormData>({
-		category: null,
-		location: null,
-		name: "",
-		image: null,
-	});
-
+	const [category, setCategory] = useState<Category | null>(null);
+	const [location, setLocation] = useState<Location | null>(null);
 	const { toast } = useToast();
 	const { register } = useRegisterFurniture();
 
-	const handleSubmit = async () => {
-		if (!formData.category || !formData.location || !formData.name) {
-			toast({ title: "入力不備", description: "全項目を入力してください" });
+	const {
+		register: formRegister,
+		handleSubmit,
+		formState: { errors, isValid },
+		getValues,
+		setValue,
+	} = useForm<RegisterFurnitureSchema>({
+		resolver: zodResolver(registerFurnitureSchema),
+		defaultValues: {
+			name: "",
+			image: null,
+		},
+		mode: "onChange",
+	});
+
+	const handleFinalSubmit = async (data: RegisterFurnitureSchema) => {
+		if (!category || !location) {
+			toast({
+				title: "STEP1の入力に不備があります",
+				description: "カテゴリと設置場所を選択してください",
+				variant: "destructive",
+			});
 			return;
 		}
 
 		const form = new FormData();
-		form.append("name", formData.name);
-		form.append("category_id", String(formData.category.id));
-		form.append("location_id", String(formData.location.id));
-		if (formData.image) form.append("image", formData.image);
+		form.append("name", data.name);
+		form.append("category_id", String(category.id));
+		form.append("location_id", String(location.id));
+		if (data.image) form.append("image", data.image);
 
 		try {
 			await register(form);
 			toast({
 				title: "家具を登録しました",
-				description: `${formData.name} を ${formData.location.name} に登録しました。`,
+				description: `${data.name} を ${location.name} に登録しました。`,
 			});
 			router.push("/furniture");
 			router.refresh();
@@ -89,15 +99,22 @@ export default function RegisterFurnitureClient() {
 			<main className="flex-grow container mx-auto max-w-2xl px-6 md:px-12 py-6">
 				{step === 1 ? (
 					<Step1UI
-						formData={formData}
-						setFormData={setFormData}
+						category={category}
+						location={location}
+						setCategory={setCategory}
+						setLocation={setLocation}
 						onNext={() => setStep(2)}
 					/>
 				) : (
 					<Step2UI
-						formData={formData}
-						setFormData={setFormData}
-						onSubmit={handleSubmit}
+						category={category}
+						location={location}
+						formRegister={formRegister}
+						setValue={setValue}
+						getValues={getValues}
+						errors={errors}
+						onSubmit={handleSubmit(handleFinalSubmit)}
+						isValid={isValid}
 					/>
 				)}
 			</main>

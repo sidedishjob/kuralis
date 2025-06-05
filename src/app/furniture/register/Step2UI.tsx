@@ -2,45 +2,67 @@
 
 import Image from "next/image";
 import { FiUpload, FiX } from "react-icons/fi";
+import type {
+	UseFormRegister,
+	FieldErrors,
+	UseFormGetValues,
+	UseFormSetValue,
+} from "react-hook-form";
+import type { RegisterFurnitureSchema } from "@/lib/validation/furnitureSchema";
 import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
-	formData: {
-		category: Category | null;
-		location: Location | null;
-		name: string;
-		image: File | null;
-	};
-	setFormData: React.Dispatch<
-		React.SetStateAction<{
-			category: Category | null;
-			location: Location | null;
-			name: string;
-			image: File | null;
-		}>
-	>;
+	category: Category | null;
+	location: Location | null;
+	formRegister: UseFormRegister<RegisterFurnitureSchema>;
+	getValues: UseFormGetValues<RegisterFurnitureSchema>;
+	setValue: UseFormSetValue<RegisterFurnitureSchema>;
+	errors: FieldErrors<RegisterFurnitureSchema>;
 	onSubmit: () => void;
+	isValid: boolean;
 }
-export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
-	const isValid = formData.name.trim().length > 0;
+
+export default function Step2UI({
+	category,
+	location,
+	formRegister,
+	getValues,
+	setValue,
+	errors,
+	onSubmit,
+	isValid,
+}: Props) {
+	const image = getValues("image");
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0] || null;
 		if (file && file.type.startsWith("image/")) {
-			setFormData((prev) => ({ ...prev, image: file }));
+			setValue("image", file, { shouldValidate: true, shouldDirty: true });
 		}
+		// ファイル入力をリセットして同じファイルでも再選択可能にする
+		event.target.value = "";
 	};
 
 	const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
 		const file = event.dataTransfer.files[0];
 		if (file && file.type.startsWith("image/")) {
-			setFormData((prev) => ({ ...prev, image: file }));
+			setValue("image", file, { shouldValidate: true, shouldDirty: true });
 		}
 	};
 
 	const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
+	};
+
+	const handleRemoveImage = (e: React.MouseEvent) => {
+		e.preventDefault();
+		setValue("image", null, { shouldValidate: true, shouldDirty: true });
+		// ファイル入力もリセット
+		const fileInput = document.getElementById("furniture-image") as HTMLInputElement;
+		if (fileInput) {
+			fileInput.value = "";
+		}
 	};
 
 	return (
@@ -51,12 +73,16 @@ export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
 
 			{/* Summary */}
 			<div className="flex items-center space-x-4 mb-8 text-xs">
-				<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
-					{formData.category?.name}
-				</div>
-				<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
-					{formData.location?.name}
-				</div>
+				{category && (
+					<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
+						{category.name}
+					</div>
+				)}
+				{location && (
+					<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
+						{location.name}
+					</div>
+				)}
 			</div>
 
 			{/* Name Input */}
@@ -66,11 +92,11 @@ export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
 				</label>
 				<input
 					type="text"
-					value={formData.name}
-					onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-					className="w-full px-6 py-4 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none transition-all duration-500 font-bold tracking-tighter-custom bg-white/80 backdrop-blur-sm focus:bg-white"
 					placeholder="例：ウォールナットダイニングテーブル"
+					className="w-full px-6 py-4 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none transition-all duration-500 font-bold tracking-tighter-custom bg-white/80 backdrop-blur-sm focus:bg-white"
+					{...formRegister("name")}
 				/>
+				{errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
 			</div>
 
 			{/* Image Upload */}
@@ -93,29 +119,28 @@ export default function Step2UI({ formData, setFormData, onSubmit }: Props) {
 						className="hidden"
 						id="furniture-image"
 					/>
-					{formData.image ? (
+					{image ? (
 						<div className="space-y-2">
 							<div className="relative w-full aspect-[4/3] overflow-hidden rounded-sm bg-kuralis-50">
-								<Image
-									src={URL.createObjectURL(formData.image)}
-									alt="Preview"
-									width={400}
-									height={300}
-									className="w-full h-full object-cover"
-									unoptimized
-								/>
+								{image instanceof File && (
+									<Image
+										src={URL.createObjectURL(image)}
+										alt="Preview"
+										width={400}
+										height={300}
+										className="w-full h-full object-cover"
+										unoptimized
+									/>
+								)}
 								<button
-									onClick={(e) => {
-										e.preventDefault();
-										setFormData((prev) => ({ ...prev, image: null }));
-									}}
+									onClick={handleRemoveImage}
 									className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-300"
 								>
 									<FiX size={16} className="text-kuralis-900" />
 								</button>
 							</div>
 							<div className="text-sm text-kuralis-900 font-bold tracking-tighter-custom">
-								{formData.image.name}
+								{image.name}
 							</div>
 							<button
 								onClick={(e) => {

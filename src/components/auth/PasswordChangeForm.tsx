@@ -2,30 +2,13 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { supabase } from "@/lib/supabase/client";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { passwordChangeSchema, type PasswordChangeSchema } from "@/lib/validation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/useToast";
-import { supabase } from "@/lib/supabase/client";
-
-const schema = z
-	.object({
-		currentPassword: z.string().min(6, "現在のパスワードを入力してください"),
-		newPassword: z
-			.string()
-			.min(6, "6文字以上で入力してください")
-			.regex(/[a-z]/, "小文字を含めてください")
-			// .regex(/[A-Z]/, "大文字を含めてください")
-			.regex(/[0-9]/, "数字を含めてください"),
-		confirmPassword: z.string(),
-	})
-	.refine((data) => data.newPassword === data.confirmPassword, {
-		message: "パスワードが一致しません",
-		path: ["confirmPassword"],
-	});
-
-type FormData = z.infer<typeof schema>;
 
 export default function PasswordChangeForm() {
 	const { toast } = useToast();
@@ -34,11 +17,11 @@ export default function PasswordChangeForm() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		reset,
-	} = useForm<FormData>({
-		resolver: zodResolver(schema),
+	} = useForm<PasswordChangeSchema>({
+		resolver: zodResolver(passwordChangeSchema),
 	});
 
-	const onSubmit = async (data: FormData) => {
+	const onSubmit = async (data: PasswordChangeSchema) => {
 		// 再認証
 		const { data: userData } = await supabase.auth.getUser();
 		const email = userData.user?.email ?? "";
@@ -50,8 +33,8 @@ export default function PasswordChangeForm() {
 
 		if (signInError) {
 			toast({
-				title: "認証失敗",
-				description: "現在のパスワードが正しくありません",
+				title: "認証に失敗しました",
+				description: getErrorMessage(signInError, "現在のパスワードが正しくありません"),
 				variant: "destructive",
 			});
 			return;
@@ -64,8 +47,8 @@ export default function PasswordChangeForm() {
 
 		if (error) {
 			toast({
-				title: "更新失敗",
-				description: "パスワードの変更に失敗しました",
+				title: "パスワードの変更に失敗しました",
+				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
 		} else {

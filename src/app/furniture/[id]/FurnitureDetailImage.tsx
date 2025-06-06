@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { useFormContext } from "react-hook-form";
 import { FiUpload } from "react-icons/fi";
-import DemoView from "@/components/DemoView";
+import Image from "next/image";
 import { useSupabaseClient } from "@/lib/supabase/hooks/useSupabaseClient";
+import { FurnitureEditSchema } from "@/lib/validation";
+import DemoView from "@/components/DemoView";
 
 interface Props {
 	isEditing: boolean;
@@ -19,6 +21,13 @@ export default function FurnitureDetailImage({
 	selectedImage,
 	setSelectedImage,
 }: Props) {
+	const {
+		setValue,
+		setError,
+		clearErrors,
+		formState: { errors },
+	} = useFormContext<FurnitureEditSchema>();
+
 	const [publicUrl, setPublicUrl] = useState<string | null>(null);
 	const supabase = useSupabaseClient();
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,6 +36,11 @@ export default function FurnitureDetailImage({
 	// 1. imageUrl がすでに完全なURLならそのまま使う
 	// 2. Supabase Storage のパス形式なら getPublicUrl() で変換してから使う
 	useEffect(() => {
+		if (!imageUrl) {
+			setPublicUrl(null);
+			return;
+		}
+
 		if (imageUrl) {
 			if (imageUrl.startsWith("http")) {
 				// すでに public URL の場合
@@ -43,9 +57,40 @@ export default function FurnitureDetailImage({
 
 	// ファイルが画像の場合に selectedImage に設定するヘルパー関数
 	const handleFileSelect = (file: File | null) => {
-		if (file && file.type.startsWith("image/")) {
-			setSelectedImage(file);
+		if (!file) {
+			setValue("image", null);
+			setSelectedImage(null);
+			clearErrors("image");
+			return;
 		}
+
+		// zodで使ったルールに従って手動チェック
+		const isValidType = ["image/jpeg", "image/png"].includes(file.type);
+		const isValidSize = file.size <= 10 * 1024 * 1024;
+
+		if (!isValidType) {
+			setError("image", {
+				type: "manual",
+				message: "JPEGまたはPNG画像のみアップロード可能です",
+			});
+			setValue("image", null);
+			setSelectedImage(null);
+			return;
+		}
+
+		if (!isValidSize) {
+			setError("image", {
+				type: "manual",
+				message: "画像サイズは10MB以内にしてください",
+			});
+			setValue("image", null);
+			setSelectedImage(null);
+			return;
+		}
+
+		clearErrors("image");
+		setValue("image", file);
+		setSelectedImage(file);
 	};
 
 	// 選択された画像ファイルを selectedImage に設定
@@ -132,6 +177,11 @@ export default function FurnitureDetailImage({
 				<div className="bg-kuralis-100 w-full aspect-square overflow-hidden shadow-lg relative group">
 					{renderImage()}
 				</div>
+				{errors.image && typeof errors.image.message === "string" && (
+					<p className="mt-2 text-red-500 text-sm font-bold tracking-tighter-custom">
+						{errors.image.message}
+					</p>
+				)}
 			</DemoView>
 		</div>
 	);

@@ -24,7 +24,7 @@ export type UpdateFurniturePayload = {
 	updated_at: string;
 	brand?: string;
 	image_url?: string;
-	purchased_at?: string;
+	purchased_at?: string | null;
 	purchased_from?: string;
 	notes?: string;
 };

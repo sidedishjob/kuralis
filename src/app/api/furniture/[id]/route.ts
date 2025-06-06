@@ -58,21 +58,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 		// 2. 更新内容構築
 		const updates: UpdateFurniturePayload = {
 			name,
+			brand,
 			location_id: locationId,
+			purchased_at:
+				typeof purchasedAt === "string" && purchasedAt.trim() === "" ? null : purchasedAt,
+			purchased_from: purchasedFrom,
+			notes,
 			updated_at: new Date().toISOString(),
 		};
 
-		// ブランド、画像、購入日、購入場所、備考（存在すれば追加）
-		if (brand) updates.brand = brand;
+		// 画像（存在すれば追加）
 		if (imageUrl) updates.image_url = imageUrl;
-		if (purchasedAt) {
-			const date = new Date(purchasedAt);
-			if (!isNaN(date.getTime())) {
-				updates.purchased_at = date.toISOString();
-			}
-		}
-		if (purchasedFrom) updates.purchased_from = purchasedFrom;
-		if (notes) updates.notes = notes;
 
 		// 3. DB更新
 		const { error } = await supabase

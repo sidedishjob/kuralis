@@ -1,21 +1,21 @@
 "use client";
 
 import { FiCalendar, FiMapPin } from "react-icons/fi";
+import { useFormContext } from "react-hook-form";
 import type { FurnitureWithExtras } from "@/types/furniture";
+import type { FurnitureEditSchema } from "@/lib/validation";
 
 interface Props {
 	furniture: FurnitureWithExtras;
-	editedFurniture: FurnitureWithExtras;
-	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
 }
 
-export default function FurnitureDetailPurchaseTab({
-	furniture,
-	editedFurniture,
-	setEditedFurniture,
-	isEditing,
-}: Props) {
+export default function FurnitureDetailPurchaseTab({ furniture, isEditing }: Props) {
+	const {
+		register,
+		formState: { errors },
+	} = useFormContext<FurnitureEditSchema>();
+
 	return (
 		<div className="bg-white p-8 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
 			<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4">
@@ -31,13 +31,7 @@ export default function FurnitureDetailPurchaseTab({
 					{isEditing ? (
 						<input
 							type="date"
-							value={editedFurniture.purchased_at || ""}
-							onChange={(e) =>
-								setEditedFurniture({
-									...editedFurniture,
-									purchased_at: e.target.value,
-								})
-							}
+							{...register("purchased_at")}
 							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
 						/>
 					) : (
@@ -45,6 +39,9 @@ export default function FurnitureDetailPurchaseTab({
 							{furniture.purchased_at &&
 								new Date(furniture.purchased_at).toLocaleDateString()}
 						</div>
+					)}
+					{errors.purchased_at && (
+						<p className="text-red-500 text-sm mt-1">{errors.purchased_at.message}</p>
 					)}
 				</div>
 			)}
@@ -56,20 +53,21 @@ export default function FurnitureDetailPurchaseTab({
 						<span>購入店舗</span>
 					</div>
 					{isEditing ? (
-						<input
-							type="text"
-							placeholder="購入店舗"
-							value={editedFurniture.purchased_from || ""}
-							onChange={(e) =>
-								setEditedFurniture({
-									...editedFurniture,
-									purchased_from: e.target.value,
-								})
-							}
-							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
-						/>
+						<div>
+							<input
+								type="text"
+								placeholder="購入店舗"
+								{...register("purchased_from")}
+								className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none w-full"
+							/>
+							{errors.purchased_from && (
+								<p className="text-red-500 text-sm mt-1">
+									{errors.purchased_from.message}
+								</p>
+							)}
+						</div>
 					) : (
-						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
+						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate w-full">
 							{furniture.purchased_from}
 						</div>
 					)}

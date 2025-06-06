@@ -1,24 +1,23 @@
 "use client";
 
 import { FiMapPin } from "react-icons/fi";
+import { useFormContext } from "react-hook-form";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
+import type { FurnitureEditSchema } from "@/lib/validation";
 
 interface Props {
 	furniture: FurnitureWithExtras;
-	editedFurniture: FurnitureWithExtras;
-	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
 	locations: Location[];
 }
 
-export default function FurnitureDetailBasicTab({
-	furniture,
-	editedFurniture,
-	setEditedFurniture,
-	isEditing,
-	locations,
-}: Props) {
+export default function FurnitureDetailBasicTab({ furniture, isEditing, locations }: Props) {
+	const {
+		register,
+		formState: { errors },
+	} = useFormContext<FurnitureEditSchema>();
+
 	return (
 		<div className="space-y-8">
 			{/* 名前・ブランドエリア */}
@@ -29,24 +28,21 @@ export default function FurnitureDetailBasicTab({
 							<input
 								type="text"
 								placeholder="家具名"
-								value={editedFurniture.name}
-								onChange={(e) =>
-									setEditedFurniture({ ...editedFurniture, name: e.target.value })
-								}
+								{...register("name")}
 								className="text-2xl md:text-3xl font-bold tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none w-full"
 							/>
+							{errors.name && (
+								<p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+							)}
 							<input
 								type="text"
 								placeholder="ブランド名"
-								value={editedFurniture.brand || ""}
-								onChange={(e) =>
-									setEditedFurniture({
-										...editedFurniture,
-										brand: e.target.value,
-									})
-								}
+								{...register("brand")}
 								className="text-kuralis-600 mt-2 text-sm font-bold tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none w-full"
 							/>
+							{errors.brand && (
+								<p className="text-red-500 text-sm mt-1">{errors.brand.message}</p>
+							)}
 						</div>
 					) : (
 						<div>
@@ -85,25 +81,28 @@ export default function FurnitureDetailBasicTab({
 						<span>設置場所</span>
 					</div>
 					{isEditing ? (
-						<select
-							value={editedFurniture.location_id || ""}
-							onChange={(e) =>
-								setEditedFurniture({
-									...editedFurniture,
-									location_id: Number(e.target.value),
-								})
-							}
-							className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none"
-						>
-							<option value="" disabled>
-								選択してください
-							</option>
-							{locations.map((loc) => (
-								<option key={loc.id} value={loc.id}>
-									{loc.name}
+						<div className="flex-1">
+							<select
+								{...register("location_id", {
+									setValueAs: (val) => (val === "" ? undefined : Number(val)),
+								})}
+								className="font-normal tracking-tighter-custom bg-transparent border-b border-kuralis-200 focus:border-kuralis-900 outline-none w-full"
+							>
+								<option value="" disabled>
+									選択してください
 								</option>
-							))}
-						</select>
+								{locations.map((loc) => (
+									<option key={loc.id} value={loc.id}>
+										{loc.name}
+									</option>
+								))}
+							</select>
+							{errors.location_id && (
+								<p className="text-red-500 text-sm mt-1">
+									{errors.location_id.message}
+								</p>
+							)}
+						</div>
 					) : (
 						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
 							{furniture.location?.name}

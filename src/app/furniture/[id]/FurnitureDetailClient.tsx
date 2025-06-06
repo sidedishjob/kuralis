@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiArrowLeft, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useFurnitureById } from "@/hooks/useFurnitureById";
@@ -24,6 +26,7 @@ import type { FurnitureWithExtras } from "@/types/furniture";
 import type { Location } from "@/types/furniture_meta";
 import type { MaintenanceSummary } from "@/types/maintenance";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { furnitureEditSchema, type FurnitureEditSchema } from "@/lib/validation";
 
 interface FurnitureDetailClientProps {
 	initialFurniture: FurnitureWithExtras;
@@ -48,16 +51,35 @@ export default function FurnitureDetailClient({
 	const { deleteFurniture } = useDeleteFurniture(initialFurniture.id);
 
 	const [isEditing, setIsEditing] = useState(false);
-	const [editedFurniture, setEditedFurniture] = useState<FurnitureWithExtras>(initialFurniture);
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-	const furnitureToUse = isEditing ? editedFurniture : (furniture ?? initialFurniture);
+	const methods = useForm<FurnitureEditSchema>({
+		resolver: zodResolver(furnitureEditSchema),
+		defaultValues: {
+			name: initialFurniture.name,
+			brand: initialFurniture.brand || "",
+			location_id: initialFurniture.location_id,
+			purchased_at: initialFurniture.purchased_at || "",
+			purchased_from: initialFurniture.purchased_from || "",
+			notes: initialFurniture.notes || "",
+		},
+	});
+
+	const furnitureToUse = furniture ?? initialFurniture;
 
 	useEffect(() => {
 		if (furniture && !isEditing) {
-			setEditedFurniture(furniture);
+			// 編集モードを抜けたときに最新のデータでリセット
+			methods.reset({
+				name: furniture.name,
+				brand: furniture.brand || "",
+				location_id: furniture.location_id,
+				purchased_at: furniture.purchased_at || "",
+				purchased_from: furniture.purchased_from || "",
+				notes: furniture.notes || "",
+			});
 		}
-	}, [furniture, isEditing]);
+	}, [furniture, isEditing, methods]);
 
 	const handleDelete = async () => {
 		try {
@@ -77,24 +99,21 @@ export default function FurnitureDetailClient({
 		}
 	};
 
-	const handleSave = async () => {
+	const onSubmit = async (data: FurnitureEditSchema) => {
 		try {
 			const formData = new FormData();
-			formData.append("name", editedFurniture.name);
-			formData.append("brand", editedFurniture.brand ?? "");
-			formData.append("location_id", String(editedFurniture.location_id));
-			formData.append("purchased_from", editedFurniture.purchased_from ?? "");
-			formData.append("notes", editedFurniture.notes ?? "");
+			formData.append("name", data.name ?? "");
+			formData.append("brand", data.brand ?? "");
+			formData.append("location_id", String(data.location_id ?? ""));
+			formData.append("purchased_from", data.purchased_from ?? "");
+			formData.append("notes", data.notes ?? "");
 
-			// 購入日（Date → YYYY-MM-DD）
-			if (editedFurniture.purchased_at) {
-				formData.append(
-					"purchased_at",
-					new Date(editedFurniture.purchased_at).toISOString().split("T")[0] // フォーマット例: 2024-05-28
-				);
+			if (data.purchased_at) {
+				formData.append("purchased_at", data.purchased_at);
+			} else {
+				formData.append("purchased_at", "");
 			}
 
-			// 画像
 			if (selectedImage) {
 				formData.append("image", selectedImage);
 			}
@@ -163,84 +182,95 @@ export default function FurnitureDetailClient({
 					</div>
 				</div>
 			) : (
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[70vw] mx-auto">
-					<FurnitureDetailImage
-						isEditing={isEditing}
-						imageUrl={furnitureToUse.image_url}
-						selectedImage={selectedImage}
-						setSelectedImage={setSelectedImage}
-					/>
+				<FormProvider {...methods}>
+					<form onSubmit={methods.handleSubmit(onSubmit)}>
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[70vw] mx-auto">
+							<FurnitureDetailImage
+								isEditing={isEditing}
+								imageUrl={furnitureToUse.image_url}
+								selectedImage={selectedImage}
+								setSelectedImage={setSelectedImage}
+							/>
 
-					<div className="space-y-8">
-						{/* 編集削除ボタンをタブの外に表示 */}
-						<div className="flex items-center justify-between">
-							{user && !isEditing && (
-								<div className="flex items-center space-x-3">
-									<button
-										onClick={() => setIsEditing(true)}
-										className="p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
-									>
-										<FiEdit2 size={18} />
-									</button>
-									<Dialog>
-										<DialogTrigger asChild>
-											<button className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50">
-												<FiTrash2 size={18} />
+							<div className="space-y-8">
+								{/* 編集削除ボタンをタブの外に表示 */}
+								<div className="flex items-center justify-between">
+									{user && !isEditing && (
+										<div className="flex items-center space-x-3">
+											<button
+												type="button"
+												onClick={() => setIsEditing(true)}
+												className="p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
+											>
+												<FiEdit2 size={18} />
 											</button>
-										</DialogTrigger>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>家具を削除しますか？</DialogTitle>
-												<DialogDescription>
-													この操作は取り消せません。本当に
-													{furnitureToUse.name}
-													を削除しますか？
-												</DialogDescription>
-											</DialogHeader>
-											<DialogFooter className="mt-4">
-												<button
-													onClick={handleDelete}
-													className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-												>
-													削除する
-												</button>
-											</DialogFooter>
-										</DialogContent>
-									</Dialog>
+											<Dialog>
+												<DialogTrigger asChild>
+													<button
+														type="button"
+														className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50"
+													>
+														<FiTrash2 size={18} />
+													</button>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>
+															家具を削除しますか？
+														</DialogTitle>
+														<DialogDescription>
+															この操作は取り消せません。本当に
+															{furnitureToUse.name}
+															を削除しますか？
+														</DialogDescription>
+													</DialogHeader>
+													<DialogFooter className="mt-4">
+														<button
+															type="button"
+															onClick={handleDelete}
+															className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+														>
+															削除する
+														</button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+										</div>
+									)}
 								</div>
-							)}
-						</div>
 
-						<FurnitureDetailTabs
-							furniture={furnitureToUse}
-							editedFurniture={editedFurniture}
-							setEditedFurniture={setEditedFurniture}
-							isEditing={isEditing}
-							locations={initialLocations}
-							summary={initialMaintenanceSummary}
-						/>
+								<FurnitureDetailTabs
+									furniture={furnitureToUse}
+									isEditing={isEditing}
+									locations={initialLocations}
+									summary={initialMaintenanceSummary}
+								/>
 
-						{isEditing && (
-							<div className="flex justify-end space-x-4 pt-8">
-								<button
-									onClick={() => {
-										setIsEditing(false);
-										setSelectedImage(null);
-									}}
-									className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-								>
-									キャンセル
-								</button>
-								<button
-									onClick={handleSave}
-									className="px-6 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-								>
-									保存する
-								</button>
+								{isEditing && (
+									<div className="flex justify-end space-x-4 pt-8">
+										<button
+											type="button"
+											onClick={() => {
+												setIsEditing(false);
+												setSelectedImage(null);
+												methods.reset();
+											}}
+											className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+										>
+											キャンセル
+										</button>
+										<button
+											type="submit"
+											className="px-6 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+										>
+											保存する
+										</button>
+									</div>
+								)}
 							</div>
-						)}
-					</div>
-				</div>
+						</div>
+					</form>
+				</FormProvider>
 			)}
 		</div>
 	);

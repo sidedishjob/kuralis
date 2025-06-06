@@ -2,24 +2,23 @@
 
 import Link from "next/link";
 import { FiTool, FiList, FiCalendar } from "react-icons/fi";
+import { useFormContext } from "react-hook-form";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import { MaintenanceSummary } from "@/types/maintenance";
+import type { FurnitureEditSchema } from "@/lib/validation";
 
 interface Props {
 	furniture: FurnitureWithExtras;
-	editedFurniture: FurnitureWithExtras;
-	setEditedFurniture: (f: FurnitureWithExtras) => void;
 	isEditing: boolean;
 	summary: MaintenanceSummary | null;
 }
 
-export default function FurnitureDetailMaintenanceTab({
-	furniture,
-	editedFurniture,
-	setEditedFurniture,
-	isEditing,
-	summary,
-}: Props) {
+export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, summary }: Props) {
+	const {
+		register,
+		formState: { errors },
+	} = useFormContext<FurnitureEditSchema>();
+
 	const formattedNextDue =
 		summary?.nearestDueDate && summary?.nearestTaskName
 			? `${summary.nearestDueDate}（${summary.nearestTaskName}）`
@@ -76,17 +75,14 @@ export default function FurnitureDetailMaintenanceTab({
 			</div>
 
 			{/* 備考欄 */}
-			{(isEditing || furniture.notes) && (
+			{(isEditing || furniture.notes.trim()) && (
 				<div className="bg-white p-8 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
 					<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
 						備考
 					</h2>
 					{isEditing ? (
 						<textarea
-							value={editedFurniture.notes || ""}
-							onChange={(e) =>
-								setEditedFurniture({ ...editedFurniture, notes: e.target.value })
-							}
+							{...register("notes")}
 							className="w-full p-4 font-normal tracking-tighter-custom bg-kuralis-50 rounded-sm border-none focus:ring-1 focus:ring-kuralis-900 outline-none resize-none"
 							rows={3}
 						/>
@@ -94,6 +90,9 @@ export default function FurnitureDetailMaintenanceTab({
 						<p className="p-4 bg-kuralis-50 rounded-sm font-normal tracking-tighter-custom break-words">
 							{furniture.notes}
 						</p>
+					)}
+					{errors.notes && (
+						<p className="text-red-500 text-sm mt-1">{errors.notes.message}</p>
 					)}
 				</div>
 			)}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { handleApiError } from "@/lib/utils/handleApiError";
+import { maintenanceTaskSchema } from "@/lib/validation";
 import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
 
 const VALID_UNITS = ["days", "weeks", "months", "years"];
@@ -56,7 +57,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 }
 
 /**
- * POST: メンテナンスタスクの登録
+ * POST: メンテナンスタスクの追加追加
  */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
@@ -67,17 +68,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
 	try {
 		const supabase = await createSupabaseServerClient();
-		const { taskName, cycleValue, cycleUnit } = await req.json();
+		const body = await req.json();
 
-		const errors: { field: string; message: string }[] = [];
-
-		if (!taskName) errors.push({ field: "taskName", message: "項目名は必須です" });
-		if (!cycleValue) errors.push({ field: "cycleValue", message: "周期（日数）は必須です" });
-		if (!cycleUnit) errors.push({ field: "cycleUnit", message: "周期（単位）は必須です" });
-
-		if (errors.length > 0) {
+		const result = maintenanceTaskSchema.safeParse(body);
+		if (!result.success) {
 			return NextResponse.json(
-				{ error: "入力に不備があります", details: errors },
+				{ error: "入力に不備があります", details: result.error.flatten().fieldErrors },
+				{ status: 400 }
+			);
+		}
+
+		const { taskName, cycleValue, cycleUnit } = result.data;
+		const parsedCycleValue = parseInt(cycleValue, 10);
+		if (Number.isNaN(parsedCycleValue)) {
+			return NextResponse.json(
+				{ error: "周期値が不正です。数値を入力してください。" },
 				{ status: 400 }
 			);
 		}
@@ -94,16 +99,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 			.insert({
 				furniture_id: id,
 				name: taskName,
-				cycle_value: parseInt(cycleValue),
+				cycle_value: parsedCycleValue,
 				cycle_unit: cycleUnit,
 			})
 			.select()
 			.single();
 
-		if (error) throw new Error(`メンテナンスタスク登録失敗: ${error.message}`);
+		if (error) throw new Error(`メンテナンスタスク追加エラー: ${error.message}`);
 
 		return NextResponse.json(data);
 	} catch (error: unknown) {
-		return handleApiError(error, "メンテナンスタスクの登録に失敗しました");
+		return handleApiError(error, "メンテナンスタスクの追加追加に失敗しました");
 	}
 }

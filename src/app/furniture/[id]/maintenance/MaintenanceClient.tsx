@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FiArrowLeft, FiCalendar, FiPlus, FiTool, FiTrash2 } from "react-icons/fi";
 import { format } from "date-fns";
-import type { Furniture } from "@/types/furniture";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { maintenanceTaskSchema, MaintenanceTaskSchema } from "@/lib/validation";
 import {
 	Dialog,
 	DialogContent,
@@ -14,15 +18,14 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/useToast";
-import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
+import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
 import { useAddMaintenanceTask } from "@/hooks/useAddMaintenanceTask";
-import Link from "next/link";
-import { MaintenanceCycleUnit } from "@/types/maintenance";
-import { Switch } from "@/components/ui/switch";
 import { useUpdateMaintenanceTask } from "@/hooks/useUpdateMaintenanceTask";
-import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { Switch } from "@/components/ui/switch";
+import type { Furniture } from "@/types/furniture";
+import type { MaintenanceCycleUnit } from "@/types/maintenance";
 
 interface Props {
 	furniture: Furniture;
@@ -38,42 +41,49 @@ const unitMap: Record<MaintenanceCycleUnit, string> = {
 export default function MaintenanceClient({ furniture }: Props) {
 	const getTodayDate = () => new Date().toISOString().split("T")[0];
 
-	const [isAddingItem, setIsAddingItem] = useState(false);
-	const [isAddingHistory, setIsAddingHistory] = useState<string | null>(null);
-	const [newItem, setNewItem] = useState({ taskName: "", cycleValue: "", cycleUnit: "" });
-	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
-
 	const { toast } = useToast();
+
 	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
 	const { addTask } = useAddMaintenanceTask(furniture.id);
 	const { addRecord } = useAddMaintenanceRecord();
 	const { deleteRecord } = useDeleteMaintenanceRecord();
 	const { updateTaskActive } = useUpdateMaintenanceTask(furniture.id);
 
-	const handleAddTask = async () => {
-		if (!newItem.taskName) return;
+	const [isAddingItem, setIsAddingItem] = useState(false);
+	const [isAddingHistory, setIsAddingHistory] = useState<string | null>(null);
+	const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
 
-		const cycleValue = parseInt(newItem.cycleValue);
-		if (newItem.cycleValue && (isNaN(cycleValue) || cycleValue < 0)) {
-			toast({ title: "周期は正の数値で入力してください" });
-			return;
-		}
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors, isValid },
+	} = useForm<MaintenanceTaskSchema>({
+		resolver: zodResolver(maintenanceTaskSchema),
+		defaultValues: {
+			taskName: "",
+			cycleValue: "",
+			cycleUnit: "months",
+		},
+		mode: "onChange",
+	});
 
+	/**
+	 * メンテナンスタスク追加
+	 */
+	const onSubmit = async (data: MaintenanceTaskSchema) => {
 		try {
-			await addTask({
-				taskName: newItem.taskName,
-				cycleValue: newItem.cycleValue,
-				cycleUnit: newItem.cycleUnit,
-			});
+			await addTask(data);
 			await mutate();
 
-			setNewItem({ taskName: "", cycleValue: "", cycleUnit: "" });
+			reset();
 			setIsAddingItem(false);
+
 			toast({ title: "メンテナンス項目を追加しました" });
 		} catch (error: unknown) {
-			console.error("メンテナンス項目登録エラー:", error);
+			console.error("メンテナンス項追加エラー:", error);
 			toast({
-				title: "メンテナンス項目の登録に失敗しました",
+				title: "メンテナンス項目の追加に失敗しました",
 				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
@@ -81,7 +91,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 	};
 
 	/**
-	 * メンテナンス履歴登録
+	 * メンテナンス履歴追加
 	 */
 	const handleAddHistory = async (taskId: string) => {
 		if (!newHistoryDate) return;
@@ -94,9 +104,9 @@ export default function MaintenanceClient({ furniture }: Props) {
 			setIsAddingHistory(null);
 			toast({ title: "メンテナンス履歴を追加しました" });
 		} catch (error: unknown) {
-			console.error("メンテナンス履歴登録エラー:", error);
+			console.error("メンテナンス履歴追加エラー:", error);
 			toast({
-				title: "メンテナンス履歴の登録に失敗しました",
+				title: "メンテナンス履歴の追加に失敗しました",
 				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
@@ -178,7 +188,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 					<div className="text-center py-12 border-2 border-dashed border-kuralis-200 rounded-sm">
 						<FiTool size={32} className="mx-auto text-kuralis-400 mb-4" />
 						<p className="text-kuralis-600 font-bold tracking-tighter-custom">
-							メンテナンス項目がありません
+							メンテナンス項目が追加されていません
 						</p>
 					</div>
 				) : (
@@ -326,70 +336,77 @@ export default function MaintenanceClient({ furniture }: Props) {
 						<DialogHeader>
 							<DialogTitle>メンテナンス項目の追加</DialogTitle>
 						</DialogHeader>
-						<div className="space-y-4 py-4">
+						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
 							<div>
 								<label className="block text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
 									メンテナンス項目名
 								</label>
 								<input
 									type="text"
-									value={newItem.taskName}
-									onChange={(e) =>
-										setNewItem({ ...newItem, taskName: e.target.value })
-									}
+									{...register("taskName")}
 									className="w-full px-3 py-2 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
 									placeholder="例：オイルメンテナンス"
 								/>
+								{errors.taskName && (
+									<p className="text-sm text-red-500 mt-1">
+										{errors.taskName.message}
+									</p>
+								)}
 							</div>
 							<div>
 								<label className="block text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
 									実施周期
 								</label>
-								<input
-									type="number"
-									value={newItem.cycleValue}
-									onChange={(e) =>
-										setNewItem({ ...newItem, cycleValue: e.target.value })
-									}
-									className=" px-3 py-2 w-1/3 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
-									placeholder="例：90"
-									min="1"
-									step="1"
-									inputMode="numeric"
-								/>
-								<select
-									value={newItem.cycleUnit}
-									onChange={(e) =>
-										setNewItem({ ...newItem, cycleUnit: e.target.value })
-									}
-									className="ml-2 px-3 py-2 border border-kuralis-200 rounded-sm"
-								>
-									{Object.entries(unitMap).map(([key, value]) => (
-										<option value={key} key={key}>
-											{value}
-										</option>
-									))}
-								</select>
-								<span className="pl-1 text-sm text-kuralis-600">
-									ごとにメンテナンス
-								</span>
+								<div className="flex items-center">
+									<input
+										type="number"
+										{...register("cycleValue")}
+										className=" px-3 py-2 w-1/3 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
+										placeholder="例：90"
+										min="1"
+										step="1"
+										inputMode="numeric"
+									/>
+									<select
+										{...register("cycleUnit")}
+										className="ml-2 px-3 py-2 border border-kuralis-200 rounded-sm"
+									>
+										{Object.entries(unitMap).map(([key, value]) => (
+											<option value={key} key={key}>
+												{value}
+											</option>
+										))}
+									</select>
+									<span className="pl-1 text-sm text-kuralis-600">
+										ごとにメンテナンス
+									</span>
+								</div>
+								{errors.cycleValue && (
+									<p className="text-sm text-red-500 mt-1">
+										{errors.cycleValue.message}
+									</p>
+								)}
 							</div>
-						</div>
-						<DialogFooter>
-							<button
-								onClick={() => setIsAddingItem(false)}
-								className="px-4 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
-							>
-								キャンセル
-							</button>
-							<button
-								onClick={() => handleAddTask()}
-								disabled={!newItem.taskName || !newItem.cycleValue}
-								className="px-4 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom disabled:bg-kuralis-200 disabled:cursor-not-allowed"
-							>
-								追加する
-							</button>
-						</DialogFooter>
+							<DialogFooter>
+								<button
+									onClick={() => {
+										setIsAddingItem(false);
+										reset();
+									}}
+									type="button"
+									className="px-4 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
+								>
+									キャンセル
+								</button>
+								<button
+									type="submit"
+									disabled={!isValid}
+									className="px-4 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom disabled:bg-kuralis-200 disabled:cursor-not-allowed"
+								>
+									追加する
+								</button>
+							</DialogFooter>
+						</form>
 					</DialogContent>
 				</Dialog>
 			</div>

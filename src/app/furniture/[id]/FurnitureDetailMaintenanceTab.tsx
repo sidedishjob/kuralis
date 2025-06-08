@@ -75,7 +75,7 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 			</div>
 
 			{/* 備考欄 */}
-			{(isEditing || furniture.notes.trim()) && (
+			{(isEditing || furniture.notes) && (
 				<div className="bg-white p-8 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
 					<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
 						備考

@@ -13,7 +13,6 @@ import { useToast } from "@/hooks/useToast";
 enum PageState {
 	Loading = "loading",
 	Authorized = "authorized",
-	Unauthorized = "unauthorized",
 }
 
 export function usePasswordResetPage() {

@@ -11,16 +11,24 @@ export default function ResetPasswordPage() {
 		<div className="flex items-center justify-center bg-background p-16">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<CardTitle className="text-center text-2xl">
-						{pageState === "loading" ? "読み込み中..." : "新しいパスワードを設定"}
-					</CardTitle>
+					{pageState === "loading" ? (
+						<div className="w-2/3 h-10 bg-gray-200 rounded-sm animate-pulse mx-auto" />
+					) : (
+						<CardTitle className="text-center text-2xl">
+							新しいパスワードを設定
+						</CardTitle>
+					)}
 				</CardHeader>
 				<CardContent>
 					{pageState === "authorized" ? (
 						<PasswordResetForm form={form} onSubmit={onSubmit} />
 					) : pageState === "loading" ? (
-						<div className="py-8 text-center text-sm text-muted-foreground">
-							認証情報を確認中...
+						<div className="space-y-2 p-2">
+							{/* パスワード入力欄のスケルトン */}
+							<div className="w-full h-8 bg-gray-200 rounded-sm animate-pulse" />
+
+							{/* ボタンのスケルトン */}
+							<div className="w-full h-8 bg-gray-300 rounded-sm animate-pulse" />
 						</div>
 					) : null}
 				</CardContent>

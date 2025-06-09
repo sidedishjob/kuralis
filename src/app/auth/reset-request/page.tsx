@@ -1,43 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { supabase } from "@/lib/supabase/client";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/useToast";
-import { Label } from "@/components/ui/label";
-import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { ResetRequestForm } from "@/components/auth/ResetRequestForm";
+import { useResetRequestPage } from "@/hooks/useResetRequestPage";
 
 export default function ResetRequestPage() {
-	const [email, setEmail] = useState("");
-	const [loading, setLoading] = useState(false);
-	const { toast } = useToast();
-
-	// パスワードリセットリンクを送信する処理
-	const handleReset = async () => {
-		setLoading(true);
-		const { error } = await supabase.auth.resetPasswordForEmail(email, {
-			redirectTo: `${window.location.origin}/auth/reset-password`,
-		});
-		setLoading(false);
-
-		if (error) {
-			toast({
-				title: "メールの送信に失敗しました",
-				description: getErrorMessage(
-					error,
-					"メールの送信に失敗しました。時間をおいて再度お試しください"
-				),
-				variant: "destructive",
-			});
-		} else {
-			toast({
-				title: "メールを送信しました",
-				description: "パスワード再設定用のリンクを送信しました",
-			});
-		}
-	};
+	const { email, setEmail, loading, handleReset } = useResetRequestPage();
 
 	return (
 		<div className="flex-grow flex items-center justify-center p-16">
@@ -46,25 +14,12 @@ export default function ResetRequestPage() {
 					<CardTitle className="text-center text-2xl">パスワードをリセット</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div className="space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="email">メールアドレス</Label>
-							<Input
-								id="email"
-								type="email"
-								placeholder="your@email.com"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-							/>
-						</div>
-						<Button
-							onClick={handleReset}
-							disabled={!email || loading}
-							className="w-full"
-						>
-							{loading ? "送信中..." : "リセットリンクを送信"}
-						</Button>
-					</div>
+					<ResetRequestForm
+						email={email}
+						setEmail={setEmail}
+						loading={loading}
+						handleReset={handleReset}
+					/>
 				</CardContent>
 			</Card>
 		</div>

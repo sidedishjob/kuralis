@@ -33,7 +33,7 @@ export default function ResetRequestPage() {
 			});
 		} else {
 			toast({
-				title: "メール送信済み",
+				title: "メールを送信しました",
 				description: "パスワード再設定用のリンクを送信しました",
 			});
 		}

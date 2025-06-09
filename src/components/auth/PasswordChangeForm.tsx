@@ -53,8 +53,8 @@ export default function PasswordChangeForm() {
 			});
 		} else {
 			toast({
-				title: "成功",
-				description: "パスワードを変更しました",
+				title: "パスワードを更新しました。",
+				description: "次回のログインから新しいパスワードをご使用ください",
 			});
 			reset();
 		}

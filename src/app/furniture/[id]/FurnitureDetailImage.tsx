@@ -6,7 +6,7 @@ import { FiUpload } from "react-icons/fi";
 import Image from "next/image";
 import { useSupabaseClient } from "@/lib/supabase/hooks/useSupabaseClient";
 import { FurnitureEditSchema } from "@/lib/validation";
-import DemoView from "@/components/DemoView";
+import { DemoView } from "@/components/common/DemoView";
 
 interface Props {
 	isEditing: boolean;

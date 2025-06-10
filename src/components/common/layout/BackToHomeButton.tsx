@@ -3,16 +3,21 @@
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 
+interface BackToHomeButtonProps {
+	className?: string;
+}
+
 /**
  * ホームに戻る共通ボタンコンポーネント
  */
-export default function BackToHomeButton() {
+export function BackToHomeButton({ className = "" }: BackToHomeButtonProps) {
 	const router = useRouter();
 
 	return (
 		<button
 			onClick={() => router.push("/")}
-			className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
+			className={`inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom ${className}`}
+			aria-label="ホームに戻る"
 		>
 			<FiArrowLeft
 				size={16}

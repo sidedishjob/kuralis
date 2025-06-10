@@ -14,15 +14,33 @@ interface FilterSheetProps {
 	onLocationSelect: (location: number | null) => void;
 }
 
-// FilterSheet はスマホ用のフィルター選択 UI（カテゴリ・設置場所）を表示するシート
-const FilterSheet: React.FC<FilterSheetProps> = ({
+export function FilterSheet({
 	categories,
 	locations,
 	activeCategory,
 	activeLocation,
 	onCategorySelect,
 	onLocationSelect,
-}) => {
+}: FilterSheetProps) {
+	const FilterButton = ({
+		isActive,
+		onClick,
+		children,
+	}: {
+		isActive: boolean;
+		onClick: () => void;
+		children: React.ReactNode;
+	}) => (
+		<button
+			onClick={onClick}
+			className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
+				isActive ? "text-kuralis-900" : "text-kuralis-500 hover:text-kuralis-700"
+			}`}
+		>
+			{children}
+		</button>
+	);
+
 	return (
 		<Sheet>
 			<SheetTrigger
@@ -45,28 +63,20 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 							Category
 						</h2>
 						<div className="space-y-3 ml-2">
-							<button
+							<FilterButton
+								isActive={activeCategory === null}
 								onClick={() => onCategorySelect(null)}
-								className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-									activeCategory === null
-										? "text-kuralis-900"
-										: "text-kuralis-500 hover:text-kuralis-700"
-								}`}
 							>
 								All
-							</button>
+							</FilterButton>
 							{categories.map((category) => (
-								<button
+								<FilterButton
 									key={category.id}
+									isActive={activeCategory === category.id}
 									onClick={() => onCategorySelect(category.id)}
-									className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeCategory === category.id
-											? "text-kuralis-900"
-											: "text-kuralis-500 hover:text-kuralis-700"
-									}`}
 								>
 									{category.name}
-								</button>
+								</FilterButton>
 							))}
 						</div>
 					</div>
@@ -77,28 +87,20 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 							Location
 						</h2>
 						<div className="space-y-3 ml-2">
-							<button
+							<FilterButton
+								isActive={activeLocation === null}
 								onClick={() => onLocationSelect(null)}
-								className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-									activeLocation === null
-										? "text-kuralis-900"
-										: "text-kuralis-500 hover:text-kuralis-700"
-								}`}
 							>
 								All
-							</button>
+							</FilterButton>
 							{locations.map((location) => (
-								<button
+								<FilterButton
 									key={location.id}
+									isActive={activeLocation === location.id}
 									onClick={() => onLocationSelect(location.id)}
-									className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeLocation === location.id
-											? "text-kuralis-900"
-											: "text-kuralis-500 hover:text-kuralis-700"
-									}`}
 								>
 									{location.name}
-								</button>
+								</FilterButton>
 							))}
 						</div>
 					</div>
@@ -106,6 +108,4 @@ const FilterSheet: React.FC<FilterSheetProps> = ({
 			</SheetContent>
 		</Sheet>
 	);
-};
-
-export default FilterSheet;
+}

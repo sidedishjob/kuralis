@@ -1,6 +1,6 @@
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/common/layout/Header";
+import { Footer } from "@/components/common/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import { inter, notoSansJP } from "@/constants/fonts";

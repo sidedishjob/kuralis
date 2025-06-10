@@ -4,14 +4,14 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Furniture } from "@/types/furniture";
-import DemoView from "./DemoView";
+import { DemoView } from "@/components/common/DemoView";
 
 interface FurnitureCardProps {
 	furniture: Furniture;
 	isDemo?: boolean;
 }
 
-const FurnitureCard: React.FC<FurnitureCardProps> = ({ furniture, isDemo = false }) => {
+export function FurnitureCard({ furniture, isDemo = false }: FurnitureCardProps) {
 	const Card = () => (
 		<div className="block group relative overflow-hidden">
 			<div className="aspect-[4/3] transform group-hover:-translate-y-8 transition-transform duration-700 ease-natural">
@@ -50,6 +50,4 @@ const FurnitureCard: React.FC<FurnitureCardProps> = ({ furniture, isDemo = false
 			)}
 		</Link>
 	);
-};
-
-export default FurnitureCard;
+}

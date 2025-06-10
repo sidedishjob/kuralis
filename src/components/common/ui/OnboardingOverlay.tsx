@@ -4,6 +4,12 @@ import React from "react";
 import Link from "next/link";
 import { FiHeart, FiBook, FiPlus, FiX } from "react-icons/fi";
 
+interface OnboardingStep {
+	title: string;
+	description: string;
+	icon: React.ReactNode;
+}
+
 interface OnboardingOverlayProps {
 	currentStep: number;
 	onNext: () => void;
@@ -11,33 +17,33 @@ interface OnboardingOverlayProps {
 	onComplete: () => void;
 }
 
-const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
+const STEPS: OnboardingStep[] = [
+	{
+		title: "家具と暮らすための記録アプリ",
+		description:
+			"kuralisは、家具との思い出を記録し、適切なメンテナンスをサポートするアプリです。",
+		icon: <FiHeart className="w-8 h-8" />,
+	},
+	{
+		title: "主な機能",
+		description:
+			"家具の登録、メンテナンス記録の管理、次回メンテナンス予定の確認など、家具との暮らしをより豊かにする機能を提供します。",
+		icon: <FiBook className="w-8 h-8" />,
+	},
+	{
+		title: "さっそく始めましょう",
+		description: "家具を登録して、メンテナンス記録を始めましょう。",
+		icon: <FiPlus className="w-8 h-8" />,
+	},
+];
+
+export function OnboardingOverlay({
 	currentStep,
 	onNext,
 	onSkip,
 	onComplete,
-}) => {
-	const steps = [
-		{
-			title: "家具と暮らすための記録アプリ",
-			description:
-				"kuralisは、家具との思い出を記録し、適切なメンテナンスをサポートするアプリです。",
-			icon: <FiHeart className="w-8 h-8" />,
-		},
-		{
-			title: "主な機能",
-			description:
-				"家具の登録、メンテナンス記録の管理、次回メンテナンス予定の確認など、家具との暮らしをより豊かにする機能を提供します。",
-			icon: <FiBook className="w-8 h-8" />,
-		},
-		{
-			title: "さっそく始めましょう",
-			description: "家具を登録して、メンテナンス記録を始めましょう。",
-			icon: <FiPlus className="w-8 h-8" />,
-		},
-	];
-
-	const currentStepData = steps[currentStep - 1];
+}: OnboardingOverlayProps) {
+	const currentStepData = STEPS[currentStep - 1];
 
 	return (
 		<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6">
@@ -45,6 +51,7 @@ const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
 				<button
 					onClick={onSkip}
 					className="absolute top-4 right-4 text-kuralis-400 hover:text-kuralis-600 transition-colors duration-300"
+					aria-label="スキップ"
 				>
 					<FiX size={20} />
 				</button>
@@ -62,7 +69,7 @@ const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
 					</div>
 
 					<div className="flex justify-center space-x-2">
-						{steps.map((_, index) => (
+						{STEPS.map((_, index) => (
 							<div
 								key={index}
 								className={`w-2 h-2 rounded-full transition-all duration-300 ${
@@ -75,7 +82,7 @@ const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
 					</div>
 
 					<div className="space-y-3 pt-4">
-						{currentStep === steps.length ? (
+						{currentStep === STEPS.length ? (
 							<Link
 								href="/furniture/register"
 								onClick={onComplete}
@@ -103,6 +110,4 @@ const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
 			</div>
 		</div>
 	);
-};
-
-export default OnboardingOverlay;
+}

@@ -4,9 +4,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
-import FurnitureCard from "@/components/FurnitureCard";
-import FilterSheet from "@/components/FilterSheet";
-import OnboardingOverlay from "@/components/OnboardingOverlay";
+import { FurnitureCard } from "@/components/features/furniture/FurnitureCard";
+import { FilterSheet } from "@/components/features/furniture/FilterSheet";
+import { OnboardingOverlay } from "@/components/common/ui/OnboardingOverlay";
 import type { Furniture } from "@/types/furniture";
 import type { Category, Location } from "@/types/furniture_meta";
 

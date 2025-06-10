@@ -1,4 +1,4 @@
-import BackToHomeButton from "@/components/BackToHomeButton";
+import { BackToHomeButton } from "@/components/common/layout/BackToHomeButton";
 
 export default function PrivacyPage() {
 	return (

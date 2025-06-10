@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const Footer: React.FC = () => {
+export function Footer() {
 	return (
 		<footer className="py-8 px-6 md:px-12 text-kuralis-500 text-xs font-normal tracking-tighter-custom border-t border-kuralis-200">
 			<div className="container mx-auto">
@@ -10,6 +10,4 @@ const Footer: React.FC = () => {
 			</div>
 		</footer>
 	);
-};
-
-export default Footer;
+}

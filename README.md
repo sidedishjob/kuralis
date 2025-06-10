@@ -1,6 +1,6 @@
-# Kuralis
+# kuralis
 
-Kuralisは、Next.js 15.3.2を使用した最新のWebアプリケーションです。TypeScript、Tailwind CSS、Supabaseを活用したモダンなスタックで構築されています。
+kuralisは、Next.js 15.3.2を使用した最新のWebアプリケーションです。TypeScript、Tailwind CSS、Supabaseを活用したモダンなスタックで構築されています。
 
 ## 🚀 技術スタック
 

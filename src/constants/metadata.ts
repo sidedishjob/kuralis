@@ -5,7 +5,7 @@ export const siteMetadata = {
 	titleSuffix: "使い手として、家具と暮らす。",
 	description:
 		"家具と暮らすための記録アプリ。家具の登録、メンテナンス記録の管理、次回メンテナンス予定の確認など、家具との暮らしをより豊かにする機能を提供します。",
-	siteUrl: "https://kuralis.app",
+	siteUrl: "https://kuralis.homes",
 	siteName: "kuralis",
 	language: "ja-JP",
 	locale: "ja_JP",
@@ -37,7 +37,7 @@ export const siteMetadata = {
 
 	// OGP画像
 	ogImage: {
-		url: "https://kuralis.app/og-image.png",
+		url: "https://kuralis.homes/og-image.png",
 		width: 1200,
 		height: 630,
 		alt: "kuralis - 家具と暮らすための記録アプリ",
@@ -73,7 +73,7 @@ export const siteMetadata = {
 	support: {
 		email: "support@kuralis.app",
 		twitter: "https://twitter.com/kuralis_app",
-		github: "https://github.com/kuralis",
+		github: "https://github.com/sidedishjob/kuralis",
 	},
 
 	// ライセンス情報

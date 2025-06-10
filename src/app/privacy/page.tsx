@@ -11,14 +11,14 @@ export default function PrivacyPage() {
 				</h1>
 
 				<div className="prose prose-kuralis max-w-none">
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-1">
+						<h2 id="policy-1" className="text-xl font-bold mb-4">
 							1. 個人情報の収集
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed mb-4">
+						<p>
 							kuralis（以下「当社」）は、本サービスの提供にあたり、以下の個人情報を収集することがあります：
 						</p>
-						<ul className="list-disc list-inside space-y-2 text-kuralis-600">
+						<ul className="list-disc list-inside space-y-2">
 							<li>メールアドレス</li>
 							<li>ユーザー名</li>
 							<li>家具情報（名称、ブランド、購入日、購入場所、設置場所等）</li>
@@ -27,92 +27,91 @@ export default function PrivacyPage() {
 						</ul>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-2">
+						<h2 id="policy-2" className="text-xl font-bold mb-4">
 							2. 個人情報の利用目的
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed mb-4">
-							収集した個人情報は、以下の目的で利用します：
-						</p>
-						<ul className="list-disc list-inside space-y-2 text-kuralis-600">
-							<li>家具管理サービスの提供・運営のため</li>
-							<li>メンテナンスリマインダーの送信のため</li>
-							<li>家具の状態管理と履歴の記録のため</li>
-							<li>ユーザーからのお問い合わせに対応するため</li>
-							<li>利用規約に違反する行為に対応するため</li>
-							<li>本サービスの改善および新機能の開発のため</li>
-							<li>統計情報の作成のため</li>
+						<p>収集した個人情報は、以下の目的で利用します：</p>
+						<ul className="list-disc list-inside space-y-2">
+							<li>家具管理サービスの提供・運営</li>
+							<li>メンテナンスリマインダーの送信</li>
+							<li>家具の状態管理と履歴記録</li>
+							<li>お問い合わせ対応</li>
+							<li>利用規約違反への対応</li>
+							<li>本サービスの改善・新機能開発</li>
+							<li>統計情報の作成</li>
 						</ul>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-3">
+						<h2 id="policy-3" className="text-xl font-bold mb-4">
 							3. 個人情報の管理
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed mb-4">
-							当社は、ユーザーの個人情報を適切に管理し、以下に掲げる場合を除いて、個人情報を第三者に開示することはありません。
+						<p>
+							当社は、ユーザーの個人情報を適切に管理し、以下の場合を除いて第三者に開示しません：
 						</p>
-						<ul className="list-disc list-inside space-y-2 text-kuralis-600">
+						<ul className="list-disc list-inside space-y-2">
 							<li>ユーザーの同意がある場合</li>
-							<li>法令に基づき開示することが必要である場合</li>
-							<li>人の生命、身体または財産の保護のために必要がある場合</li>
+							<li>法令に基づく場合</li>
+							<li>人命や財産保護のために必要な場合</li>
 						</ul>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-4">
+						<h2 id="policy-4" className="text-xl font-bold mb-4">
 							4. 個人情報の開示・訂正・削除
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed mb-4">
-							ユーザーから個人情報の開示・訂正・削除を求められた場合、当社は速やかに対応いたします。
-							ただし、法令等により開示できない場合もございます。
-						</p>
-						<p className="text-kuralis-600 leading-relaxed">
-							個人情報の開示・訂正・削除のご請求は、当社の問い合わせフォームよりお願いいたします。
+						<p>
+							ご希望に応じて、個人情報の開示・訂正・削除に対応いたします。
+							ご請求は当社の問い合わせフォームよりご連絡ください。
 						</p>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-5">
+						<h2 id="policy-5" className="text-xl font-bold mb-4">
 							5. セキュリティ対策
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed mb-4">
-							当社は、個人情報の漏洩、滅失または毀損を防止するため、以下のセキュリティ対策を実施しています：
-						</p>
-						<ul className="list-disc list-inside space-y-2 text-kuralis-600">
-							<li>個人情報へのアクセス制限</li>
+						<p>以下の対策を講じています：</p>
+						<ul className="list-disc list-inside space-y-2">
+							<li>アクセス権限の管理</li>
 							<li>データの暗号化</li>
 						</ul>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-6">
+						<h2 id="policy-6" className="text-xl font-bold mb-4">
 							6. アクセス解析ツール
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed">
-							当社は、サービスの利用状況を把握するため、Googleアナリティクス等のアクセス解析ツールを使用しています。
-							これらのツールは、Cookieを使用して個人を特定できない形式で情報を収集します。
+						<p>
+							Googleアナリティクス等を利用してアクセス状況を収集しています。収集情報は個人を特定しません。
 						</p>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-7">
+						<h2 id="policy-7" className="text-xl font-bold mb-4">
 							7. プライバシーポリシーの変更
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed">
-							本ポリシーの内容は、法令その他本ポリシーに別段の定めのある事項を除いて、ユーザーに通知することなく、変更することができるものとします。
-							変更後のプライバシーポリシーは、本ウェブサイトに掲載したときから効力を生じるものとします。
+						<p>
+							本ポリシーは予告なく改訂されることがあります。変更後の内容は本サイトへの掲載時点から効力を持ちます。
 						</p>
 					</section>
 
-					<section className="mb-12">
-						<h2 className="text-xl font-bold tracking-tighter-custom mb-4">
+					<section className="mb-12" aria-labelledby="policy-8">
+						<h2 id="policy-8" className="text-xl font-bold mb-4">
 							8. お問い合わせ窓口
 						</h2>
-						<p className="text-kuralis-600 leading-relaxed">
-							本ポリシーに関するお問い合わせは、当社の問い合わせフォームよりお願いいたします。
+						<p>
+							当社へのお問い合わせは、以下のフォームよりお願いいたします。
+							<br />
+							<a
+								href="/contact"
+								className="underline text-kuralis-700 dark:text-kuralis-300 hover:text-primary"
+							>
+								お問い合わせフォーム
+							</a>
 						</p>
 					</section>
+					<p className="text-sm text-gray-500">施行日：2025年6月10日</p>
 				</div>
 			</div>
 		</div>

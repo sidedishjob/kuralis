@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kuralis
 
-## Getting Started
+Kuralisは、Next.js 15.3.2を使用した最新のWebアプリケーションです。TypeScript、Tailwind CSS、Supabaseを活用したモダンなスタックで構築されています。
 
-First, run the development server:
+## 🚀 技術スタック
+
+- **フレームワーク**: Next.js 15.3.2
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS 4.1.7
+- **バックエンド**: Supabase
+- **UIコンポーネント**: Radix UI
+- **フォーム管理**: React Hook Form + Zod
+- **状態管理**: SWR
+- **その他**: date-fns, uuid
+
+## 🛠️ 開発環境のセットアップ
+
+### 必要条件
+
+- Node.js (最新のLTS版推奨)
+- npm または yarn
+- Supabaseアカウント
+
+### インストール
+
+```bash
+# リポジトリのクローン
+git clone [repository-url]
+
+# 依存関係のインストール
+npm install
+# または
+yarn install
+
+# 環境変数の設定
+cp .env.example .env.local
+```
+
+### 環境変数の設定
+
+`.env.local`ファイルに以下の環境変数を設定してください：
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+# ※SupabaseのService Role Keyはクライアント公開せず、
+# サーバー環境（CI/CDやAPIルート）でのみ利用してください。
+```
+
+## 🏃‍♂️ 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
+# または
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+開発サーバーは http://localhost:3002 で起動します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📝 利用可能なスクリプト
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev`: 開発サーバーの起動
+- `npm run build`: プロダクションビルドの作成
+- `npm run start`: プロダクションサーバーの起動
+- `npm run lint`: ESLintによるコードチェック
+- `npm run format`: Prettierによるコードフォーマット
 
-## Learn More
+## 🏗️ プロジェクト構造
 
-To learn more about Next.js, take a look at the following resources:
+```
+kuralis/
+├── src/              # ソースコード
+│ ├── app/ # Next.js App Router のルート
+│ ├── components/ # Atomic Design ベースの UI コンポーネント
+│ ├── hooks/ # カスタムフック
+│ ├── lib/ # API クライアント・共通ユーティリティ
+│ ├── types/ # TypeScript 型定義
+│ └── styles/ # グローバルCSS・Tailwind設定
+├── public/           # 静的ファイル
+├── supabase/         # Supabase関連の設定
+├── docs/             # ドキュメント
+└── components.json   # UIコンポーネントの設定
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔧 開発ガイドライン
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- TypeScriptの厳格な型チェックを有効にしています
+- ESLintとPrettierによるコード品質の維持
+- コンポーネントはAtomic Designに基づいて構成
+- コミットメッセージは[Conventional Commits](https://www.conventionalcommits.org/)に従ってください
 
-## Deploy on Vercel
+## 📚 ドキュメント
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+詳細なドキュメントは `docs/` ディレクトリを参照してください。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 デプロイ
+
+このプロジェクトはVercelへのデプロイを推奨しています：
+
+1. Vercelアカウントを作成
+2. リポジトリをVercelに接続
+3. 環境変数を設定
+4. デプロイを実行
+
+## 📄 ライセンス
+
+このプロジェクトは **MIT License** の下で公開されています。  
+詳しくは [LICENSE](./LICENSE) をご覧ください。

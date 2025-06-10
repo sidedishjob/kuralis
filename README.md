@@ -70,12 +70,12 @@ yarn dev
 ```
 kuralis/
 ├── src/              # ソースコード
-│ ├── app/ # Next.js App Router のルート
-│ ├── components/ # Atomic Design ベースの UI コンポーネント
-│ ├── hooks/ # カスタムフック
-│ ├── lib/ # API クライアント・共通ユーティリティ
-│ ├── types/ # TypeScript 型定義
-│ └── styles/ # グローバルCSS・Tailwind設定
+│ ├── app/            # Next.js App Router のルート
+│ ├── components/     # Atomic Design ベースの UI コンポーネント
+│ ├── hooks/          # カスタムフック
+│ ├── lib/            # API クライアント・共通ユーティリティ
+│ ├── types/          # TypeScript 型定義
+│ └── styles/         # グローバルCSS・Tailwind設定
 ├── public/           # 静的ファイル
 ├── supabase/         # Supabase関連の設定
 ├── docs/             # ドキュメント

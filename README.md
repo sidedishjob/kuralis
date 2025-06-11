@@ -8,7 +8,7 @@ kuralisは、Next.js 15.3.2を使用した最新のWebアプリケーション�
 - **言語**: TypeScript
 - **スタイリング**: Tailwind CSS 4.1.7
 - **バックエンド**: Supabase
-- **UIコンポーネント**: Radix UI
+- **UIコンポーネント**: shadcn/ui
 - **フォーム管理**: React Hook Form + Zod
 - **状態管理**: SWR
 - **その他**: date-fns, uuid
@@ -20,12 +20,13 @@ kuralisは、Next.js 15.3.2を使用した最新のWebアプリケーション�
 - Node.js (最新のLTS版推奨)
 - npm または yarn
 - Supabaseアカウント
+- Googleアカウント
 
 ### インストール
 
 ```bash
 # リポジトリのクローン
-git clone [repository-url]
+git clone git@github.com:sidedishjob/kuralis.git
 
 # 依存関係のインストール
 npm install
@@ -45,6 +46,9 @@ NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 # ※SupabaseのService Role Keyはクライアント公開せず、
 # サーバー環境（CI/CDやAPIルート）でのみ利用してください。
+EMAIL_USER=your-email
+EMAIL_PASS=your-gmail-app-password  # Gmailの「アプリパスワード」を使用（2段階認証必要）
+EMAIL_TO=your-email
 ```
 
 ## 🏃‍♂️ 開発サーバーの起動
@@ -72,10 +76,11 @@ kuralis/
 ├── src/              # ソースコード
 │ ├── app/            # Next.js App Router のルート
 │ ├── components/     # Atomic Design ベースの UI コンポーネント
+│ ├── constants/      # 定数ファイル
+│ ├── contexts/       # 認証コンテキスト
 │ ├── hooks/          # カスタムフック
 │ ├── lib/            # API クライアント・共通ユーティリティ
-│ ├── types/          # TypeScript 型定義
-│ └── styles/         # グローバルCSS・Tailwind設定
+│ └── types/          # TypeScript 型定義
 ├── public/           # 静的ファイル
 ├── supabase/         # Supabase関連の設定
 ├── docs/             # ドキュメント
@@ -87,7 +92,6 @@ kuralis/
 - TypeScriptの厳格な型チェックを有効にしています
 - ESLintとPrettierによるコード品質の維持
 - コンポーネントはAtomic Designに基づいて構成
-- コミットメッセージは[Conventional Commits](https://www.conventionalcommits.org/)に従ってください
 
 ## 📚 ドキュメント
 

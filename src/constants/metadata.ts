@@ -19,7 +19,7 @@ export const siteMetadata = {
 	appDescription: "家具と暮らすための記録アプリ",
 	appVersion: "1.0.0",
 	appAuthor: "kuralis team",
-	appEmail: "contact@kuralis.app",
+	appEmail: "kuralis525@gmail.com",
 
 	// メタ情報
 	keywords: [
@@ -71,8 +71,7 @@ export const siteMetadata = {
 
 	// サポート情報
 	support: {
-		email: "support@kuralis.app",
-		twitter: "https://twitter.com/kuralis_app",
+		email: "kuralis525@gmail.com",
 		github: "https://github.com/sidedishjob/kuralis",
 	},
 

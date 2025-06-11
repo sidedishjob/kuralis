@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BackToHomeButton } from "@/components/common/layout/BackToHomeButton";
 
 export default function PrivacyPage() {
@@ -103,12 +104,12 @@ export default function PrivacyPage() {
 						<p>
 							当社へのお問い合わせは、以下のフォームよりお願いいたします。
 							<br />
-							<a
+							<Link
 								href="/contact"
 								className="underline text-kuralis-700 dark:text-kuralis-300 hover:text-primary"
 							>
 								お問い合わせフォーム
-							</a>
+							</Link>
 						</p>
 					</section>
 					<p className="text-sm text-gray-500">施行日：2025年6月10日</p>

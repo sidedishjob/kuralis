@@ -58,8 +58,11 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 				<Link href="/about" className={linkClassName} onClick={onLinkClick}>
 					アプリについて
 				</Link>
+				<Link href="/contact" className={linkClassName} onClick={onLinkClick}>
+					お問い合わせ
+				</Link>
 				<Link href="/auth/login" className={linkClassName} onClick={onLinkClick}>
-					<FiLogIn className="mr-2" />
+					<FiLogIn className="inline mr-2" />
 					ログイン
 				</Link>
 			</>

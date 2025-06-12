@@ -39,6 +39,7 @@ export const AccountSection = () => {
 		const res = await fetch("/api/delete-user", { method: "POST" });
 		if (!res.ok) {
 			alert("削除に失敗しました");
+			setLoading(false);
 			return;
 		}
 		await supabase.auth.signOut();

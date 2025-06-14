@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
+import { FiPlus, FiSearch, FiX, FiChevronDown, FiGrid, FiMapPin, FiLayout } from "react-icons/fi";
 import { FurnitureCard } from "@/components/features/furniture/FurnitureCard";
 import { FilterSheet } from "@/components/features/furniture/FilterSheet";
 import { OnboardingOverlay } from "@/components/common/ui/OnboardingOverlay";
@@ -64,7 +64,7 @@ export default function FurnitureListClient({
 	};
 
 	return (
-		<div className="container mx-auto py-4 md:py-6 px-4 md:px-12">
+		<div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
 			{onboardingStep && (
 				<OnboardingOverlay
 					currentStep={onboardingStep}
@@ -74,178 +74,191 @@ export default function FurnitureListClient({
 				/>
 			)}
 
-			<header className="mb-4 md:mb-12">
-				<div className="flex items-center justify-between">
-					<h1 className="text-3xl font-bold tracking-tighter-custom">Collection</h1>
-				</div>
-			</header>
-
-			<div className="flex flex-col md:flex-row md:gap-12">
-				<aside className="hidden md:block w-40 flex-shrink-0">
-					<div className="space-y-1 md:space-y-4">
-						{/* Category Filter */}
-						<div className="space-y-3">
-							<button
-								onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-								className="flex items-center justify-between w-full text-sm text-kuralis-600 font-bold tracking-tighter-custom"
-							>
-								<span>Category</span>
-								<FiChevronDown
-									size={16}
-									className={`transform transition-transform duration-300 ${
-										isCategoryOpen ? "rotate-180" : ""
-									}`}
-								/>
-							</button>
-							<div
-								className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${
-									isCategoryOpen ? "max-h-96" : "max-h-0"
-								}`}
-							>
-								<button
-									onClick={() => setActiveCategory(null)}
-									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeCategory === null
-											? "text-kuralis-900"
-											: "text-kuralis-500 hover:text-kuralis-700"
-									}`}
-								>
-									All
-								</button>
-								{initialCategories.map((category) => (
-									<button
-										key={category.id}
-										onClick={() => setActiveCategory(category.id)}
-										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-											activeCategory === category.id
-												? "text-kuralis-900"
-												: "text-kuralis-500 hover:text-kuralis-700"
-										}`}
-									>
-										{category.name}
-									</button>
-								))}
-							</div>
+			<div className="container mx-auto py-12 px-4 md:px-8">
+				{/* ヘッダーセクション */}
+				<header className="mb-12">
+					<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+						<div className="space-y-2">
+							<h1 className="text-4xl md:text-5xl font-light tracking-tight text-neutral-900">
+								家具コレクション
+							</h1>
+							<p className="text-lg text-neutral-600">
+								大切な家具との物語を、デジタルで紡ぐ
+							</p>
 						</div>
 
-						{/* Location Filter */}
-						<div className="space-y-3">
-							<button
-								onClick={() => setIsLocationOpen(!isLocationOpen)}
-								className="flex items-center justify-between w-full text-sm text-kuralis-600 font-bold tracking-tighter-custom"
-							>
-								<span>Location</span>
-								<FiChevronDown
-									size={16}
-									className={`transform transition-transform duration-300 ${
-										isLocationOpen ? "rotate-180" : ""
-									}`}
+						{/* 検索とフィルター */}
+						<div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+							<div className="relative flex-1 md:w-96">
+								<input
+									type="text"
+									placeholder="家具を検索..."
+									value={searchQuery}
+									onChange={(e) => setSearchQuery(e.target.value)}
+									className="w-full pl-12 pr-4 py-4 bg-white/80 backdrop-blur-sm border border-neutral-200/50 rounded-xl focus:border-neutral-400 outline-none transition-all duration-300 font-normal tracking-tight shadow-sm"
 								/>
-							</button>
-							<div
-								className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${
-									isLocationOpen ? "max-h-96" : "max-h-0"
-								}`}
-							>
-								<button
-									onClick={() => setActiveLocation(null)}
-									className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-										activeLocation === null
-											? "text-kuralis-900"
-											: "text-kuralis-500 hover:text-kuralis-700"
-									}`}
-								>
-									All
-								</button>
-								{initialLocations.map((location) => (
-									<button
-										key={location.id}
-										onClick={() => setActiveLocation(location.id)}
-										className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-											activeLocation === location.id
-												? "text-kuralis-900"
-												: "text-kuralis-500 hover:text-kuralis-700"
-										}`}
-									>
-										{location.name}
-									</button>
-								))}
-							</div>
-						</div>
-					</div>
-				</aside>
-
-				{/* メインリスト */}
-				<div className="flex-grow min-w-0">
-					<div className="mb-8">
-						<div className="relative">
-							<input
-								type="text"
-								placeholder="search..."
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								className="w-full pl-10 pr-12 py-2 bg-transparent border-b border-kuralis-200 focus:border-kuralis-400 outline-none transition-colors duration-300 font-normal tracking-tighter-custom"
-							/>
-							<FiSearch
-								size={18}
-								className="absolute left-0 top-1/2 -translate-y-1/2 text-kuralis-400"
-							/>
-							<div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+								<FiSearch
+									size={20}
+									className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
+								/>
 								{searchQuery && (
 									<button
 										onClick={() => setSearchQuery("")}
-										className="text-kuralis-400 hover:text-kuralis-600 transition-colors duration-300"
+										className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors duration-300"
 									>
-										<FiX size={16} />
+										<FiX size={18} />
 									</button>
 								)}
-								<FilterSheet
-									categories={initialCategories}
-									locations={initialLocations}
-									activeCategory={activeCategory}
-									activeLocation={activeLocation}
-									onCategorySelect={setActiveCategory}
-									onLocationSelect={setActiveLocation}
-								/>
 							</div>
 						</div>
 					</div>
+				</header>
 
-					<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-						{filteredFurniture?.map((furniture) => (
-							<FurnitureCard
-								key={furniture.id}
-								furniture={furniture}
-								isDemo={!user}
-							/>
-						))}
+				<div className="flex flex-col lg:flex-row gap-8">
+					{/* サイドバー */}
+					<aside className="lg:w-64 flex-shrink-0">
+						<div className="sticky top-8 space-y-6">
+							{/* カテゴリーフィルター */}
+							<div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+								<button
+									onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+									className="flex items-center justify-between w-full text-sm text-neutral-600 font-medium mb-2"
+								>
+									<div className="flex items-center gap-2">
+										<FiGrid size={18} />
+										<span>カテゴリー</span>
+									</div>
+									<FiChevronDown
+										size={18}
+										className={`transform transition-transform duration-300 ${
+											isCategoryOpen ? "rotate-180" : ""
+										}`}
+									/>
+								</button>
+								<div
+									className={`space-y-2 overflow-hidden transition-all duration-300 ${
+										isCategoryOpen ? "max-h-96" : "max-h-0"
+									}`}
+								>
+									<button
+										onClick={() => setActiveCategory(null)}
+										className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
+											activeCategory === null
+												? "bg-neutral-900 text-white"
+												: "text-neutral-600 hover:bg-neutral-100"
+										}`}
+									>
+										すべて
+									</button>
+									{initialCategories.map((category) => (
+										<button
+											key={category.id}
+											onClick={() => setActiveCategory(category.id)}
+											className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
+												activeCategory === category.id
+													? "bg-neutral-900 text-white"
+													: "text-neutral-600 hover:bg-neutral-100"
+											}`}
+										>
+											{category.name}
+										</button>
+									))}
+								</div>
+							</div>
+
+							{/* 場所フィルター */}
+							<div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+								<button
+									onClick={() => setIsLocationOpen(!isLocationOpen)}
+									className="flex items-center justify-between w-full text-sm text-neutral-600 font-medium mb-2"
+								>
+									<div className="flex items-center gap-2">
+										<FiMapPin size={18} />
+										<span>場所</span>
+									</div>
+									<FiChevronDown
+										size={18}
+										className={`transform transition-transform duration-300 ${
+											isLocationOpen ? "rotate-180" : ""
+										}`}
+									/>
+								</button>
+								<div
+									className={`space-y-2 overflow-hidden transition-all duration-300 ${
+										isLocationOpen ? "max-h-96" : "max-h-0"
+									}`}
+								>
+									<button
+										onClick={() => setActiveLocation(null)}
+										className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
+											activeLocation === null
+												? "bg-neutral-900 text-white"
+												: "text-neutral-600 hover:bg-neutral-100"
+										}`}
+									>
+										すべて
+									</button>
+									{initialLocations.map((location) => (
+										<button
+											key={location.id}
+											onClick={() => setActiveLocation(location.id)}
+											className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
+												activeLocation === location.id
+													? "bg-neutral-900 text-white"
+													: "text-neutral-600 hover:bg-neutral-100"
+											}`}
+										>
+											{location.name}
+										</button>
+									))}
+								</div>
+							</div>
+						</div>
+					</aside>
+
+					{/* メインリスト */}
+					<main className="flex-1">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+							{filteredFurniture?.map((furniture) => (
+								<FurnitureCard
+									key={furniture.id}
+									furniture={furniture}
+									isDemo={!user}
+								/>
+							))}
+						</div>
+
 						{filteredFurniture.length === 0 && (
-							<div className="text-center text-sm text-kuralis-500 mt-12 col-span-full">
-								家具が登録されていません。
+							<div className="col-span-full py-16 text-center">
+								<p className="text-neutral-600 mb-4">家具が登録されていません</p>
 								<Link
 									href="/furniture/register"
-									className="text-kuralis-700 underline underline-offset-2 hover:text-kuralis-900 ml-1"
+									className="inline-flex items-center gap-2 text-neutral-900 hover:text-neutral-700 transition-colors duration-300"
 								>
 									家具を登録する
+									<FiPlus size={16} />
 								</Link>
 							</div>
 						)}
-					</div>
+					</main>
 				</div>
 			</div>
 
-			{/* 登録 or ログインリンク */}
+			{/* 登録ボタン */}
 			{user ? (
 				<Link
 					href="/furniture/register"
-					className="fixed bottom-5 right-4 md:bottom-8 md:right-8 w-12 h-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
+					className="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-16 h-16 bg-neutral-900 text-white shadow-lg hover:bg-neutral-800 rounded-full flex items-center justify-center transition-all duration-300 group z-50"
 				>
-					<FiPlus size={20} className="transition-colors duration-300" />
+					<FiPlus
+						size={28}
+						className="transition-transform duration-300 group-hover:rotate-90"
+					/>
 				</Link>
 			) : (
 				<Link
 					href="/auth/login"
-					className="fixed bottom-5 right-4 md:bottom-8 md:right-8 px-6 py-3 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-sm flex items-center justify-center transition-all duration-300 ease-natural group z-50 text-sm font-bold tracking-tighter-custom"
+					className="fixed bottom-6 right-6 md:bottom-8 md:right-8 px-6 py-3 bg-neutral-900 text-white shadow-lg hover:bg-neutral-800 rounded-full flex items-center justify-center transition-all duration-300 group z-50 text-sm font-medium"
 				>
 					ログインして家具を登録
 				</Link>

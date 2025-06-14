@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FiArrowLeft, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiArrowLeft, FiEdit2, FiTrash2, FiSave, FiX } from "react-icons/fi";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/useAuth";
@@ -69,7 +69,6 @@ export default function FurnitureDetailClient({
 
 	useEffect(() => {
 		if (furniture && !isEditing) {
-			// 編集モードを抜けたときに最新のデータでリセット
 			methods.reset({
 				name: furniture.name,
 				brand: furniture.brand || "",
@@ -143,135 +142,140 @@ export default function FurnitureDetailClient({
 	if (!furnitureToUse) return <div>家具データが見つかりません</div>;
 
 	return (
-		<div className="container mx-auto py-12 px-6 md:px-12">
-			<Link
-				href="/furniture"
-				className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
-			>
-				<FiArrowLeft
-					size={16}
-					className="mr-2 transform translate-x-0 group-hover:-translate-x-1 transition-all duration-400 ease-natural"
-				/>
-				<span>Back to Collection</span>
-			</Link>
+		<div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+			<div className="container mx-auto py-12 px-6 md:px-12">
+				{/* ヘッダー */}
+				<div className="flex items-center justify-between mb-12">
+					<Link
+						href="/furniture"
+						className="inline-flex items-center text-neutral-600 hover:text-neutral-900 transition-colors duration-300 group"
+					>
+						<FiArrowLeft
+							size={20}
+							className="mr-2 transform translate-x-0 group-hover:-translate-x-1 transition-all duration-400 ease-natural"
+						/>
+						<span className="text-sm font-medium">コレクションに戻る</span>
+					</Link>
 
-			{isLoading ? (
-				// ローディング中のSkeleton表示
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-					{/* 左カラム：画像部分 */}
-					<div className="w-full max-w-[500px] aspect-[4/3] bg-kuralis-100 rounded-sm animate-pulse" />
+					{user && !isEditing && (
+						<div className="flex items-center space-x-3">
+							<button
+								type="button"
+								onClick={() => setIsEditing(true)}
+								className="inline-flex items-center px-4 py-2 bg-white text-neutral-900 hover:bg-neutral-50 transition-all duration-300 rounded-lg shadow-sm hover:shadow-md"
+							>
+								<FiEdit2 size={18} className="mr-2" />
+								<span className="text-sm font-medium">編集</span>
+							</button>
 
-					{/* 右カラム：タブなどの情報部分のSkeleton */}
-					<div className="space-y-6">
-						{/* メンテナンスバッジ or スイッチのSkeleton */}
-						<div className="flex justify-between items-center">
-							<div className="h-6 w-48 bg-kuralis-100 rounded-sm animate-pulse" />
-							<div className="h-6 w-12 bg-kuralis-100 rounded-sm animate-pulse" />
-						</div>
-
-						{/* タブ部分 Skeleton */}
-						<div className="space-y-4">
-							<div className="flex justify-between items-center">
-								<div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
-								<div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
-								<div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
-							</div>
-							<div className="h-32 w-full bg-kuralis-100 rounded-sm animate-pulse" />
-							<div className="h-24 w-full bg-kuralis-100 rounded-sm animate-pulse" />
-						</div>
-					</div>
-				</div>
-			) : (
-				<FormProvider {...methods}>
-					<form onSubmit={methods.handleSubmit(onSubmit)}>
-						<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[70vw] mx-auto">
-							<FurnitureDetailImage
-								isEditing={isEditing}
-								imageUrl={furnitureToUse.image_url}
-								selectedImage={selectedImage}
-								setSelectedImage={setSelectedImage}
-							/>
-
-							<div className="space-y-8">
-								{/* 編集削除ボタンをタブの外に表示 */}
-								<div className="flex items-center justify-between">
-									{user && !isEditing && (
-										<div className="flex items-center space-x-3">
-											<button
-												type="button"
-												onClick={() => setIsEditing(true)}
-												className="p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
-											>
-												<FiEdit2 size={18} />
-											</button>
-											<Dialog>
-												<DialogTrigger asChild>
-													<button
-														type="button"
-														className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50"
-													>
-														<FiTrash2 size={18} />
-													</button>
-												</DialogTrigger>
-												<DialogContent>
-													<DialogHeader>
-														<DialogTitle>
-															家具を削除しますか？
-														</DialogTitle>
-														<DialogDescription>
-															この操作は取り消せません。本当に
-															{furnitureToUse.name}
-															を削除しますか？
-														</DialogDescription>
-													</DialogHeader>
-													<DialogFooter className="mt-4">
-														<button
-															type="button"
-															onClick={handleDelete}
-															className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-														>
-															削除する
-														</button>
-													</DialogFooter>
-												</DialogContent>
-											</Dialog>
-										</div>
-									)}
-								</div>
-
-								<FurnitureDetailTabs
-									furniture={furnitureToUse}
-									isEditing={isEditing}
-									locations={initialLocations}
-									summary={initialMaintenanceSummary}
-								/>
-
-								{isEditing && (
-									<div className="flex justify-end space-x-4 pt-8">
+							<Dialog>
+								<DialogTrigger asChild>
+									<button
+										type="button"
+										className="inline-flex items-center px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-300 rounded-lg"
+									>
+										<FiTrash2 size={18} className="mr-2" />
+										<span className="text-sm font-medium">削除</span>
+									</button>
+								</DialogTrigger>
+								<DialogContent className="sm:max-w-md">
+									<DialogHeader>
+										<DialogTitle className="text-xl font-medium">
+											家具を削除しますか？
+										</DialogTitle>
+										<DialogDescription className="mt-2 text-neutral-600">
+											この操作は取り消せません。本当に
+											<span className="font-medium text-neutral-900">
+												{furnitureToUse.name}
+											</span>
+											を削除しますか？
+										</DialogDescription>
+									</DialogHeader>
+									<DialogFooter className="mt-6">
 										<button
 											type="button"
-											onClick={() => {
-												setIsEditing(false);
-												setSelectedImage(null);
-												methods.reset();
-											}}
-											className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+											onClick={handleDelete}
+											className="w-full px-4 py-2 bg-red-600 text-white hover:bg-red-700 transition-all duration-300 rounded-lg text-sm font-medium"
 										>
-											キャンセル
+											削除する
 										</button>
-										<button
-											type="submit"
-											className="px-6 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
-										>
-											保存する
-										</button>
-									</div>
-								)}
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
+						</div>
+					)}
+				</div>
+
+				{isLoading ? (
+					// ローディング中のSkeleton表示
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+						<div className="w-full max-w-[500px] aspect-[4/3] bg-neutral-100 rounded-xl animate-pulse" />
+						<div className="space-y-6">
+							<div className="flex justify-between items-center">
+								<div className="h-8 w-48 bg-neutral-100 rounded-lg animate-pulse" />
+								<div className="h-8 w-12 bg-neutral-100 rounded-lg animate-pulse" />
+							</div>
+							<div className="space-y-4">
+								<div className="flex justify-between items-center">
+									<div className="h-4 w-32 bg-neutral-100 rounded-lg animate-pulse" />
+									<div className="h-4 w-32 bg-neutral-100 rounded-lg animate-pulse" />
+									<div className="h-4 w-32 bg-neutral-100 rounded-lg animate-pulse" />
+								</div>
+								<div className="h-32 w-full bg-neutral-100 rounded-lg animate-pulse" />
+								<div className="h-24 w-full bg-neutral-100 rounded-lg animate-pulse" />
 							</div>
 						</div>
-					</form>
-				</FormProvider>
-			)}
+					</div>
+				) : (
+					<FormProvider {...methods}>
+						<form onSubmit={methods.handleSubmit(onSubmit)}>
+							<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+								{/* 左カラム：画像 */}
+								<div className="space-y-6">
+									<FurnitureDetailImage
+										isEditing={isEditing}
+										imageUrl={furnitureToUse.image_url}
+										selectedImage={selectedImage}
+										setSelectedImage={setSelectedImage}
+									/>
+								</div>
+
+								{/* 右カラム：情報 */}
+								<div className="space-y-8">
+									{isEditing && (
+										<div className="flex items-center justify-end space-x-3">
+											<button
+												type="button"
+												onClick={() => setIsEditing(false)}
+												className="inline-flex items-center px-4 py-2 bg-white text-neutral-600 hover:bg-neutral-50 transition-all duration-300 rounded-lg shadow-sm hover:shadow-md"
+											>
+												<FiX size={18} className="mr-2" />
+												<span className="text-sm font-medium">
+													キャンセル
+												</span>
+											</button>
+											<button
+												type="submit"
+												className="inline-flex items-center px-4 py-2 bg-neutral-900 text-white hover:bg-neutral-800 transition-all duration-300 rounded-lg shadow-sm hover:shadow-md"
+											>
+												<FiSave size={18} className="mr-2" />
+												<span className="text-sm font-medium">保存</span>
+											</button>
+										</div>
+									)}
+
+									<FurnitureDetailTabs
+										furniture={furnitureToUse}
+										isEditing={isEditing}
+										locations={initialLocations}
+										summary={initialMaintenanceSummary}
+									/>
+								</div>
+							</div>
+						</form>
+					</FormProvider>
+				)}
+			</div>
 		</div>
 	);
 }

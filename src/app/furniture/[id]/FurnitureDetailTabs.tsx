@@ -24,44 +24,51 @@ export default function FurnitureDetailTabs({ furniture, isEditing, locations, s
 	} = useFormContext<FurnitureEditSchema>();
 
 	const hasBasicTabError = errors.name || errors.brand || errors.location_id;
-
 	const hasPurchaseTabError = errors.purchased_at || errors.purchased_from;
-
 	const hasMaintenanceTabError = errors.notes;
 
 	return (
 		<Tabs defaultValue="basic" className="w-full">
-			<TabsList className="w-full grid grid-cols-3 mb-8 bg-transparent p-0 gap-2">
-				<TabsTrigger value="basic" className="flex items-center">
-					<FiInfo className="mr-2" />
-					基本情報
+			<TabsList className="w-full grid grid-cols-3 mb-8 bg-white/80 backdrop-blur-sm p-1 rounded-xl shadow-sm">
+				<TabsTrigger
+					value="basic"
+					className="flex items-center justify-center py-3 px-4 rounded-lg data-[state=active]:bg-neutral-900 data-[state=active]:text-white transition-all duration-300"
+				>
+					<FiInfo className="mr-2" size={18} />
+					<span className="text-sm font-medium">基本情報</span>
 					{hasBasicTabError && (
-						<span className="ml-2 bg-red-500 text-white text-[10px] px-1 rounded-sm">
+						<span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
 							!
 						</span>
 					)}
 				</TabsTrigger>
-				<TabsTrigger value="purchase" className="flex items-center">
-					<FiShoppingBag className="mr-2" />
-					購入情報
+				<TabsTrigger
+					value="purchase"
+					className="flex items-center justify-center py-3 px-4 rounded-lg data-[state=active]:bg-neutral-900 data-[state=active]:text-white transition-all duration-300"
+				>
+					<FiShoppingBag className="mr-2" size={18} />
+					<span className="text-sm font-medium">購入情報</span>
 					{hasPurchaseTabError && (
-						<span className="ml-2 bg-red-500 text-white text-[10px] px-1 rounded-sm">
+						<span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
 							!
 						</span>
 					)}
 				</TabsTrigger>
-				<TabsTrigger value="maintenance" className="flex items-center">
-					<FiSettings className="mr-2" />
-					メンテナンス
+				<TabsTrigger
+					value="maintenance"
+					className="flex items-center justify-center py-3 px-4 rounded-lg data-[state=active]:bg-neutral-900 data-[state=active]:text-white transition-all duration-300"
+				>
+					<FiSettings className="mr-2" size={18} />
+					<span className="text-sm font-medium">メンテナンス</span>
 					{hasMaintenanceTabError && (
-						<span className="ml-2 bg-red-500 text-white text-[10px] px-1 rounded-sm">
+						<span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
 							!
 						</span>
 					)}
 				</TabsTrigger>
 			</TabsList>
 
-			<TabsContent value="basic">
+			<TabsContent value="basic" className="mt-0">
 				<FurnitureDetailBasicTab
 					furniture={furniture}
 					isEditing={isEditing}
@@ -69,11 +76,11 @@ export default function FurnitureDetailTabs({ furniture, isEditing, locations, s
 				/>
 			</TabsContent>
 
-			<TabsContent value="purchase">
+			<TabsContent value="purchase" className="mt-0">
 				<FurnitureDetailPurchaseTab furniture={furniture} isEditing={isEditing} />
 			</TabsContent>
 
-			<TabsContent value="maintenance">
+			<TabsContent value="maintenance" className="mt-0">
 				<FurnitureDetailMaintenanceTab
 					furniture={furniture}
 					isEditing={isEditing}

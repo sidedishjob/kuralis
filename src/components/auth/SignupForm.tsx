@@ -66,7 +66,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 							Googleで登録
 						</Button>
 
-						<div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+						<div className="after:border-border relative text-center text-xs after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
 							<span className="bg-card text-muted-foreground relative z-10 px-2">
 								またはメールで登録
 							</span>
@@ -78,7 +78,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 								<Input
 									id="email"
 									type="email"
-									placeholder="Enter your email"
+									placeholder="kuralis@example.com"
 									{...register("email")}
 								/>
 								{errors.email && (
@@ -91,7 +91,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 								<Input
 									id="password"
 									type="password"
-									placeholder="Enter your password"
+									placeholder="6文字以上の半角英数字"
 									{...register("password")}
 								/>
 								{errors.password && (
@@ -109,7 +109,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 							</Button>
 						</form>
 
-						<div className="text-center text-sm">
+						<div className="text-center text-xs">
 							すでにアカウントをお持ちですか？
 							<Link href="/auth/login" className="underline underline-offset-4">
 								ログイン

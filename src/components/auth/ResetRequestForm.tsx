@@ -25,7 +25,7 @@ export function ResetRequestForm({ email, setEmail, loading, handleReset }: Prop
 						<Input
 							id="email"
 							type="email"
-							placeholder="your@email.com"
+							placeholder="kuralis@example.com"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 						/>

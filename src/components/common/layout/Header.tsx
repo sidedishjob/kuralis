@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { FiMenu } from "react-icons/fi";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -7,6 +8,8 @@ import { NavigationLinks } from "../navigation/NavigationLinks";
 import { DialogTitle } from "@/components/ui/dialog";
 
 export function Header() {
+	const [open, setOpen] = useState(false);
+
 	return (
 		<header className="py-6 px-6 md:px-12 bg-white border-b border-kuralis-200">
 			<div className="container mx-auto flex justify-between items-center">
@@ -20,7 +23,7 @@ export function Header() {
 				</div>
 
 				{/* モバイル */}
-				<Sheet>
+				<Sheet open={open} onOpenChange={setOpen}>
 					<SheetTrigger asChild>
 						<button
 							className="md:hidden text-kuralis-700 hover:text-kuralis-900 transition-colors duration-300"
@@ -43,9 +46,7 @@ export function Header() {
 								<div className="space-y-6">
 									<NavigationLinks
 										variant="mobile"
-										onLinkClick={() =>
-											document.dispatchEvent(new Event("closeSheet"))
-										}
+										onLinkClick={() => setOpen(false)}
 									/>
 								</div>
 							</nav>

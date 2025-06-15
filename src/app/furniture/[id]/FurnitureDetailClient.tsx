@@ -13,6 +13,7 @@ import { useDeleteFurniture } from "@/hooks/useDeleteFurniture";
 import { useUpdateFurniture } from "@/hooks/useUpdateFurniture";
 import FurnitureDetailImage from "./FurnitureDetailImage";
 import FurnitureDetailTabs from "./FurnitureDetailTabs";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogTrigger,
@@ -225,13 +226,14 @@ export default function FurnitureDetailClient({
 														</DialogDescription>
 													</DialogHeader>
 													<DialogFooter className="mt-4">
-														<button
+														<Button
 															type="button"
+															variant="destructive"
 															onClick={handleDelete}
-															className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+															className="bg-accent-500 hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 														>
 															削除する
-														</button>
+														</Button>
 													</DialogFooter>
 												</DialogContent>
 											</Dialog>
@@ -248,23 +250,24 @@ export default function FurnitureDetailClient({
 
 								{isEditing && (
 									<div className="flex justify-end space-x-4 pt-8">
-										<button
+										<Button
 											type="button"
+											variant="outline"
 											onClick={() => {
 												setIsEditing(false);
 												setSelectedImage(null);
 												methods.reset();
 											}}
-											className="px-6 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+											className="px-6 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 										>
 											キャンセル
-										</button>
-										<button
+										</Button>
+										<Button
 											type="submit"
-											className="px-6 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
+											className="px-6 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 										>
 											保存する
-										</button>
+										</Button>
 									</div>
 								)}
 							</div>

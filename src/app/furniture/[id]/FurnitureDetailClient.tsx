@@ -230,7 +230,6 @@ export default function FurnitureDetailClient({
 															type="button"
 															variant="destructive"
 															onClick={handleDelete}
-															className="bg-accent-500 hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 														>
 															削除する
 														</Button>

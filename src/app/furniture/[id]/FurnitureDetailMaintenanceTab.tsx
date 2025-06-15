@@ -33,12 +33,12 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 	return (
 		<div className="space-y-6">
 			{/* メンテナンス概要 */}
-			<div className="bg-white p-8 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
+			<div className="bg-white p-6 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
 				<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4">
 					メンテナンス概要
 				</h2>
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiCalendar className="mr-2" size={14} />
 						次回予定
 					</div>
@@ -51,7 +51,7 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 					</div>
 				</div>
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiTool className="mr-2" size={14} />
 						メンテ対象
 					</div>
@@ -76,7 +76,7 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 
 			{/* 備考欄 */}
 			{(isEditing || furniture.notes) && (
-				<div className="bg-white p-8 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
+				<div className="bg-white p-6 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
 					<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
 						備考
 					</h2>

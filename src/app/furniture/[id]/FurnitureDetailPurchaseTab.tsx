@@ -17,14 +17,14 @@ export default function FurnitureDetailPurchaseTab({ furniture, isEditing }: Pro
 	} = useFormContext<FurnitureEditSchema>();
 
 	return (
-		<div className="bg-white p-8 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
+		<div className="bg-white p-6 border border-kuralis-100 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-6">
 			<h2 className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4">
 				購入情報
 			</h2>
 
 			{(isEditing || furniture.purchased_at) && (
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiCalendar size={16} className="mr-2" />
 						<span>購入日</span>
 					</div>
@@ -48,7 +48,7 @@ export default function FurnitureDetailPurchaseTab({ furniture, isEditing }: Pro
 
 			{(isEditing || furniture.purchased_from) && (
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-24 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiMapPin size={16} className="mr-2" />
 						<span>購入店舗</span>
 					</div>

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { FiArrowLeft, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useFurnitureById } from "@/hooks/useFurnitureById";
 import { useDeleteFurniture } from "@/hooks/useDeleteFurniture";
@@ -42,7 +41,6 @@ export default function FurnitureDetailClient({
 }: FurnitureDetailClientProps) {
 	const router = useRouter();
 	const { toast } = useToast();
-	const { user } = useAuth();
 
 	const { furniture, mutate, isLoading, error } = useFurnitureById(
 		initialFurniture.id,
@@ -144,7 +142,7 @@ export default function FurnitureDetailClient({
 	if (!furnitureToUse) return <div>家具データが見つかりません</div>;
 
 	return (
-		<div className="container mx-auto py-12 px-6 md:px-12">
+		<div className="container mx-auto py-6 md:py-12 px-6 md:px-12">
 			<Link
 				href="/furniture"
 				className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
@@ -185,7 +183,7 @@ export default function FurnitureDetailClient({
 			) : (
 				<FormProvider {...methods}>
 					<form onSubmit={methods.handleSubmit(onSubmit)}>
-						<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[70vw] mx-auto">
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[90vw] mx-auto">
 							<FurnitureDetailImage
 								isEditing={isEditing}
 								imageUrl={furnitureToUse.image_url}
@@ -194,14 +192,21 @@ export default function FurnitureDetailClient({
 							/>
 
 							<div className="space-y-8">
+								<FurnitureDetailTabs
+									furniture={furnitureToUse}
+									isEditing={isEditing}
+									locations={initialLocations}
+									summary={initialMaintenanceSummary}
+								/>
+
 								{/* 編集削除ボタンをタブの外に表示 */}
 								<div className="flex items-center justify-between">
-									{user && !isEditing && (
-										<div className="flex items-center space-x-3">
+									{!isEditing ? (
+										<div className="flex justify-end space-x-4">
 											<button
 												type="button"
 												onClick={() => setIsEditing(true)}
-												className="p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
+												className="h-10 p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
 											>
 												<FiEdit2 size={18} />
 											</button>
@@ -237,38 +242,29 @@ export default function FurnitureDetailClient({
 												</DialogContent>
 											</Dialog>
 										</div>
+									) : (
+										<div className="flex justify-end space-x-4">
+											<Button
+												type="button"
+												variant="outline"
+												onClick={() => {
+													setIsEditing(false);
+													setSelectedImage(null);
+													methods.reset();
+												}}
+												className="h-10 px-6 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+											>
+												キャンセル
+											</Button>
+											<Button
+												type="submit"
+												className="px-6 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+											>
+												保存する
+											</Button>
+										</div>
 									)}
 								</div>
-
-								<FurnitureDetailTabs
-									furniture={furnitureToUse}
-									isEditing={isEditing}
-									locations={initialLocations}
-									summary={initialMaintenanceSummary}
-								/>
-
-								{isEditing && (
-									<div className="flex justify-end space-x-4 pt-8">
-										<Button
-											type="button"
-											variant="outline"
-											onClick={() => {
-												setIsEditing(false);
-												setSelectedImage(null);
-												methods.reset();
-											}}
-											className="px-6 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
-										>
-											キャンセル
-										</Button>
-										<Button
-											type="submit"
-											className="px-6 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
-										>
-											保存する
-										</Button>
-									</div>
-								)}
 							</div>
 						</div>
 					</form>

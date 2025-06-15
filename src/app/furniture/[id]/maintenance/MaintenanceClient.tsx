@@ -231,7 +231,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 										</div>
 									)}
 								</div>
-								<div className="flex items-start justify-between space-y-2 ml-8">
+								<div className="flex items-start justify-between space-y-2 md:ml-8">
 									<div>
 										{task.records.map((record) => (
 											<div

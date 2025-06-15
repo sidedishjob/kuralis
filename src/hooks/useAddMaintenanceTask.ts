@@ -14,7 +14,7 @@ export function useAddMaintenanceTask(furnitureId: string) {
 		});
 		if (!res.ok) {
 			const error = await res.json();
-			throw new Error(error.message || "メンテナンス項目の登録に失敗しました");
+			throw new Error(error.message || "メンテナンスタスクの登録に失敗しました");
 		}
 		return res.json();
 	};

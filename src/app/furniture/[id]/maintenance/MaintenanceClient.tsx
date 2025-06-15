@@ -8,6 +8,7 @@ import { FiArrowLeft, FiCalendar, FiPlus, FiTool, FiTrash2 } from "react-icons/f
 import { format } from "date-fns";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { maintenanceTaskSchema, MaintenanceTaskSchema } from "@/lib/validation";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -169,13 +170,13 @@ export default function MaintenanceClient({ furniture }: Props) {
 					<h1 className="text-2xl font-bold tracking-tighter-custom">
 						{furniture.name}のメンテナンス管理
 					</h1>
-					<button
+					<Button
 						onClick={() => setIsAddingItem(true)}
-						className="inline-flex items-center px-4 py-2 bg-kuralis-900 text-white hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
+						className="inline-flex items-center bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
 					>
 						<FiPlus size={16} className="mr-2" />
 						<span>新しい項目を追加</span>
-					</button>
+					</Button>
 				</div>
 				{isLoading ? (
 					// 🅰 ローディング中のSkeletonやプレースホルダー
@@ -260,14 +261,14 @@ export default function MaintenanceClient({ furniture }: Props) {
 															</DialogDescription>
 														</DialogHeader>
 														<DialogFooter className="mt-4">
-															<button
+															<Button
+																variant="destructive"
 																onClick={() =>
 																	handleDeleteHistory(record.id)
 																}
-																className="px-4 py-2 bg-accent-500 text-white rounded-sm hover:bg-accent-400 transition-all duration-300 transform hover:-translate-y-0.5 text-sm font-bold tracking-tighter-custom"
 															>
 																削除する
-															</button>
+															</Button>
 														</DialogFooter>
 													</DialogContent>
 												</Dialog>
@@ -388,23 +389,24 @@ export default function MaintenanceClient({ furniture }: Props) {
 								)}
 							</div>
 							<DialogFooter>
-								<button
+								<Button
+									type="button"
+									variant="outline"
 									onClick={() => {
 										setIsAddingItem(false);
 										reset();
 									}}
-									type="button"
-									className="px-4 py-2 border border-kuralis-200 rounded-sm hover:bg-kuralis-50 transition-colors duration-300 text-sm font-bold tracking-tighter-custom"
+									className="transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 								>
 									キャンセル
-								</button>
-								<button
+								</Button>
+								<Button
 									type="submit"
 									disabled={!isValid}
-									className="px-4 py-2 bg-kuralis-900 text-white rounded-sm hover:bg-kuralis-800 transition-colors duration-300 text-sm font-bold tracking-tighter-custom disabled:bg-kuralis-200 disabled:cursor-not-allowed"
+									className="bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 								>
 									追加する
-								</button>
+								</Button>
 							</DialogFooter>
 						</form>
 					</DialogContent>

@@ -2,6 +2,7 @@
 
 import { useFurnitureMeta } from "@/hooks/useFurnitureMeta";
 import { FiArrowRight } from "react-icons/fi";
+import { Button } from "@/components/ui/button";
 import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
@@ -99,10 +100,10 @@ export default function Step1UI({ category, location, setCategory, setLocation, 
 				</div>
 			</div>
 			<div className="pt-6">
-				<button
+				<Button
 					onClick={onNext}
 					disabled={!isValid}
-					className={`w-full py-3 px-4 rounded-sm flex items-center justify-center space-x-2 font-bold tracking-tighter-custom text-sm transition-all duration-300 ${
+					className={`w-full tracking-tighter-custom transition-all duration-300 ${
 						isValid
 							? "bg-kuralis-900 text-white hover:bg-kuralis-800"
 							: "bg-kuralis-200 text-kuralis-400 cursor-not-allowed"
@@ -113,7 +114,7 @@ export default function Step1UI({ category, location, setCategory, setLocation, 
 						size={16}
 						className="transform group-hover:translate-x-1 transition-transform duration-300"
 					/>
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

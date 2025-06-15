@@ -9,6 +9,7 @@ import type {
 	UseFormSetValue,
 } from "react-hook-form";
 import type { RegisterFurnitureSchema } from "@/lib/validation/furnitureSchema";
+import { Button } from "@/components/ui/button";
 import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
@@ -170,17 +171,17 @@ export default function Step2UI({
 			</div>
 
 			<div className="pt-8">
-				<button
+				<Button
 					onClick={onSubmit}
 					disabled={!isValid}
-					className={`w-full py-3 px-4 rounded-sm font-bold tracking-tighter-custom text-sm transition-all duration-300 ${
+					className={`w-full tracking-tighter-custom transition-all duration-300 ${
 						isValid
 							? "bg-kuralis-900 text-white hover:bg-kuralis-800 transform hover:-translate-y-1"
 							: "bg-kuralis-200 text-kuralis-400 cursor-not-allowed"
 					}`}
 				>
 					登録する
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

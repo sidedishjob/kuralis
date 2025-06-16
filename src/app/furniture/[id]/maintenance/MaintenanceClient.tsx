@@ -80,11 +80,11 @@ export default function MaintenanceClient({ furniture }: Props) {
 			reset();
 			setIsAddingItem(false);
 
-			toast({ title: "メンテナンス項目を追加しました" });
+			toast({ title: "メンテナンスタスクを追加しました" });
 		} catch (error: unknown) {
 			console.error("メンテナンス項追加エラー:", error);
 			toast({
-				title: "メンテナンス項目の追加に失敗しました",
+				title: "メンテナンスタスクの追加に失敗しました",
 				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
@@ -153,7 +153,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 	if (error) return <p className="text-red-500">エラーが発生しました</p>;
 
 	return (
-		<div className="container mx-auto py-12 px-6 md:px-12">
+		<div className="container mx-auto py-6 md:py-12 px-6 md:px-12">
 			<Link
 				href={`/furniture/${furniture.id}`}
 				className="inline-flex items-center text-kuralis-600 hover:text-kuralis-900 mb-8 transition-colors duration-300 group font-normal tracking-tighter-custom"
@@ -172,39 +172,38 @@ export default function MaintenanceClient({ furniture }: Props) {
 					</h1>
 					<Button
 						onClick={() => setIsAddingItem(true)}
-						className="inline-flex items-center bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
+						className="hidden md:block w-10 h-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
 					>
-						<FiPlus size={16} className="mr-2" />
-						<span>新しい項目を追加</span>
+						<FiPlus size={16} />
 					</Button>
 				</div>
 				{isLoading ? (
-					// 🅰 ローディング中のSkeletonやプレースホルダー
-					<div className="space-y-2">
+					// ローディング中のSkeletonやプレースホルダー
+					<div className="mb-6 space-y-2">
 						{Array.from({ length: 3 }).map((_, i) => (
 							<div key={i} className="h-14 bg-kuralis-100 rounded-sm animate-pulse" />
 						))}
 					</div>
 				) : tasks.length === 0 ? (
-					<div className="text-center py-12 border-2 border-dashed border-kuralis-200 rounded-sm">
+					<div className="text-center mb-6 py-12 border-2 border-dashed border-kuralis-200 rounded-sm">
 						<FiTool size={32} className="mx-auto text-kuralis-400 mb-4" />
-						<p className="text-kuralis-600 font-bold tracking-tighter-custom">
-							メンテナンス項目が追加されていません
+						<p className="text-kuralis-600 tracking-tighter-custom">
+							メンテナンスタスクが追加されていません
 						</p>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 gap-4">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 						{tasks.map((task) => (
 							<div
 								key={task.id}
-								className={`p-6 border border-kuralis-200 rounded-sm ${task.is_active ? "" : "opacity-50"}`}
+								className={`flex flex-col p-6 border border-kuralis-200 rounded-sm ${task.is_active ? "" : "opacity-50"}`}
 							>
 								<div className="flex items-center space-x-3 mb-4">
 									<div className="text-kuralis-600">
 										<FiTool className="w-5 h-5" />
 									</div>
 									<div className="flex-grow">
-										<h3 className="font-bold tracking-tighter-custom text-lg">
+										<h3 className="tracking-tighter-custom text-lg">
 											{task.name}
 										</h3>
 										<p className="text-sm text-kuralis-600">
@@ -222,7 +221,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 													: "bg-kuralis-50 text-kuralis-600"
 											}`}
 										>
-											<div className="font-bold tracking-tighter-custom">
+											<div className="tracking-tighter-custom">
 												次回予定日
 											</div>
 											<div className="mt-1">
@@ -231,8 +230,50 @@ export default function MaintenanceClient({ furniture }: Props) {
 										</div>
 									)}
 								</div>
-								<div className="flex items-start justify-between space-y-2 md:ml-8">
-									<div>
+								<div className="mb-2 md:ml-8">
+									{isAddingHistory === task.id ? (
+										<div className="h-8 flex items-center space-x-2">
+											<input
+												type="date"
+												value={newHistoryDate}
+												onChange={(e) => setNewHistoryDate(e.target.value)}
+												className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
+											/>
+											<button
+												onClick={() => handleAddHistory(task.id)}
+												disabled={!newHistoryDate}
+												className="text-sm text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400 transition-colors duration-300 tracking-tighter-custom"
+											>
+												追加
+											</button>
+											<button
+												onClick={() => {
+													setIsAddingHistory(null);
+													setNewHistoryDate(getTodayDate);
+												}}
+												className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
+											>
+												キャンセル
+											</button>
+										</div>
+									) : (
+										<button
+											onClick={() => setIsAddingHistory(task.id)}
+											className="h-8 text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom inline-flex items-center"
+										>
+											<FiPlus size={14} className="mr-1" />
+											<span>新しい履歴を追加</span>
+										</button>
+									)}
+
+									{/* スクロールコンテナ */}
+									<div
+										className={`space-y-1 ${
+											task.records.length >= 5
+												? "max-h-30 overflow-y-auto pr-1"
+												: ""
+										}`}
+									>
 										{task.records.map((record) => (
 											<div
 												key={record.id}
@@ -240,7 +281,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 											>
 												<div className="flex items-center space-x-2 text-sm text-kuralis-600">
 													<FiCalendar size={18} />
-													<span className="font-bold tracking-tighter-custom">
+													<span className="tracking-tighter-custom">
 														{record.performed_at}
 													</span>
 													<span className="text-kuralis-400">実施</span>
@@ -274,73 +315,42 @@ export default function MaintenanceClient({ furniture }: Props) {
 												</Dialog>
 											</div>
 										))}
-
-										{isAddingHistory === task.id ? (
-											<div className="flex items-center space-x-2">
-												<input
-													type="date"
-													value={newHistoryDate}
-													onChange={(e) =>
-														setNewHistoryDate(e.target.value)
-													}
-													className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
-												/>
-												<button
-													onClick={() => handleAddHistory(task.id)}
-													disabled={!newHistoryDate}
-													className="text-sm text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400 transition-colors duration-300 font-bold tracking-tighter-custom"
-												>
-													追加
-												</button>
-												<button
-													onClick={() => {
-														setIsAddingHistory(null);
-														setNewHistoryDate(getTodayDate);
-													}}
-													className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
-												>
-													キャンセル
-												</button>
-											</div>
-										) : (
-											<button
-												onClick={() => setIsAddingHistory(task.id)}
-												className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom inline-flex items-center"
-											>
-												<FiPlus size={14} className="mr-1" />
-												<span>新しい履歴を追加</span>
-											</button>
-										)}
 									</div>
-									<div className="grid place-items-center text-center gap-1">
-										<span className="text-sm text-kuralis-600">
-											タスクの状態
-										</span>
-										<Switch
-											checked={task.is_active}
-											onCheckedChange={(checked) =>
-												handleUpdateTaskActive(task.id, checked)
-											}
-											aria-label={`「${task.name}」を${task.is_active ? "無効" : "有効"}にする`}
-											className="data-[state=checked]:bg-kuralis-900"
-										/>
-									</div>
+								</div>
+								<div className="mt-auto p-2 flex items-center justify-between bg-kuralis-100 rounded-sm">
+									<span className="text-sm text-kuralis-600">タスクの状態</span>
+									<Switch
+										checked={task.is_active}
+										onCheckedChange={(checked) =>
+											handleUpdateTaskActive(task.id, checked)
+										}
+										aria-label={`「${task.name}」を${task.is_active ? "無効" : "有効"}にする`}
+										className="data-[state=checked]:bg-kuralis-900"
+									/>
 								</div>
 							</div>
 						))}
 					</div>
 				)}
+				<div className="md:hidden w-full flex items-center justify-center">
+					<Button
+						onClick={() => setIsAddingItem(true)}
+						className="w-10 h-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
+					>
+						<FiPlus size={16} />
+					</Button>
+				</div>
 
-				{/* ダイアログ（項目追加） */}
+				{/* ダイアログ（タスク追加） */}
 				<Dialog open={isAddingItem} onOpenChange={setIsAddingItem}>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>メンテナンス項目の追加</DialogTitle>
+							<DialogTitle>メンテナンスタスクの追加</DialogTitle>
 						</DialogHeader>
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
 							<div>
-								<label className="block text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
-									メンテナンス項目名
+								<label className="block text-sm tracking-tighter-custom text-kuralis-600 mb-2">
+									メンテナンスタスク名
 								</label>
 								<input
 									type="text"
@@ -355,7 +365,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 								)}
 							</div>
 							<div>
-								<label className="block text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-2">
+								<label className="block text-sm tracking-tighter-custom text-kuralis-600 mb-2">
 									実施周期
 								</label>
 								<div className="flex items-center">
@@ -396,14 +406,14 @@ export default function MaintenanceClient({ furniture }: Props) {
 										setIsAddingItem(false);
 										reset();
 									}}
-									className="transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+									className="mt-2 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 								>
 									キャンセル
 								</Button>
 								<Button
 									type="submit"
 									disabled={!isValid}
-									className="bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+									className="mt-2 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 								>
 									追加する
 								</Button>

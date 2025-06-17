@@ -29,8 +29,29 @@ export default function FurnitureDetailImage({
 	} = useFormContext<FurnitureEditSchema>();
 
 	const [publicUrl, setPublicUrl] = useState<string | null>(null);
+	const [scale, setScale] = useState(1);
 	const supabase = useSupabaseClient();
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const imageContainerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (!imageContainerRef.current) return;
+
+			const rect = imageContainerRef.current.getBoundingClientRect();
+			const scrollTop = window.scrollY;
+			const offset = rect.top + scrollTop;
+
+			// スクロール距離に応じてスケールを計算（0.7 〜 1）
+			const distance = Math.max(0, window.scrollY - offset + 100);
+			const newScale = Math.max(0.7, 1 - distance / 600); // 600px 以上で0.7まで縮小
+
+			setScale(newScale);
+		};
+
+		window.addEventListener("scroll", handleScroll, { passive: true });
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
 
 	// Supabaseの imageUrl をもとに表示用の public URL を設定する副作用
 	// 1. imageUrl がすでに完全なURLならそのまま使う
@@ -172,7 +193,15 @@ export default function FurnitureDetailImage({
 	};
 
 	return (
-		<div className="sticky top-6">
+		<div
+			ref={imageContainerRef}
+			style={{
+				transform: `scale(${scale})`,
+				transition: "transform 0.3s ease",
+				transformOrigin: "top center",
+			}}
+			className="sticky top-4 z-10 md:static"
+		>
 			<DemoView>
 				<div className="bg-kuralis-100 w-full aspect-square overflow-hidden shadow-lg relative group">
 					{renderImage()}

@@ -1,112 +1,149 @@
 # kuralis
 
-kuralisは、Next.js 15.3.2を使用した最新のWebアプリケーションです。TypeScript、Tailwind CSS、Supabaseを活用したモダンなスタックで構築されています。
+サービスURL : [https://kuralis.homes/](https://kuralis.homes/)
 
-## 🚀 技術スタック
+![kuralis OGP](/public/kuralis-ogp.png)
 
-- **フレームワーク**: Next.js 15.3.2
-- **言語**: TypeScript
-- **スタイリング**: Tailwind CSS 4.1.7
-- **バックエンド**: Supabase
-- **UIコンポーネント**: shadcn/ui
-- **フォーム管理**: React Hook Form + Zod
-- **状態管理**: SWR
-- **その他**: date-fns, uuid
+### 家具との暮らしをもっと豊かにする、家具管理 & メンテナンスアプリ
 
-## 🛠️ 開発環境のセットアップ
+「**kuralis**」は、あなたの大切な家具を"登録・記録・メンテナンス"の 3 ステップで一元管理できる Web アプリケーションです。購入日や設置場所を忘れてしまったり、メンテナンス周期を Excel や紙で管理していた人でも、kuralis があれば家具のライフサイクルをかんたんに把握できます。
 
-### 必要条件
+---
 
-- Node.js (最新のLTS版推奨)
-- npm または yarn
-- Supabaseアカウント
-- Googleアカウント
+## 開発背景
 
-### インストール
+インテリアにこだわるほど家具は増え、**「いつ買った?」「前回オイルを塗ったのはいつ?」** といった情報管理が煩雑になりがちです。開発者自身も同じ課題を抱え、**「家具との付き合い方をもっと心地よくしたい」** という思いから本プロジェクトをスタートしました。家具情報とメンテナンス履歴をクラウドに保存し、リマインダーや統計を通じて "家具と暮らす体験" をアップデートすることが kuralis の目的です。
+
+---
+
+## 主要な機能
+
+| 機能カテゴリ                           | 概要                                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 🪑 **家具登録 / 一覧 / 詳細**          | 画像・カテゴリ・設置場所・購入情報などを登録し、カード or テーブルで一覧表示。                               |
+| 🛠 **メンテナンスタスク管理**          | 周期 (日 / 週 / 月 / 年) と前回実施日から次回予定日を自動算出し、タスクをカレンダー & カンバン方式で可視化。 |
+| 📅 **カレンダービュー / ボードビュー** | 予定が近い順・カテゴリごと・場所ごとなど複数軸でフィルタリング。ドラッグ & ドロップで状態変更。              |
+| 👤 **メール & パスワード認証**         | Supabase Auth を利用したセキュアな認証。パスワードリセット・メール検証にも対応。                             |
+| 🖼 **画像アップロード**                | 家具写真を Supabase Storage にアップロードし、CDN 経由で配信。                                               |
+
+> デモ環境は現在準備中です。公開後に **ゲストアカウント** を記載予定です。
+
+---
+
+## その他機能
+
+- Skeleton UI によるローディング体験向上
+- 共通化された API レイヤー (SWR / React Query / Axios 切り替え可能)
+- React Hook Form + Zod による型安全なフォームバリデーション
+- Row Level Security (RLS) & Supabase Policy による堅牢なデータ保護
+- GitHub Actions による CI / Prettier・ESLint の自動チェック
+
+---
+
+## 使用技術
+
+| カテゴリ           | 技術                                                      |
+| ------------------ | --------------------------------------------------------- |
+| **フロントエンド** | Next.js 15.3.2 (App Router) / React 19.0.0 / TypeScript 5 |
+| **バックエンド**   | Supabase ^2.49.4 (PostgreSQL 15, Auth, Storage)           |
+| **データ取得**     | SWR / React Query / Axios                                 |
+| **フォーム**       | react-hook-form ^7.57.0 / Zod ^3.25.57                    |
+| **状態管理**       | jotai                                                     |
+| **UI / スタイル**  | Tailwind CSS 4.1.7 / shadcn/ui / Radix UI / lucide-react  |
+| **ルーティング**   | react-router-dom ^6.22.3                                  |
+| **メール送信**     | nodemailer ^7.0.3                                         |
+| **テスト**         | Jest / React Testing Library                              |
+| **CI / CD**        | GitHub Actions / Vercel                                   |
+| **その他**         | date-fns / clsx / eslint / prettier                       |
+
+### 🧑‍💻 技術選定理由
+
+- **Next.js App Router** を採用し、SSR と動的ルートを活用して "初回読み込みを高速化" しつつ "ページごとのキャッシュ戦略" を柔軟に設定。
+- **Supabase** は Postgres ベースで RLS が使えるため、**ユーザーごとの家具データ分離** を DB レイヤーで実現できる。Storage, Auth もワンストップで用意されている点を評価。
+- **React Hook Form + Zod** により **型安全** かつ **スケーラブル** なバリデーションを実装。フォーム数が多いアプリに適している。
+- **Tailwind CSS** は "ダークモード" や "レスポンシブ" をユーティリティクラスで完結でき、デザインポリシーの一貫性を保ちやすい。
+
+---
+
+## インフラ構成図
+
+![infra](/docs/architecture/infrastructure.png)
+
+> 詳細は `docs/architecture.md` を参照。
+
+---
+
+## ER 図
+
+![ER図](/docs/architecture/er.png)
+
+> SQL スキーマと詳細な解説は `docs/data-model.md` に記載。
+
+---
+
+## 画面遷移図
+
+[Figma で閲覧する](https://www.figma.com/file/████/kuralis?type=design&node-id=0-1&mode=design)
+
+---
+
+## こだわった実装
+
+- **SSR + クライアントハイドレーション**
+
+    - 家具一覧は SSR でプリロードし、クライアントでフィルタリングのみを実行。SEO と体感速度を両立。
+
+- **メンテナンス周期の汎用アルゴリズム**
+
+    - `cycle_value` × `cycle_unit` を date-fns によって動的加算。単位追加も O(1) で拡張可能。
+
+- **共通エラーハンドリング**
+
+    - API ➜ `handleApiError` ➜ toast のレイヤー構造で、フロントのエラー UI を 1 箇所に集約。
+
+- **画像ファイル名のサニタイズ & UUID 付与**
+
+    - 日本語ファイル名や重複を防止し、S3 互換ストレージでの競合を回避。
+
+---
+
+## 今後の開発予定 (v1.0)
+
+- リマインダー通知で期日が近いメンテナンスをダッシュボードとメールでお知らせ
+- プッシュ通知 (Web Push / LINE Notify) でのメンテナンスリマインド
+- 統計ダッシュボードで家具点数、カテゴリ別シェア、メンテナンス実施率などをグラフで可視化
+- 家具共有機能 (URL で公開・QR コード化)
+- iCal 連携 & Google Calendar エクスポート
+- 複数ユーザー (家族) での共同管理
+- AI による家具画像タグ付け・自動カテゴリ判定
+- ダークモード（Tailwind の `dark:` クラスで実装）
+
+---
+
+## ローカル環境での起動方法
 
 ```bash
-# リポジトリのクローン
-git clone git@github.com:sidedishjob/kuralis.git
+# 1. リポジトリをクローン
+git clone https://github.com/sidedishjob/kuralis.git
+cd kuralis
 
-# 依存関係のインストール
-npm install
-# または
-yarn install
+# 2. 環境変数を設定
+cp .env.local.example .env.local
+# SUPABASE_URL, SUPABASE_ANON_KEY などを入力
 
-# 環境変数の設定
-cp .env.example .env.local
+# 3. 依存関係をインストール
+npm ci       # or pnpm install / yarn install
+
+# 4. 開発サーバーを起動
+npm run dev  # http://localhost:3002
+
+# 5. Lint & Format
+npm run lint
+npm run format
 ```
 
-### 環境変数の設定
+---
 
-`.env.local`ファイルに以下の環境変数を設定してください：
+## License
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-# ※SupabaseのService Role Keyはクライアント公開せず、
-# サーバー環境（CI/CDやAPIルート）でのみ利用してください。
-EMAIL_USER=your-email
-EMAIL_PASS=your-gmail-app-password  # Gmailの「アプリパスワード」を使用（2段階認証必要）
-EMAIL_TO=your-email
-```
-
-## 🏃‍♂️ 開発サーバーの起動
-
-```bash
-npm run dev
-# または
-yarn dev
-```
-
-開発サーバーは http://localhost:3002 で起動します。
-
-## 📝 利用可能なスクリプト
-
-- `npm run dev`: 開発サーバーの起動
-- `npm run build`: プロダクションビルドの作成
-- `npm run start`: プロダクションサーバーの起動
-- `npm run lint`: ESLintによるコードチェック
-- `npm run format`: Prettierによるコードフォーマット
-
-## 🏗️ プロジェクト構造
-
-```
-kuralis/
-├── src/              # ソースコード
-│ ├── app/            # Next.js App Router のルート
-│ ├── components/     # Atomic Design ベースの UI コンポーネント
-│ ├── constants/      # 定数ファイル
-│ ├── contexts/       # 認証コンテキスト
-│ ├── hooks/          # カスタムフック
-│ ├── lib/            # API クライアント・共通ユーティリティ
-│ └── types/          # TypeScript 型定義
-├── public/           # 静的ファイル
-├── supabase/         # Supabase関連の設定
-├── docs/             # ドキュメント
-└── components.json   # UIコンポーネントの設定
-```
-
-## 🔧 開発ガイドライン
-
-- TypeScriptの厳格な型チェックを有効にしています
-- ESLintとPrettierによるコード品質の維持
-- コンポーネントはAtomic Designに基づいて構成
-
-## 📚 ドキュメント
-
-詳細なドキュメントは `docs/` ディレクトリを参照してください。
-
-## 🚀 デプロイ
-
-このプロジェクトはVercelへのデプロイを推奨しています：
-
-1. Vercelアカウントを作成
-2. リポジトリをVercelに接続
-3. 環境変数を設定
-4. デプロイを実行
-
-## 📄 ライセンス
-
-このプロジェクトは **MIT License** の下で公開されています。  
-詳しくは [LICENSE](./LICENSE) をご覧ください。
+This project is licensed under the MIT License – see the [LICENSE](./LICENSE) file for details.

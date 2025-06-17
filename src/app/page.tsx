@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FiArrowRight, FiHeart, FiClock, FiBookOpen } from "react-icons/fi";
 import { getUserFromCookie } from "@/lib/supabase/server";
-import Image from "next/image";
 
 export default async function Page() {
 	const user = await getUserFromCookie();

@@ -11,8 +11,8 @@ export const siteMetadata = {
 	locale: "ja_JP",
 	type: "website",
 	twitterCard: "summary_large_image",
-	twitterSite: "@kuralis_app",
-	twitterCreator: "@kuralis_app",
+	// twitterSite: "@kuralis_app",
+	// twitterCreator: "@kuralis_app",
 
 	// アプリケーション情報
 	appName: "kuralis",
@@ -37,7 +37,7 @@ export const siteMetadata = {
 
 	// OGP画像
 	ogImage: {
-		url: "https://kuralis.homes/og-image.png",
+		url: "https://kuralis.homes/kuralis-ogp.png",
 		width: 1200,
 		height: 630,
 		alt: "kuralis - 家具と暮らすための記録アプリ",
@@ -122,8 +122,8 @@ export function generateMetadata({
 			card: siteMetadata.twitterCard,
 			title: title ? `${title} | ${siteMetadata.title}` : siteMetadata.title,
 			description: description || siteMetadata.description,
-			site: siteMetadata.twitterSite,
-			creator: siteMetadata.twitterCreator,
+			// site: siteMetadata.twitterSite,
+			// creator: siteMetadata.twitterCreator,
 			images: [image || siteMetadata.ogImage.url],
 		},
 		robots: {

@@ -20,6 +20,7 @@ export function usePasswordResetPage() {
 	const { toast } = useToast();
 	const router = useRouter();
 	const [pageState, setPageState] = useState<PageState>(PageState.Loading);
+	const [resetComplete, setResetComplete] = useState(false);
 
 	const form = useForm<PasswordResetSchema>({
 		resolver: zodResolver(passwordResetSchema),
@@ -37,7 +38,7 @@ export function usePasswordResetPage() {
 	}, []);
 
 	useEffect(() => {
-		if (authLoading) return;
+		if (authLoading || resetComplete) return;
 
 		if (user) {
 			setPageState(PageState.Authorized);
@@ -52,7 +53,7 @@ export function usePasswordResetPage() {
 				});
 			}, 100);
 		}
-	}, [authLoading, user, router, toast]);
+	}, [authLoading, user, resetComplete, router, toast]);
 
 	const onSubmit = async ({ newPassword }: PasswordResetSchema) => {
 		const { error } = await supabase.auth.updateUser({ password: newPassword });
@@ -68,6 +69,7 @@ export function usePasswordResetPage() {
 				title: "パスワードを更新しました",
 				description: "新しいパスワードで再度ログインしてください",
 			});
+			setResetComplete(true);
 			await logout();
 			form.reset();
 			router.push("/auth/login");

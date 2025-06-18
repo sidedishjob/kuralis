@@ -61,16 +61,16 @@ export const AccountSection = () => {
 					アカウント
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-4 flex justify-between">
-				{!isGoogleUser && (
+			{!isGoogleUser && (
+				<CardContent className="space-y-4 flex justify-between">
 					<div className="space-y-4">
 						<h4 className="text-sm font-medium text-muted-foreground">
 							パスワードの変更
 						</h4>
 						<PasswordChangeForm />
 					</div>
-				)}
-			</CardContent>
+				</CardContent>
+			)}
 
 			<CardContent className="space-y-4">
 				<div className="space-y-4">

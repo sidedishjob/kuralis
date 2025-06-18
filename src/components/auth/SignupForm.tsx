@@ -49,7 +49,12 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 	};
 
 	const handleGoogleSignup = async () => {
-		await supabase.auth.signInWithOAuth({ provider: "google" });
+		await supabase.auth.signInWithOAuth({
+			provider: "google",
+			options: {
+				redirectTo: `${location.origin}/auth/callback`,
+			},
+		});
 	};
 
 	return (

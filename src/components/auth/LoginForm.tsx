@@ -37,13 +37,18 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 			setAuthError("メールアドレスまたはパスワードが違います");
 			setLoading(false);
 		} else {
-			router.push("/furniture");
+			router.push("/auth/callback");
 		}
 	};
 
 	// Googleログイン
 	const handleGoogleLogIn = async () => {
-		await supabase.auth.signInWithOAuth({ provider: "google" });
+		await supabase.auth.signInWithOAuth({
+			provider: "google",
+			options: {
+				redirectTo: `${location.origin}/auth/callback`,
+			},
+		});
 	};
 
 	return (

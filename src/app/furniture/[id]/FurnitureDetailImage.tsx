@@ -134,19 +134,21 @@ export default function FurnitureDetailImage({
 		if (selectedImage) {
 			// プレビュー表示（新規選択時）
 			return (
-				<Image
-					src={URL.createObjectURL(selectedImage)}
-					alt="プレビュー画像"
-					width={400}
-					height={300}
-					className="w-full h-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
-					unoptimized
-				/>
+				<div className="relative aspect-[4/3] w-full">
+					<Image
+						src={URL.createObjectURL(selectedImage)}
+						alt="Preview"
+						fill
+						sizes="(max-width: 768px) 100vw, 33vw"
+						className="w-full h-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
+						unoptimized
+					/>
+				</div>
 			);
 		} else if (publicUrl) {
 			// 既存画像（変更不可）
 			return (
-				<div className="relative w-full h-full">
+				<div className="relative aspect-[4/3] w-full">
 					<Image
 						src={publicUrl}
 						alt="家具画像"
@@ -163,7 +165,7 @@ export default function FurnitureDetailImage({
 					onDrop={handleDrop}
 					onDragOver={handleDragOver}
 					onClick={() => fileInputRef.current?.click()}
-					className="w-full h-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
+					className="aspect-[4/3] w-full h-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
 				>
 					<input
 						ref={fileInputRef}
@@ -184,7 +186,7 @@ export default function FurnitureDetailImage({
 		} else {
 			// 画像なし・編集不可
 			return (
-				<div className="w-full h-full flex flex-col items-center justify-center text-kuralis-400">
+				<div className="aspect-[4/3] w-full h-full flex flex-col items-center justify-center text-kuralis-400">
 					<FiUpload size={32} className="mb-2" />
 					<p className="text-sm">No image</p>
 				</div>
@@ -203,7 +205,7 @@ export default function FurnitureDetailImage({
 			className="sticky top-4 z-10 md:static"
 		>
 			<DemoView>
-				<div className="bg-kuralis-100 w-full aspect-square overflow-hidden shadow-lg relative group">
+				<div className="bg-kuralis-100 overflow-hidden shadow-lg relative group">
 					{renderImage()}
 				</div>
 				{errors.image && typeof errors.image.message === "string" && (

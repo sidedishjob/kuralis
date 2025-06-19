@@ -68,19 +68,19 @@ export default function Step2UI({
 
 	return (
 		<div className="space-y-4 md:space-y-8">
-			<h1 className="text-xl md:text-3xl font-bold tracking-tighter-custom text-center mb-6 text-kuralis-900">
+			<h1 className="text-xl md:text-3xl tracking-tighter-custom text-center mb-6 text-kuralis-900">
 				家具の名前と写真を入力してください
 			</h1>
 
 			{/* Summary */}
 			<div className="flex items-center space-x-4 mb-8 text-xs">
 				{category && (
-					<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
+					<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm tracking-tighter-custom">
 						{category.name}
 					</div>
 				)}
 				{location && (
-					<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm font-bold tracking-tighter-custom">
+					<div className="px-2 py-1 bg-kuralis-100 text-kuralis-600 rounded-sm tracking-tighter-custom">
 						{location.name}
 					</div>
 				)}
@@ -88,13 +88,13 @@ export default function Step2UI({
 
 			{/* Name Input */}
 			<div>
-				<label className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4 block">
+				<label className="text-sm tracking-tighter-custom text-kuralis-600 mb-4 block">
 					家具名
 				</label>
 				<input
 					type="text"
 					placeholder="例：ウォールナットダイニングテーブル"
-					className="w-full px-6 py-4 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none transition-all duration-500 font-bold tracking-tighter-custom bg-white/80 backdrop-blur-sm focus:bg-white"
+					className="w-full px-6 py-4 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none transition-all duration-500 tracking-tighter-custom bg-white/80 backdrop-blur-sm focus:bg-white"
 					{...formRegister("name")}
 				/>
 				{errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
@@ -102,16 +102,16 @@ export default function Step2UI({
 
 			{/* Image Upload */}
 			<div>
-				<label className="text-sm font-bold tracking-tighter-custom text-kuralis-600 mb-4 block">
+				<label className="text-sm tracking-tighter-custom text-kuralis-600 mb-4 block">
 					写真
-					<span className="ml-2 text-xs font-medium text-kuralis-500 bg-kuralis-100 rounded px-2 py-0.5">
+					<span className="ml-2 text-xs text-kuralis-500 bg-kuralis-100 rounded px-2 py-0.5">
 						任意
 					</span>
 				</label>
 				<div
 					onDrop={handleDrop}
 					onDragOver={handleDragOver}
-					className="border-2 border-dashed border-kuralis-200 rounded-sm p-6 text-center hover:border-kuralis-400 transition-all duration-500 bg-white/80 backdrop-blur-sm group"
+					className="border-2 border-dashed border-kuralis-200 rounded-sm p-6 text-center backdrop-blur-sm"
 				>
 					<input
 						type="file"
@@ -122,13 +122,13 @@ export default function Step2UI({
 					/>
 					{image ? (
 						<div className="space-y-2">
-							<div className="relative w-full aspect-[4/3] overflow-hidden rounded-sm bg-kuralis-50">
+							<div className="relative aspect-[4/3] w-full">
 								{image instanceof File && (
 									<Image
 										src={URL.createObjectURL(image)}
 										alt="Preview"
-										width={400}
-										height={300}
+										fill
+										sizes="(max-width: 768px) 100vw, 33vw"
 										className="w-full h-full object-cover"
 										unoptimized
 									/>
@@ -140,15 +140,12 @@ export default function Step2UI({
 									<FiX size={16} className="text-kuralis-900" />
 								</button>
 							</div>
-							<div className="text-sm text-kuralis-900 font-bold tracking-tighter-custom">
-								{image.name}
-							</div>
 							<button
 								onClick={(e) => {
 									e.preventDefault();
 									document.getElementById("furniture-image")?.click();
 								}}
-								className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-bold tracking-tighter-custom"
+								className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
 							>
 								写真を変更
 							</button>
@@ -156,14 +153,16 @@ export default function Step2UI({
 					) : (
 						<label
 							htmlFor="furniture-image"
-							className="cursor-pointer space-y-2 w-full aspect-[4/3] flex flex-col items-center justify-center bg-kuralis-50/50"
+							className="aspect-[4/3] w-full h-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
 						>
 							<FiUpload
 								size={32}
-								className="mx-auto text-kuralis-400 group-hover:scale-110 transition-transform duration-500"
+								className="mb-4 group-hover:scale-110 transition-transform duration-300"
 							/>
-							<div className="text-sm text-kuralis-600 font-bold tracking-tighter-custom">
-								クリックまたはドラッグ＆ドロップで写真をアップロード
+							<div className="text-sm text-kuralis-600 tracking-tighter-custom">
+								クリックまたはドラッグ＆ドロップで
+								<br className="md:hidden" />
+								写真をアップロード
 							</div>
 						</label>
 					)}

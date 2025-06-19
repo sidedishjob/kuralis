@@ -7,7 +7,7 @@ interface StepIndicatorProps {
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps }) => {
 	return (
-		<div className="flex items-center justify-center space-x-3">
+		<div className="flex items-center justify-center">
 			{Array.from({ length: totalSteps }).map((_, index) => (
 				<div key={index} className="flex items-center">
 					<div

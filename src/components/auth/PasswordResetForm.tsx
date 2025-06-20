@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { UseFormReturn } from "react-hook-form";
@@ -44,9 +44,14 @@ export function PasswordResetForm({ pageState, form, onSubmit }: Props) {
 								<p className="text-sm text-red-500">{errors.newPassword.message}</p>
 							)}
 						</div>
-						<Button type="submit" disabled={isSubmitting} className="w-full">
-							{isSubmitting ? "更新中..." : "パスワードを更新"}
-						</Button>
+						<LoadingButton
+							type="submit"
+							isLoading={isSubmitting}
+							loadingText="更新中..."
+							className="w-full"
+						>
+							パスワードを更新
+						</LoadingButton>
 					</form>
 				) : pageState === "loading" ? (
 					<div className="space-y-2 p-2">

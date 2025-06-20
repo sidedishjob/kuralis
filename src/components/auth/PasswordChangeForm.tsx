@@ -7,8 +7,8 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { passwordChangeSchema, type PasswordChangeSchema } from "@/lib/validation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/useToast";
+import { LoadingButton } from "../ui/loadingButton";
 
 export default function PasswordChangeForm() {
 	const { toast } = useToast();
@@ -86,9 +86,14 @@ export default function PasswordChangeForm() {
 				)}
 			</div>
 
-			<Button type="submit" className="w-full" disabled={isSubmitting}>
-				{isSubmitting ? "更新中..." : "パスワードを更新"}
-			</Button>
+			<LoadingButton
+				type="submit"
+				isLoading={isSubmitting}
+				loadingText="更新中..."
+				className="w-full"
+			>
+				パスワードを更新
+			</LoadingButton>
 		</form>
 	);
 }

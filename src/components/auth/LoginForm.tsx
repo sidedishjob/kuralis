@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { loginSchema, type LoginSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +17,7 @@ import { Icons } from "@/constants/icons";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [authError, setAuthError] = useState<string | null>(null);
 
 	// react-hook-form 初期化
@@ -28,14 +29,14 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
 	// メール+パスワードログイン
 	const onSubmit = async ({ email, password }: LoginSchema) => {
-		setLoading(true);
+		setIsLoading(true);
 		setAuthError(null);
 
 		const { error } = await supabase.auth.signInWithPassword({ email, password });
 
 		if (error) {
 			setAuthError("メールアドレスまたはパスワードが違います");
-			setLoading(false);
+			setIsLoading(false);
 		} else {
 			router.push("/auth/callback");
 		}
@@ -118,9 +119,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
 							{authError && <p className="text-sm text-red-500">{authError}</p>}
 
-							<Button type="submit" className="w-full" disabled={loading}>
-								{loading ? "ログイン中..." : "ログイン"}
-							</Button>
+							<LoadingButton
+								type="submit"
+								isLoading={isLoading}
+								loadingText="ログイン中..."
+							>
+								ログイン
+							</LoadingButton>
 						</form>
 
 						<div className="text-center text-xs">

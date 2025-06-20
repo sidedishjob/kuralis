@@ -8,13 +8,14 @@ import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { signupSchema, type SignupSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/constants/icons";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
-	const [loading, setLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [authError, setAuthError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
 
@@ -27,7 +28,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 	});
 
 	const onSubmit = async (data: SignupSchema) => {
-		setLoading(true);
+		setIsLoading(true);
 		setAuthError(null);
 		setMessage(null);
 
@@ -39,7 +40,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 			},
 		});
 
-		setLoading(false);
+		setIsLoading(false);
 
 		if (error) {
 			setAuthError(error.message);
@@ -109,9 +110,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 							{authError && <p className="text-sm text-red-500">{authError}</p>}
 							{message && <p className="text-sm text-green-600">{message}</p>}
 
-							<Button type="submit" className="w-full" disabled={loading}>
-								{loading ? "登録中..." : "サインアップ"}
-							</Button>
+							<LoadingButton
+								type="submit"
+								isLoading={isLoading}
+								loadingText="登録中..."
+							>
+								登録する
+							</LoadingButton>
 						</form>
 
 						<div className="text-center text-xs">

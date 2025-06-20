@@ -35,7 +35,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 			email: data.email,
 			password: data.password,
 			options: {
-				emailRedirectTo: `${location.origin}/auth/callback`,
+				emailRedirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
 			},
 		});
 
@@ -52,7 +52,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 		await supabase.auth.signInWithOAuth({
 			provider: "google",
 			options: {
-				redirectTo: `${location.origin}/auth/callback`,
+				redirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
 			},
 		});
 	};

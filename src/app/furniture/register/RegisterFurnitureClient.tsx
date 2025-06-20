@@ -19,6 +19,7 @@ export default function RegisterFurnitureClient() {
 	const [step, setStep] = useState(1);
 	const [category, setCategory] = useState<Category | null>(null);
 	const [location, setLocation] = useState<Location | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 	const { register } = useRegisterFurniture();
 
@@ -53,8 +54,11 @@ export default function RegisterFurnitureClient() {
 		form.append("location_id", String(location.id));
 		if (data.image) form.append("image", data.image);
 
+		setIsLoading(true);
+
 		try {
 			await register(form);
+
 			toast({
 				title: "家具を登録しました",
 				description: `${data.name} を ${location.name} に登録しました。`,
@@ -68,6 +72,7 @@ export default function RegisterFurnitureClient() {
 				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
+			setIsLoading(false);
 		}
 	};
 
@@ -115,6 +120,7 @@ export default function RegisterFurnitureClient() {
 						errors={errors}
 						onSubmit={handleSubmit(handleFinalSubmit)}
 						isValid={isValid}
+						isLoading={isLoading}
 					/>
 				)}
 			</main>

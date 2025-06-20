@@ -8,8 +8,8 @@ import type {
 	UseFormGetValues,
 	UseFormSetValue,
 } from "react-hook-form";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import type { RegisterFurnitureSchema } from "@/lib/validation/furnitureSchema";
-import { Button } from "@/components/ui/button";
 import type { Category, Location } from "@/types/furniture_meta";
 
 interface Props {
@@ -21,6 +21,7 @@ interface Props {
 	errors: FieldErrors<RegisterFurnitureSchema>;
 	onSubmit: () => void;
 	isValid: boolean;
+	isLoading: boolean;
 }
 
 export default function Step2UI({
@@ -32,6 +33,7 @@ export default function Step2UI({
 	errors,
 	onSubmit,
 	isValid,
+	isLoading,
 }: Props) {
 	const image = getValues("image");
 
@@ -170,17 +172,19 @@ export default function Step2UI({
 			</div>
 
 			<div className="pt-8">
-				<Button
+				<LoadingButton
 					onClick={onSubmit}
+					isLoading={isLoading}
 					disabled={!isValid}
+					loadingText="登録中..."
 					className={`w-full tracking-tighter-custom transition-all duration-300 ${
 						isValid
-							? "bg-kuralis-900 text-white hover:bg-kuralis-800 transform hover:-translate-y-1"
+							? "transform hover:-translate-y-0.5"
 							: "bg-kuralis-200 text-kuralis-400 cursor-not-allowed"
 					}`}
 				>
 					登録する
-				</Button>
+				</LoadingButton>
 			</div>
 		</div>
 	);

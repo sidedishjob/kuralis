@@ -13,6 +13,7 @@ import { useUpdateFurniture } from "@/hooks/useUpdateFurniture";
 import FurnitureDetailImage from "./FurnitureDetailImage";
 import FurnitureDetailTabs from "./FurnitureDetailTabs";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import {
 	Dialog,
 	DialogTrigger,
@@ -50,6 +51,8 @@ export default function FurnitureDetailClient({
 	const { deleteFurniture } = useDeleteFurniture(initialFurniture.id);
 
 	const [isEditing, setIsEditing] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
 	const methods = useForm<FurnitureEditSchema>({
@@ -81,13 +84,16 @@ export default function FurnitureDetailClient({
 	}, [furniture, isEditing, methods]);
 
 	const handleDelete = async () => {
+		setIsDeleting(true);
 		try {
 			await deleteFurniture();
-			router.push("/furniture");
+
 			toast({
 				title: "家具を削除しました",
 				description: `${furniture?.name} を削除しました。`,
 			});
+			router.push("/furniture");
+			router.refresh();
 		} catch (error: unknown) {
 			console.error("家具削除エラー:", error);
 			toast({
@@ -95,10 +101,12 @@ export default function FurnitureDetailClient({
 				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
+			setIsDeleting(false);
 		}
 	};
 
 	const onSubmit = async (data: FurnitureEditSchema) => {
+		setIsSaving(true);
 		try {
 			const formData = new FormData();
 			formData.append("name", data.name ?? "");
@@ -134,6 +142,8 @@ export default function FurnitureDetailClient({
 				description: getErrorMessage(error, "もう一度お試しください"),
 				variant: "destructive",
 			});
+		} finally {
+			setIsSaving(false);
 		}
 	};
 
@@ -231,13 +241,15 @@ export default function FurnitureDetailClient({
 														</DialogDescription>
 													</DialogHeader>
 													<DialogFooter className="mt-4">
-														<Button
+														<LoadingButton
 															type="button"
 															variant="destructive"
+															isLoading={isDeleting}
+															loadingText="削除中..."
 															onClick={handleDelete}
 														>
 															削除する
-														</Button>
+														</LoadingButton>
 													</DialogFooter>
 												</DialogContent>
 											</Dialog>
@@ -256,12 +268,14 @@ export default function FurnitureDetailClient({
 											>
 												キャンセル
 											</Button>
-											<Button
+											<LoadingButton
 												type="submit"
-												className="px-6 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+												isLoading={isSaving}
+												loadingText="保存中..."
+												className="px-6 tracking-tighter-custom transition-all duration-300 transform hover:-translate-y-0.5"
 											>
 												保存する
-											</Button>
+											</LoadingButton>
 										</div>
 									)}
 								</div>

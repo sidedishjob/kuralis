@@ -11,10 +11,10 @@ export const metadata = siteMetadata;
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="ja" className={`${inter.variable} ${notoSansJP.variable}`}>
-			<body>
+			<body className="min-h-screen flex flex-col">
 				<AuthProvider>
 					<Header />
-					<div className="min-h-screen bg-white text-kuralis-900 flex flex-col">
+					<div className="flex-grow flex flex-col">
 						<main className="flex-grow">{children}</main>
 						<Toaster />
 					</div>

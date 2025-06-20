@@ -79,26 +79,22 @@ export default async function Page() {
 					アプリ画面で見る「kuralis」
 				</h2>
 				<div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4">
-					<Image
-						src="/images/furniture-list.png"
-						alt="家具一覧画面"
-						className="rounded-xl shadow-md"
-					/>
-					<Image
-						src="/images/furniture-detail.png"
-						alt="家具詳細画面"
-						className="rounded-xl shadow-md"
-					/>
-					<Image
-						src="/images/maintenance-form.png"
-						alt="メンテナンスタスク追加"
-						className="rounded-xl shadow-md"
-					/>
-					<Image
-						src="/images/maintenance-calendar.png"
-						alt="メンテ履歴カレンダー"
-						className="rounded-xl shadow-md"
-					/>
+					{[
+						{ src: "/images/furniture-list.png", alt: "家具一覧画面" },
+						{ src: "/images/furniture-detail.png", alt: "家具詳細画面" },
+						{ src: "/images/maintenance-form.png", alt: "メンテナンスタスク追加" },
+						{ src: "/images/maintenance-calendar.png", alt: "メンテ履歴カレンダー" },
+					].map((img) => (
+						<div key={img.src} className="relative aspect-[16/9] w-full">
+							<Image
+								src={img.src}
+								alt={img.alt}
+								fill
+								sizes="(max-width: 768px) 100vw, 50vw"
+								className="rounded-xl shadow-md object-cover"
+							/>
+						</div>
+					))}
 				</div>
 			</section>
 

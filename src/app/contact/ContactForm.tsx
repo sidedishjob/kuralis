@@ -3,7 +3,7 @@
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import type { ContactSchema } from "@/lib/validation";
 
 type Props = {
@@ -68,9 +68,14 @@ export function ContactForm({ onSubmit, isSuccess }: Props) {
 				)}
 			</div>
 
-			<Button type="submit" className="w-full" disabled={isSubmitting || isSuccess}>
-				{isSubmitting || isSuccess ? "送信中..." : "送信する"}
-			</Button>
+			<LoadingButton
+				type="submit"
+				isLoading={isSubmitting || isSuccess}
+				loadingText="送信中..."
+				className="w-full"
+			>
+				送信する
+			</LoadingButton>
 		</form>
 	);
 }

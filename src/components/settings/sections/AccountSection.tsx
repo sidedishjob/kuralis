@@ -1,5 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FiUser } from "react-icons/fi";
+import { supabase } from "@/lib/supabase/client";
+import PasswordChangeForm from "@/components/auth/PasswordChangeForm";
 import {
 	Dialog,
 	DialogContent,
@@ -11,16 +16,12 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { LoadingButton } from "@/components/ui/loadingButton";
 import { useToast } from "@/hooks/useToast";
-import PasswordChangeForm from "@/components/auth/PasswordChangeForm";
-import { FiUser } from "react-icons/fi";
 
 export const AccountSection = () => {
 	const [open, setOpen] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [isGoogleUser, setIsGoogleUser] = useState(false);
 	const router = useRouter();
 
@@ -35,15 +36,14 @@ export const AccountSection = () => {
 	}, []);
 
 	const handleDelete = async () => {
-		setLoading(true);
+		setIsLoading(true);
 		const res = await fetch("/api/delete-user", { method: "POST" });
 		if (!res.ok) {
 			alert("削除に失敗しました");
-			setLoading(false);
+			setIsLoading(false);
 			return;
 		}
 		await supabase.auth.signOut();
-		setLoading(false);
 
 		toast({
 			title: "アカウント削除完了しました",
@@ -90,13 +90,15 @@ export const AccountSection = () => {
 								<Button variant="outline" onClick={() => setOpen(false)}>
 									キャンセル
 								</Button>
-								<Button
+								<LoadingButton
+									type="button"
 									variant="destructive"
 									onClick={handleDelete}
-									disabled={loading}
+									isLoading={isLoading}
+									loadingText="削除中..."
 								>
-									{loading ? "削除中..." : "削除する"}
-								</Button>
+									削除する
+								</LoadingButton>
 							</DialogFooter>
 						</DialogContent>
 					</Dialog>

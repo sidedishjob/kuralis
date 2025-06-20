@@ -1,5 +1,6 @@
 import "./globals.css";
 import PageViewListener from "./_analytics/pageviewListener";
+import { Suspense } from "react";
 import Script from "next/script";
 import { GA_ID, existsGaId } from "@/lib/gtag";
 import { Header } from "@/components/common/layout/Header";
@@ -17,7 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<body className="min-h-screen flex flex-col">
 				<AuthProvider>
 					<Header />
-					<PageViewListener />
+					<Suspense>
+						<PageViewListener />
+					</Suspense>
 					<div className="flex-grow flex flex-col">
 						<main className="flex-grow">{children}</main>
 						<Toaster />

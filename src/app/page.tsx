@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { FiArrowRight, FiHeart, FiClock, FiBookOpen } from "react-icons/fi";
 import { getUserFromCookie } from "@/lib/supabase/server";
@@ -78,22 +79,22 @@ export default async function Page() {
 					アプリ画面で見る「kuralis」
 				</h2>
 				<div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4">
-					<img
+					<Image
 						src="/images/furniture-list.png"
 						alt="家具一覧画面"
 						className="rounded-xl shadow-md"
 					/>
-					<img
+					<Image
 						src="/images/furniture-detail.png"
 						alt="家具詳細画面"
 						className="rounded-xl shadow-md"
 					/>
-					<img
+					<Image
 						src="/images/maintenance-form.png"
 						alt="メンテナンスタスク追加"
 						className="rounded-xl shadow-md"
 					/>
-					<img
+					<Image
 						src="/images/maintenance-calendar.png"
 						alt="メンテ履歴カレンダー"
 						className="rounded-xl shadow-md"
@@ -150,11 +151,11 @@ export default async function Page() {
 					<p className="text-kuralis-600 mb-8">
 						家具を登録し、タスクを追加して、次の予定を確認。直感的な操作で完結します。
 					</p>
-					<img
+					{/* <Image
 						src="/images/demo-flow.gif"
 						alt="アプリ操作の流れ"
 						className="mx-auto rounded-xl shadow-lg max-w-full h-auto"
-					/>
+					/> */}
 				</div>
 			</section>
 

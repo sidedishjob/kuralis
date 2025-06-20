@@ -1,4 +1,7 @@
 import "./globals.css";
+import PageViewListener from "./_analytics/pageviewListener";
+import Script from "next/script";
+import { GA_ID, existsGaId } from "@/lib/gtag";
 import { Header } from "@/components/common/layout/Header";
 import { Footer } from "@/components/common/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -14,12 +17,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<body className="min-h-screen flex flex-col">
 				<AuthProvider>
 					<Header />
+					<PageViewListener />
 					<div className="flex-grow flex flex-col">
 						<main className="flex-grow">{children}</main>
 						<Toaster />
 					</div>
 					<Footer />
 				</AuthProvider>
+
+				{existsGaId && (
+					<>
+						<Script
+							src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+							strategy="afterInteractive"
+						/>
+						<Script id="ga-init" strategy="afterInteractive">
+							{`
+								window.dataLayer = window.dataLayer || [];
+								function gtag(){dataLayer.push(arguments);}
+								gtag('js', new Date());
+								gtag('config', '${GA_ID}');
+							`}
+						</Script>
+					</>
+				)}
 			</body>
 		</html>
 	);

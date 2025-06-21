@@ -57,6 +57,13 @@ export const siteMetadata = {
 		type: "image/png",
 	},
 
+	// Apple Touch Icon（iOS ホーム画面アイコン）
+	appleTouchIcon: {
+		url: "/apple-touch-icon.png",
+		sizes: "180x180",
+		type: "image/png",
+	},
+
 	// プライバシーポリシー
 	privacyPolicy: {
 		url: "/privacy",
@@ -125,6 +132,15 @@ export function generateMetadata({
 			// site: siteMetadata.twitterSite,
 			// creator: siteMetadata.twitterCreator,
 			images: [image || siteMetadata.ogImage.url],
+		},
+		icons: {
+			apple: [
+				{
+					url: siteMetadata.appleTouchIcon.url,
+					sizes: siteMetadata.appleTouchIcon.sizes,
+					type: siteMetadata.appleTouchIcon.type,
+				},
+			],
 		},
 		robots: {
 			index: true,

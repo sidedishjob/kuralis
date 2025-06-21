@@ -1,11 +1,15 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
 	images: {
-		domains: ["vjrywcrqdwmywiojnxap.supabase.co"],
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "images.pexels.com",
+				hostname: "vjrywcrqdwmywiojnxap.supabase.co",
+				port: "",
+				pathname: "/**", // ← Supabase Storage 用のパターン
 			},
 		],
 	},
 };
+
+module.exports = nextConfig;

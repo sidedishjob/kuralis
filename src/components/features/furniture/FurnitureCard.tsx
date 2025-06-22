@@ -4,14 +4,12 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Furniture } from "@/types/furniture";
-import { DemoView } from "@/components/common/DemoView";
 
 interface FurnitureCardProps {
 	furniture: Furniture;
-	isDemo?: boolean;
 }
 
-export function FurnitureCard({ furniture, isDemo = false }: FurnitureCardProps) {
+export function FurnitureCard({ furniture }: FurnitureCardProps) {
 	const Card = () => (
 		<div className="block group relative overflow-hidden">
 			<div className="aspect-[4/3] transform group-hover:-translate-y-8 transition-transform duration-700 ease-natural">
@@ -41,13 +39,7 @@ export function FurnitureCard({ furniture, isDemo = false }: FurnitureCardProps)
 
 	return (
 		<Link href={`/furniture/${furniture.id}`} className="block">
-			{isDemo ? (
-				<DemoView>
-					<Card />
-				</DemoView>
-			) : (
-				<Card />
-			)}
+			<Card />
 		</Link>
 	);
 }

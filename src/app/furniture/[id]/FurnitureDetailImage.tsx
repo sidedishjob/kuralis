@@ -6,7 +6,6 @@ import { FiUpload } from "react-icons/fi";
 import Image from "next/image";
 import { useSupabaseClient } from "@/lib/supabase/hooks/useSupabaseClient";
 import { FurnitureEditSchema } from "@/lib/validation";
-import { DemoView } from "@/components/common/DemoView";
 
 interface Props {
 	isEditing: boolean;
@@ -204,16 +203,14 @@ export default function FurnitureDetailImage({
 			}}
 			className="sticky top-4 z-10 md:static"
 		>
-			<DemoView>
-				<div className="bg-kuralis-100 overflow-hidden shadow-lg relative group">
-					{renderImage()}
-				</div>
-				{errors.image && typeof errors.image.message === "string" && (
-					<p className="mt-2 text-red-500 text-sm font-bold tracking-tighter-custom">
-						{errors.image.message}
-					</p>
-				)}
-			</DemoView>
+			<div className="bg-kuralis-100 overflow-hidden shadow-lg relative group">
+				{renderImage()}
+			</div>
+			{errors.image && typeof errors.image.message === "string" && (
+				<p className="mt-2 text-red-500 text-sm font-bold tracking-tighter-custom">
+					{errors.image.message}
+				</p>
+			)}
 		</div>
 	);
 }

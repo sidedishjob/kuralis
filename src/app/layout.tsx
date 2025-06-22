@@ -6,7 +6,7 @@ import { GA_ID, existsGaId } from "@/lib/gtag";
 import { getUserFromCookie } from "@/lib/supabase/server";
 import { Header } from "@/components/common/layout/Header";
 import { Footer } from "@/components/common/layout/Footer";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { inter, notoSansJP } from "@/constants/fonts";
 import { siteMetadata } from "@/constants/metadata";

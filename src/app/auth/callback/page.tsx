@@ -2,27 +2,37 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
 export default function AuthCallbackPage() {
 	const router = useRouter();
 
 	useEffect(() => {
+		// ログイン済みか即時確認してリダイレクト
+		const checkSession = async () => {
+			const { data } = await supabase.auth.getSession();
+			if (data.session?.user) {
+				router.push("/furniture");
+			}
+		};
+
+		checkSession();
+
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
 			if (event === "SIGNED_IN" && session?.user) {
-				// 必要ならプロフィール insert など
-				router.push("/furniture"); // ← ここで初めて家具一覧に遷移
+				router.push("/furniture");
 			}
 		});
 
 		return () => subscription.unsubscribe();
-	}, []);
+	}, [router]);
 
 	return (
-		<div className="flex items-center justify-center h-screen">
-			<p>ログイン中です...</p>
+		<div className="flex flex-col flex-grow items-center justify-center min-h-[50vh]">
+			<Loader2 className="h-4 w-4 animate-spin" />
 		</div>
 	);
 }

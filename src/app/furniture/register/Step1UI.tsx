@@ -2,6 +2,7 @@
 
 import { useFurnitureMeta } from "@/hooks/useFurnitureMeta";
 import { FiArrowRight } from "react-icons/fi";
+import { ErrorMessage } from "@/components/common/ui/ErrorMessage";
 import { Button } from "@/components/ui/button";
 import type { Category, Location } from "@/types/furniture_meta";
 
@@ -39,7 +40,8 @@ export default function Step1UI({ category, location, setCategory, setLocation, 
 			</div>
 		);
 	}
-	if (error) return <div>データ取得エラー</div>;
+
+	if (error) return <ErrorMessage error={error} className="mx-auto mt-10 max-w-md" />;
 
 	return (
 		<div className="space-y-4 md:space-y-8">

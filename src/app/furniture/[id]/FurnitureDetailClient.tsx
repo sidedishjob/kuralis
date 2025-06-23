@@ -12,6 +12,7 @@ import { useDeleteFurniture } from "@/hooks/useDeleteFurniture";
 import { useUpdateFurniture } from "@/hooks/useUpdateFurniture";
 import FurnitureDetailImage from "./FurnitureDetailImage";
 import FurnitureDetailTabs from "./FurnitureDetailTabs";
+import { ErrorMessage } from "@/components/common/ui/ErrorMessage";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";
 import {
@@ -147,8 +148,15 @@ export default function FurnitureDetailClient({
 		}
 	};
 
-	if (isLoading && !furniture) return <div>読み込み中...</div>;
-	if (error) return <div>エラーが発生しました</div>;
+	if (error)
+		return (
+			<ErrorMessage
+				error={error}
+				onRetry={() => mutate()}
+				className="mx-auto mt-10 max-w-md"
+			/>
+		);
+
 	if (!furnitureToUse) return <div>家具データが見つかりません</div>;
 
 	return (

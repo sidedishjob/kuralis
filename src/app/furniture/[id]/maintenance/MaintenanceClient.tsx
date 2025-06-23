@@ -8,6 +8,7 @@ import { FiArrowLeft, FiCalendar, FiPlus, FiX, FiTool, FiTrash2 } from "react-ic
 import { format } from "date-fns";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { maintenanceTaskSchema, MaintenanceTaskSchema } from "@/lib/validation";
+import { ErrorMessage } from "@/components/common/ui/ErrorMessage";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";
 import {
@@ -19,13 +20,13 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/useToast";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
 import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
 import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
 import { useAddMaintenanceTask } from "@/hooks/useAddMaintenanceTask";
 import { useUpdateMaintenanceTask } from "@/hooks/useUpdateMaintenanceTask";
-import { Switch } from "@/components/ui/switch";
 import type { Furniture } from "@/types/furniture";
 import type { MaintenanceCycleUnit } from "@/types/maintenance";
 
@@ -162,7 +163,14 @@ export default function MaintenanceClient({ furniture }: Props) {
 		}
 	};
 
-	if (error) return <p className="text-red-500">エラーが発生しました</p>;
+	if (error)
+		return (
+			<ErrorMessage
+				error={error}
+				onRetry={() => mutate()}
+				className="mx-auto mt-10 max-w-md"
+			/>
+		);
 
 	return (
 		<div className="container mx-auto py-6 md:py-12 px-6 md:px-12">

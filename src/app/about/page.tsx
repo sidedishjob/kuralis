@@ -6,12 +6,9 @@ import {
 	FiArrowDown,
 	FiImage,
 	FiStar,
-	FiAward,
 	FiTarget,
 	FiTrendingUp,
 	FiCheckCircle,
-	FiGithub,
-	FiTwitter,
 	FiMail,
 } from "react-icons/fi";
 import Link from "next/link";
@@ -236,7 +233,7 @@ export default function AboutPage() {
 								caption: "メンテナンス履歴をカレンダー形式で確認",
 								features: ["カレンダー表示", "ボード表示", "履歴管理"],
 							},
-						].map((img, idx) => (
+						].map((img) => (
 							<div
 								key={img.src}
 								className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2"

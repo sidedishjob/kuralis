@@ -11,7 +11,7 @@ export function Header() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<header className="py-6 px-6 md:px-12 bg-white border-b border-kuralis-200">
+		<header className="py-6 px-6 md:px-12 z-10 border-b border-kuralis-200">
 			<div className="container mx-auto flex justify-between items-center">
 				<Link href="/" className="text-xl font-bold tracking-tighter-custom">
 					kuralis

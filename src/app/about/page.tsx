@@ -18,7 +18,7 @@ export default function AboutPage() {
 	return (
 		<main className="overflow-hidden">
 			{/* Hero Section - Enhanced */}
-			<section className="min-h-[85vh] flex flex-col items-center justify-center text-center px-4 relative">
+			<section className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center px-4 relative">
 				<div className="relative space-y-12">
 					<div className="inline-flex items-center gap-2 px-4 py-2 bg-kuralis-100 rounded-full text-kuralis-700 text-sm font-medium animate-fade-in">
 						<FiStar className="w-4 h-4" />

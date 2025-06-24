@@ -1,17 +1,58 @@
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import {
 	FiArrowRight,
 	FiHeart,
 	FiClock,
 	FiBookOpen,
-	FiImage,
 	FiEdit,
 	FiTool,
 	FiCalendar,
 } from "react-icons/fi";
+
 import { getUserFromCookie } from "@/lib/supabase/server";
+import UIGallerySection from "@/components/common/sections/UIGallerySection";
+
+// Value Props セクションの内容
+const valueProps = [
+	{
+		icon: <FiHeart className="w-6 h-6 text-kuralis-700" />,
+		title: "家具を記録する",
+		desc: "お気に入りの家具や写真、設置場所をシンプルに管理できます。",
+	},
+	{
+		icon: <FiClock className="w-6 h-6 text-kuralis-700" />,
+		title: "メンテナンスを可視化",
+		desc: "家具ごとにメンテナンス履歴や実施予定を記録し、いつでも見返せます。",
+	},
+	{
+		icon: <FiBookOpen className="w-6 h-6 text-kuralis-700" />,
+		title: "思い出とストーリー",
+		desc: "家具にまつわる思い出や家族のストーリーも、そっと残せます。",
+	},
+];
+
+// How it works セクションの内容
+const howItWorksSteps = [
+	{
+		step: 1,
+		title: "家具を登録",
+		desc: "家具名・設置場所を入力し、写真をアップロード。",
+		icon: <FiEdit className="w-6 h-6 text-kuralis-700" />,
+	},
+	{
+		step: 2,
+		title: "メンテナンスを設定",
+		desc: "掃除やケアの頻度を登録し、自動で予定日を管理。",
+		icon: <FiTool className="w-6 h-6 text-kuralis-700" />,
+	},
+	{
+		step: 3,
+		title: "次回予定を確認",
+		desc: "カレンダーや一覧画面で、次のメンテ日をひと目で把握。",
+		icon: <FiCalendar className="w-6 h-6 text-kuralis-700" />,
+	},
+];
 
 export default async function Page() {
 	const user = await getUserFromCookie();
@@ -22,54 +63,62 @@ export default async function Page() {
 	return (
 		<main>
 			{/* ヒーローセクション */}
-			<section className="min-h-[85vh] relative flex flex-col justify-center items-center text-center px-4 overflow-hidden bg-gradient-to-b from-white to-kuralis-50">
-				<div className="absolute inset-0 bg-[url('/hero-pattern.svg')] opacity-50"></div>
-				<div className="relative z-10">
-					<h1 className="text-6xl md:text-8xl tracking-tight mb-10 text-kuralis-900 font-bold animate-fade-in">
-						kuralis
-					</h1>
-					<p className="text-2xl md:text-3xl text-kuralis-700 tracking-wide mb-8 max-w-2xl mx-auto leading-relaxed font-medium">
-						使い手として、
-						<span className="text-kuralis-900">家具と暮らす。</span>
-					</p>
-					<div className="flex flex-col md:flex-row justify-center gap-5">
-						<Link
-							href="/auth/signup"
-							className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-kuralis-900 border-2 border-kuralis-900 text-white text-lg font-medium rounded-lg hover:bg-kuralis-50 hover:text-kuralis-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-						>
-							Start Collection
-							<FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-						</Link>
-						<Link
-							href="/auth/login"
-							className="px-8 py-4 text-kuralis-900 text-lg font-medium bg-white border-2 border-kuralis-900 rounded-lg hover:bg-kuralis-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-						>
-							Login
-						</Link>
-					</div>
+			<section className="relative isolate min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center text-center bg-white dark:bg-black">
+				{/* 上部のぼかし背景 */}
+				<div
+					aria-hidden="true"
+					className="absolute inset-x-0 -top-40 -z-10 overflow-hidden blur-3xl sm:-top-80"
+				>
+					<div
+						style={{
+							clipPath:
+								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+						}}
+						className="relative left-1/2 -translate-x-1/2 rotate-[30deg] aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72rem]"
+					/>
 				</div>
-				<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
+
+				{/* 中央コンテンツ */}
+				<h1 className="text-6xl md:text-8xl tracking-tight mb-10 text-kuralis-900 font-bold">
+					kuralis
+				</h1>
+				<p className="text-2xl md:text-3xl text-kuralis-700 tracking-wide mb-8 max-w-2xl mx-auto leading-relaxed font-medium">
+					使い手として、<span className="text-kuralis-900">家具と暮らす。</span>
+				</p>
+				<div className="flex flex-col md:flex-row justify-center gap-5">
+					<Link
+						href="/auth/signup"
+						className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-kuralis-900 border-2 border-kuralis-900 text-white text-lg font-medium rounded-lg hover:bg-kuralis-50 hover:text-kuralis-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+					>
+						Start Collection
+						<FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+					</Link>
+					<Link
+						href="/auth/login"
+						className="px-8 py-4 text-kuralis-900 text-lg font-medium bg-white border-2 border-kuralis-900 rounded-lg hover:bg-kuralis-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+					>
+						Login
+					</Link>
+				</div>
+
+				{/* 下部のぼかし背景 */}
+				<div
+					aria-hidden="true"
+					className="absolute inset-x-0 bottom-[-8rem] sm:bottom-[-16rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-42rem)]"
+				>
+					<div
+						style={{
+							clipPath:
+								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+						}}
+						className="relative left-1/2 -translate-x-1/2 aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+					/>
+				</div>
 			</section>
 
 			{/* Value Props */}
 			<section className="max-w-6xl mx-auto px-4 py-32 grid md:grid-cols-3 gap-12">
-				{[
-					{
-						icon: <FiHeart className="w-6 h-6 text-kuralis-700" />,
-						title: "家具を記録する",
-						desc: "お気に入りの家具や写真、設置場所をシンプルに管理できます。",
-					},
-					{
-						icon: <FiClock className="w-6 h-6 text-kuralis-700" />,
-						title: "メンテナンスを可視化",
-						desc: "家具ごとにメンテナンス履歴や実施予定を記録し、いつでも見返せます。",
-					},
-					{
-						icon: <FiBookOpen className="w-6 h-6 text-kuralis-700" />,
-						title: "思い出とストーリー",
-						desc: "家具にまつわる思い出や家族のストーリーも、そっと残せます。",
-					},
-				].map((item, index) => (
+				{valueProps.map((item, index) => (
 					<div
 						key={index}
 						className="group p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
@@ -88,71 +137,7 @@ export default async function Page() {
 			</section>
 
 			{/* UI ギャラリー */}
-			<section className="relative py-24  bg-gradient-to-bl from-kuralis-50 via-white to-kuralis-100">
-				<h2 className="text-4xl md:text-5xl tracking-tight text-center font-bold text-kuralis-900 mb-8">
-					kuralis in Action
-				</h2>
-				<p className="text-center text-kuralis-600 text-base md:text-lg max-w-xl mx-auto mb-16 leading-relaxed">
-					家具の記録から日々の手入れまで。
-					<br />
-					その日常のすべてを、シンプルな画面で。
-				</p>
-
-				<div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto px-4">
-					{[
-						{
-							src: "/images/furniture-list.png",
-							alt: "家具一覧画面",
-							title: "家具一覧",
-							caption: "登録された家具の一覧を確認",
-						},
-						{
-							src: "/images/furniture-detail.png",
-							alt: "家具詳細画面",
-							title: "家具詳細",
-							caption: "選択した家具の詳細情報を閲覧・編集",
-						},
-						{
-							src: "/images/furniture-register.png",
-							alt: "家具登録",
-							title: "家具登録",
-							caption: "家具名・設置場所・写真を入力し、家具を登録",
-						},
-						{
-							src: "/images/maintenance-calendar.png",
-							alt: "メンテ履歴カレンダー",
-							title: "メンテ履歴カレンダー",
-							caption: "メンテナンス履歴をカレンダー形式で確認",
-						},
-					].map((img) => (
-						<div
-							key={img.src}
-							className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-						>
-							<div className="relative aspect-[16/9] group">
-								<Image
-									src={img.src}
-									alt={img.alt}
-									fill
-									sizes="(max-width: 768px) 100vw, 50vw"
-									className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-								/>
-							</div>
-							<div className="p-4 md:p-6 space-y-2">
-								<h3 className="text-base text-kuralis-900 tracking-tight flex items-center gap-2 font-semibold">
-									<FiImage className="text-kuralis-500 w-5 h-5" />
-									{img.title}
-								</h3>
-								<p className="text-sm uppercase text-kuralis-700 bg-kuralis-50 px-3 py-1 rounded shadow-sm tracking-wide font-medium">
-									{img.caption}
-								</p>
-							</div>
-						</div>
-					))}
-				</div>
-				{/* 下部グラデーション */}
-				<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
-			</section>
+			<UIGallerySection />
 
 			{/* 使い方の流れ（How it works） */}
 			<section className="max-w-6xl mx-auto px-4 py-28">
@@ -164,26 +149,7 @@ export default async function Page() {
 				</p>
 
 				<div className="grid md:grid-cols-3 gap-12">
-					{[
-						{
-							step: 1,
-							title: "家具を登録",
-							desc: "家具名・設置場所を入力し、写真をアップロード。",
-							icon: <FiEdit className="w-6 h-6 text-kuralis-700" />,
-						},
-						{
-							step: 2,
-							title: "メンテナンスを設定",
-							desc: "掃除やケアの頻度を登録し、自動で予定日を管理。",
-							icon: <FiTool className="w-6 h-6 text-kuralis-700" />,
-						},
-						{
-							step: 3,
-							title: "次回予定を確認",
-							desc: "カレンダーや一覧画面で、次のメンテ日をひと目で把握。",
-							icon: <FiCalendar className="w-6 h-6 text-kuralis-700" />,
-						},
-					].map((item) => (
+					{howItWorksSteps.map((item) => (
 						<div
 							key={item.step}
 							className="flex flex-col items-center text-center px-4"

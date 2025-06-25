@@ -5,15 +5,13 @@ import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { AuthContext, AuthContextType } from "./AuthContext";
 
-// Provider に SSR で渡された初期ユーザーを受け取れるように修正
 interface AuthProviderProps {
 	children: React.ReactNode;
-	initialUser?: User | null;
 }
 
-export const AuthProvider = ({ children, initialUser = null }: AuthProviderProps) => {
-	const [user, setUser] = useState<User | null>(initialUser);
-	const [loading, setLoading] = useState(!initialUser);
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+	const [user, setUser] = useState<User | null>(null);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const getSession = async () => {
@@ -26,9 +24,9 @@ export const AuthProvider = ({ children, initialUser = null }: AuthProviderProps
 			setUser(session?.user ?? null);
 		});
 
-		if (!initialUser) getSession();
+		getSession();
 		return () => listener.subscription.unsubscribe();
-	}, [initialUser]);
+	}, []);
 
 	// ログアウト処理
 	const logout = async () => {

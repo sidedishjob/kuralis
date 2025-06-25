@@ -11,24 +11,31 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
  */
 export async function createSupabaseServerClient() {
 	const cookieStore = await cookies();
-
 	return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
 		cookies: {
-			getAll() {
-				return cookieStore.getAll();
-			},
-			setAll(cookiesToSet) {
-				try {
-					cookiesToSet.forEach(({ name, value, options }) => {
-						cookieStore.set(name, value, options);
-					});
-				} catch {
-					// Server Component から呼び出された場合などは setAll が無視される（問題なし）
-				}
-			},
+			getAll: () => cookieStore.getAll(),
+			setAll: (all) =>
+				all.forEach((c) => {
+					cookieStore.set(c.name, c.value, c.options);
+				}),
 		},
 	});
 }
+
+//TODO 上記の処理を下記処理に置換（利用側の関数名も全置換）
+/**
+ * サーバー側で利用する Supabase クライアントを生成
+ */
+export const createServerSupabase = async () => {
+	const cookieStore = await cookies();
+
+	return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+		cookies: {
+			getAll: () => cookieStore.getAll(),
+			setAll: (all) => all.forEach((c) => cookieStore.set(c.name, c.value, c.options)),
+		},
+	});
+};
 
 /**
  * cookiesからユーザー情報を取得

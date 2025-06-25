@@ -18,7 +18,6 @@ export default async function FurnitureListPage() {
 
 	return (
 		<FurnitureListClient
-			user={user}
 			initialFurniture={furniture}
 			initialCategories={meta.categories}
 			initialLocations={meta.locations}

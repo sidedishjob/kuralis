@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { User } from "@supabase/supabase-js";
 import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import { FurnitureCard } from "@/components/features/furniture/FurnitureCard";
 import { FilterSheet } from "@/components/features/furniture/FilterSheet";
@@ -11,14 +10,12 @@ import type { Furniture } from "@/types/furniture";
 import type { Category, Location } from "@/types/furniture_meta";
 
 type FurnitureListClientProps = {
-	user: User | null;
 	initialFurniture: Furniture[];
 	initialCategories: Category[];
 	initialLocations: Location[];
 };
 
 export default function FurnitureListClient({
-	user,
 	initialFurniture,
 	initialCategories,
 	initialLocations,
@@ -230,22 +227,13 @@ export default function FurnitureListClient({
 				</div>
 			</div>
 
-			{/* 登録 or ログインリンク */}
-			{user ? (
-				<Link
-					href="/furniture/register"
-					className="fixed bottom-24 right-4 md:bottom-28 md:right-8 w-12 h-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
-				>
-					<FiPlus size={20} className="transition-colors duration-300" />
-				</Link>
-			) : (
-				<Link
-					href="/auth/login"
-					className="fixed bottom-5 right-4 md:bottom-8 md:right-8 px-6 py-3 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-sm flex items-center justify-center transition-all duration-300 ease-natural group z-50 text-sm font-bold tracking-tighter-custom"
-				>
-					ログインして家具を登録
-				</Link>
-			)}
+			{/* 登録 */}
+			<Link
+				href="/furniture/register"
+				className="fixed bottom-24 right-4 md:bottom-28 md:right-8 w-12 h-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
+			>
+				<FiPlus size={20} className="transition-colors duration-300" />
+			</Link>
 		</div>
 	);
 }

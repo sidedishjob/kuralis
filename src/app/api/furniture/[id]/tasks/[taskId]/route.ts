@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseApiClient } from "@/lib/supabase/server";
+import { ApiError } from "@/lib/errors/ApiError";
 import { handleApiError } from "@/lib/utils/handleApiError";
-import { ApiError } from "next/dist/server/api-utils";
 
 /**
  * メンテナンスタスクのアクティブ状態を更新

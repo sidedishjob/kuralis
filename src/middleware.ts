@@ -1,36 +1,57 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
+import { createServerClient } from "@supabase/ssr";
 
+/**
+ * Supabaseのセッションを自動更新するmiddleware
+ * 認証の判定やリダイレクトは各ページで行う
+ */
 export async function middleware(req: NextRequest) {
-	const supabase = createSupabaseMiddlewareClient(req);
+	const response = NextResponse.next({
+		request: {
+			headers: req.headers,
+		},
+	});
 
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+	const supabase = createServerClient(
+		process.env.NEXT_PUBLIC_SUPABASE_URL!,
+		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+		{
+			cookies: {
+				get: (name) => req.cookies.get(name)?.value,
+				set: (name, value, options) => {
+					response.cookies.set({ name, value, ...options });
+				},
+				remove: (name, options) => {
+					response.cookies.set({ name, value: "", ...options });
+				},
+			},
+		}
+	);
 
+	// 公開パスチェック
 	const publicPaths = [
 		"/",
 		"/auth/login",
 		"/auth/signup",
 		"/auth/reset-request",
 		"/auth/reset-password",
+		"/auth/callback",
 		"/terms",
 		"/privacy",
 		"/about",
 		"/contact",
 		"/contact/thanks",
 	];
+
 	const pathname = req.nextUrl.pathname;
 	const isPublic = publicPaths.some(
 		(path) => pathname === path || pathname.startsWith(`${path}/`)
 	);
 
-	if (!user && !isPublic) {
-		return NextResponse.redirect(new URL("/auth/login", req.url));
-	}
-
-	return NextResponse.next();
+	// セッション更新のみ（認証の可否判断は各ページで）
+	await supabase.auth.getSession();
+	return response;
 }
 
 export const config = {

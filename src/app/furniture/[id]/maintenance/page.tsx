@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { getFurnitureById } from "@/lib/server/furniture";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import MaintenanceClient from "./MaintenanceClient";
 
 export default async function MaintenancePage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 	const {
 		data: { user },
 	} = await supabase.auth.getUser();

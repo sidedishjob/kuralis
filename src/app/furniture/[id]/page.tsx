@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import { getFurnitureById } from "@/lib/server/furniture";
 import { getFurnitureMeta } from "@/lib/server/furnitureMeta";
 import { getMaintenanceSummary } from "@/lib/server/maintenance";
@@ -8,7 +8,7 @@ import FurnitureDetailClient from "./FurnitureDetailClient";
 export default async function FurnitureDetailPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 	const {
 		data: { user },
 	} = await supabase.auth.getUser();

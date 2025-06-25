@@ -29,6 +29,10 @@ export async function middleware(req: NextRequest) {
 		}
 	);
 
+	// ユーザー情報の取得
+	const { data } = await supabase.auth.getUser();
+	const user = data.user;
+
 	// 公開パスチェック
 	const publicPaths = [
 		"/",
@@ -48,6 +52,12 @@ export async function middleware(req: NextRequest) {
 	const isPublic = publicPaths.some(
 		(path) => pathname === path || pathname.startsWith(`${path}/`)
 	);
+
+	// 認証が必要なページで未認証の場合
+	if (!user && !isPublic) {
+		console.log("⛔ 未認証ユーザー → ログイン画面へリダイレクト");
+		return NextResponse.redirect(new URL("/auth/login", req.url));
+	}
 
 	// セッション更新のみ（認証の可否判断は各ページで）
 	await supabase.auth.getSession();

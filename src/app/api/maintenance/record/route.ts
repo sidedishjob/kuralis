@@ -1,28 +1,35 @@
-import { NextResponse } from "next/server";
-import { getUserFromCookie, createSupabaseServerClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { calculateNextDueDate } from "@/lib/utils/maintenance";
 import { handleApiError } from "@/lib/utils/handleApiError";
+import { ApiError } from "@/lib/errors/ApiError";
 import type { MaintenanceHistory } from "@/types/maintenance";
 
 /**
  * メンテナンス履歴の登録
  */
-export async function POST(req: Request) {
-	const user = await getUserFromCookie();
-	if (!user) {
-		return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-	}
-
-	const { taskId, performedAt }: MaintenanceHistory = await req.json();
-
-	if (!taskId || !performedAt) {
-		return NextResponse.json({ error: "taskId と performedAt は必須です" }, { status: 400 });
-	}
+export async function POST(req: NextRequest) {
+	const res = NextResponse.next();
 
 	try {
-		const supabase = await createSupabaseServerClient();
+		const supabase = await createSupabaseApiClient(req, res);
 
-		// 1. 対象タスク情報を取得（周期取得のため）
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) {
+			throw new ApiError(401, "認証が必要です");
+		}
+
+		const { taskId, performedAt }: MaintenanceHistory = await req.json();
+
+		if (!taskId || !performedAt) {
+			throw new ApiError(400, "taskId と performedAt は必須です");
+		}
+
+		// 1. 対象タスクを取得（周期取得のため）
 		const { data: task, error: taskError } = await supabase
 			.from("maintenance_tasks")
 			.select("cycle_value, cycle_unit, name")

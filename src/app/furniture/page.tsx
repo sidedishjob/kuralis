@@ -1,17 +1,20 @@
 import { getFurniture } from "@/lib/server/furniture";
 import FurnitureListClient from "./FurnitureListClient";
-import { getUserFromCookie } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import { getFurnitureMeta } from "@/lib/server/furnitureMeta";
-import { redirect } from "next/navigation";
 
 export default async function FurnitureListPage() {
-	const user = await getUserFromCookie();
-	if (!user) return redirect("/auth/login");
+	const supabase = await createServerSupabase();
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
 
-	const [furniture, meta] = await Promise.all([
-		user ? getFurniture(user.id) : Promise.resolve([]),
-		getFurnitureMeta(),
-	]);
+	if (!user) {
+		// 実際には未認証ユーザーはmiddlewareではじかれるのであり得ないが型安全のために明記
+		throw new Error("認証済みのユーザーが必要です");
+	}
+
+	const [furniture, meta] = await Promise.all([getFurniture(user.id), getFurnitureMeta(user.id)]);
 
 	return (
 		<FurnitureListClient

@@ -3,20 +3,11 @@ import type { FurnitureMeta } from "@/types/furniture_meta";
 
 /**
  * SSR用：認証済ユーザーのカテゴリ・ロケーション一覧を取得
+ * @param userId SupabaseのユーザーID
+ * @returns カテゴリー一覧、設置場所一覧データ（エラー時は空配列）
  */
-export async function getFurnitureMeta(): Promise<FurnitureMeta> {
+export async function getFurnitureMeta(userId: string): Promise<FurnitureMeta> {
 	const supabase = await createSupabaseServerClient();
-
-	// ユーザー取得（cookieから）
-	const {
-		data: { user },
-		error: userError,
-	} = await supabase.auth.getUser();
-
-	if (userError || !user) {
-		console.error("ユーザー取得エラー:", userError?.message);
-		return { categories: [], locations: [] };
-	}
 
 	// カテゴリ一覧（全ユーザー共通）
 	const { data: categories, error: categoriesError } = await supabase
@@ -28,7 +19,7 @@ export async function getFurnitureMeta(): Promise<FurnitureMeta> {
 	const { data: locations, error: locationsError } = await supabase
 		.from("locations")
 		.select("id, name")
-		.or(`user_id.eq.${user.id},user_id.is.null`)
+		.or(`user_id.eq.${userId},user_id.is.null`)
 		.order("user_id", { ascending: true, nullsFirst: true })
 		.order("id", { ascending: true });
 

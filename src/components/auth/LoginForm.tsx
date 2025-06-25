@@ -20,7 +20,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 	const [isLoading, setIsLoading] = useState(false);
 	const [authError, setAuthError] = useState<string | null>(null);
 
-	// react-hook-form 初期化
 	const {
 		register,
 		handleSubmit,
@@ -38,7 +37,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 			setAuthError("メールアドレスまたはパスワードが違います");
 			setIsLoading(false);
 		} else {
-			router.push("/auth/callback");
+			router.push("/furniture");
 		}
 	};
 
@@ -47,7 +46,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 		await supabase.auth.signInWithOAuth({
 			provider: "google",
 			options: {
-				redirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
+				redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
 			},
 		});
 	};

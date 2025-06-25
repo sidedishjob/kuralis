@@ -36,7 +36,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 			email: data.email,
 			password: data.password,
 			options: {
-				emailRedirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
+				emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
 			},
 		});
 
@@ -46,6 +46,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 			setAuthError(error.message);
 		} else {
 			setMessage("確認メールを送信しました。メールをご確認ください。");
+			//TODO サインアップ後、家具一覧ページに遷移させるかは要検討
 		}
 	};
 
@@ -53,7 +54,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 		await supabase.auth.signInWithOAuth({
 			provider: "google",
 			options: {
-				redirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL,
+				redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
 			},
 		});
 	};

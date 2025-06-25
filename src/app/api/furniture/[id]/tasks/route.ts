@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseApiClient, createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { handleApiError } from "@/lib/utils/handleApiError";
 import { maintenanceTaskSchema } from "@/lib/validation";
 import type { MaintenanceTaskWithRecords } from "@/types/maintenance";

@@ -1,23 +1,31 @@
-import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createSupabaseApiClient, createSupabaseServerClient } from "@/lib/supabase/server";
 import { handleApiError } from "@/lib/utils/handleApiError";
 import { maintenanceTaskSchema } from "@/lib/validation";
 import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
+import { ApiError } from "@/lib/errors/ApiError";
 
 const VALID_UNITS = ["days", "weeks", "months", "years"];
 
 /**
  * GET: 家具IDに紐づくメンテナンスタスクと履歴の取得
  */
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
-
-	if (!id) {
-		return NextResponse.json({ error: "家具IDが未指定です" }, { status: 400 });
-	}
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const res = NextResponse.next();
 
 	try {
-		const supabase = await createSupabaseServerClient();
+		const supabase = await createSupabaseApiClient(req, res);
+
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) throw new ApiError(401, "認証が必要です");
+
+		const { id } = await params;
+		if (!id) throw new ApiError(400, "家具IDが未指定です");
+
 		// 1. 家具に紐づくタスク一覧取得
 		const { data: tasks, error: taskError } = await supabase
 			.from("maintenance_tasks")
@@ -50,7 +58,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 			};
 		});
 
-		return NextResponse.json(result);
+		return NextResponse.json(result, { status: 200 });
 	} catch (error: unknown) {
 		return handleApiError(error, "メンテナンスタスクの取得に失敗しました");
 	}
@@ -59,38 +67,39 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 /**
  * POST: メンテナンスタスクの追加追加
  */
-export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
-
-	if (!id) {
-		return NextResponse.json({ error: "家具IDが未指定です" }, { status: 400 });
-	}
-
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const res = NextResponse.next();
 	try {
-		const supabase = await createSupabaseServerClient();
-		const body = await req.json();
+		const supabase = await createSupabaseApiClient(req, res);
 
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) throw new ApiError(401, "認証が必要です");
+
+		const { id } = await params;
+		if (!id) throw new ApiError(400, "家具IDが未指定です");
+
+		const body = await req.json();
 		const result = maintenanceTaskSchema.safeParse(body);
+
 		if (!result.success) {
-			return NextResponse.json(
-				{ error: "入力に不備があります", details: result.error.flatten().fieldErrors },
-				{ status: 400 }
-			);
+			throw new ApiError(400, "入力に不備があります", result.error.flatten().fieldErrors);
 		}
 
 		const { taskName, cycleValue, cycleUnit } = result.data;
 		const parsedCycleValue = parseInt(cycleValue, 10);
+
 		if (Number.isNaN(parsedCycleValue)) {
-			return NextResponse.json(
-				{ error: "周期値が不正です。数値を入力してください。" },
-				{ status: 400 }
-			);
+			throw new ApiError(400, "周期値が不正です。数値を入力してください。");
 		}
 
 		if (!VALID_UNITS.includes(cycleUnit)) {
-			return NextResponse.json(
-				{ error: `周期単位が不正です。使用可能な単位: ${VALID_UNITS.join(", ")}` },
-				{ status: 400 }
+			throw new ApiError(
+				400,
+				`周期単位が不正です。使用可能な単位: ${VALID_UNITS.join(", ")}`
 			);
 		}
 
@@ -107,7 +116,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
 		if (error) throw new Error(`メンテナンスタスク追加エラー: ${error.message}`);
 
-		return NextResponse.json(data);
+		return NextResponse.json(data, { status: 200 });
 	} catch (error: unknown) {
 		return handleApiError(error, "メンテナンスタスクの追加追加に失敗しました");
 	}

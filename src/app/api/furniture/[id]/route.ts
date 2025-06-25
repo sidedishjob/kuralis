@@ -1,6 +1,5 @@
-import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getUserFromCookie } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { getFurnitureById } from "@/lib/server/furniture";
 import { uploadFurnitureImage } from "@/lib/storage/image";
 import { ApiError } from "@/lib/errors/ApiError";
@@ -10,15 +9,22 @@ import type { UpdateFurniturePayload } from "@/types/furniture";
 /**
  * GET: 家具情報の取得
  */
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
-
-	const user = await getUserFromCookie();
-	if (!user) throw new ApiError(401, "未認証のため取得できません");
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const res = NextResponse.next();
 
 	try {
+		const supabase = await createSupabaseApiClient(req, res);
+		const {
+			data: { user },
+			error,
+		} = await supabase.auth.getUser();
+
+		if (error || !user) throw new ApiError(401, "未認証のため取得できません");
+
+		const { id } = await params;
 		const furniture = await getFurnitureById(id, user.id);
-		return NextResponse.json(furniture);
+
+		return NextResponse.json(furniture, { status: 200 });
 	} catch (error: unknown) {
 		return handleApiError(error, "家具の取得に失敗しました");
 	}
@@ -27,13 +33,19 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 /**
  * PUT: 家具情報の更新
  */
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const res = NextResponse.next();
+
 	try {
-		const user = await getUserFromCookie();
-		if (!user) throw new ApiError(401, "未認証のため更新できません");
+		const supabase = await createSupabaseApiClient(req, res);
+		const {
+			data: { user },
+			error,
+		} = await supabase.auth.getUser();
+
+		if (error || !user) throw new ApiError(401, "未認証のため更新できません");
 
 		const { id } = await params;
-		const supabase = await createSupabaseServerClient();
 		const formData = await req.formData();
 
 		const name = formData.get("name") as string;
@@ -44,13 +56,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 		const notes = formData.get("notes") as string;
 
 		if (!name?.trim() || !locationId) {
-			throw new Error("設置場所・名前は必須です");
+			throw new ApiError(400, "設置場所・名前は必須です");
 		}
 
 		// 1. 画像があればアップロードしてURL取得
-		const image = formData.get("image") as File | null;
 		let imageUrl: string | undefined;
-
+		const image = formData.get("image") as File | null;
 		if (image) {
 			imageUrl = await uploadFurnitureImage(image);
 		}
@@ -71,7 +82,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 		if (imageUrl) updates.image_url = imageUrl;
 
 		// 3. DB更新
-		const { error } = await supabase
+		const { error: updateError } = await supabase
 			.from("furniture")
 			.update(updates)
 			.eq("id", id)
@@ -79,11 +90,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 			.select()
 			.single();
 
-		if (error) throw new Error(`家具更新エラー: ${error.message}`);
+		if (updateError) throw new Error(`家具更新エラー: ${updateError.message}`);
 
 		// 4. レスポンス用のデータ取得
 		const enriched = await getFurnitureById(id, user.id);
-
 		return NextResponse.json(enriched, { status: 200 });
 	} catch (error: unknown) {
 		return handleApiError(error, "家具の更新に失敗しました");
@@ -93,23 +103,29 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 /**
  * DELETE: 家具の削除
  */
-export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const res = NextResponse.next();
+
 	try {
-		const user = await getUserFromCookie();
-		if (!user) throw new ApiError(401, "未認証のため削除できません");
+		const supabase = await createSupabaseApiClient(req, res);
+		const {
+			data: { user },
+			error,
+		} = await supabase.auth.getUser();
+
+		if (error || !user) throw new ApiError(401, "未認証のため削除できません");
 
 		const { id } = await params;
-		const supabase = await createSupabaseServerClient();
 
-		const { error } = await supabase
+		const { error: deleteError } = await supabase
 			.from("furniture")
 			.delete()
 			.eq("id", id)
 			.eq("user_id", user.id);
 
-		if (error) throw new Error(`家具削除エラー: ${error.message}`);
+		if (deleteError) throw new Error(`家具削除エラー: ${deleteError.message}`);
 
-		return NextResponse.json({ success: true });
+		return NextResponse.json({ success: true }, { status: 200 });
 	} catch (error: unknown) {
 		return handleApiError(error, "家具の削除に失敗しました");
 	}

@@ -10,7 +10,7 @@ export default async function FurnitureListPage() {
 	} = await supabase.auth.getUser();
 
 	if (!user) {
-		// 実際には未認証ユーザーはmiddlewareではじかれるのであり得ないが型安全のために明記
+		// middlewareで未認証ユーザーは排除される想定だが、安全のために明記
 		throw new Error("認証済みのユーザーが必要です");
 	}
 

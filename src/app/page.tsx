@@ -10,7 +10,7 @@ import {
 	FiCalendar,
 } from "react-icons/fi";
 
-import { getUserFromCookie } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import UIGallerySection from "@/components/common/sections/UIGallerySection";
 
 // Value Props セクションの内容
@@ -55,7 +55,11 @@ const howItWorksSteps = [
 ];
 
 export default async function Page() {
-	const user = await getUserFromCookie();
+	const supabase = await createServerSupabase();
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
+
 	if (user) {
 		redirect("/furniture");
 	}

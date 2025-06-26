@@ -15,7 +15,7 @@ export const metadata = siteMetadata;
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="ja" className={`${inter.variable} ${notoSansJP.variable}`}>
-			<body className="min-h-screen flex flex-col">
+			<body className="min-h-screen flex flex-col font-sans">
 				<AuthProvider>
 					<Header />
 					<Suspense>

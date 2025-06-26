@@ -55,7 +55,6 @@ export async function middleware(req: NextRequest) {
 
 	// 認証が必要なページで未認証の場合
 	if (!user && !isPublic) {
-		console.log("⛔ 未認証ユーザー → ログイン画面へリダイレクト");
 		return NextResponse.redirect(new URL("/auth/login", req.url));
 	}
 

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { signupSchema, type SignupSchema } from "@/lib/validation";
+import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,9 +18,11 @@ import { Icons } from "@/constants/icons";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
+	const router = useRouter();
+	const { toast } = useToast();
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [authError, setAuthError] = useState<string | null>(null);
-	const [message, setMessage] = useState<string | null>(null);
 
 	const {
 		register,
@@ -31,24 +35,37 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 	const onSubmit = async (data: SignupSchema) => {
 		setIsLoading(true);
 		setAuthError(null);
-		setMessage(null);
 
-		const { error } = await supabase.auth.signUp({
+		// 1. サインアップ
+		const { error: signupError } = await supabase.auth.signUp({
 			email: data.email,
 			password: data.password,
-			options: {
-				emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
-			},
+			// ↓将来メール認証用
+			// options: {
+			// 	emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+			// },
 		});
 
-		setIsLoading(false);
-
-		if (error) {
-			setAuthError(getErrorMessage(error, "もう一度お試しください"));
-		} else {
-			setMessage("確認メールを送信しました。メールをご確認ください。");
-			//TODO サインアップ後、家具一覧ページに遷移させるかは要検討
+		if (signupError) {
+			setIsLoading(false);
+			setAuthError(getErrorMessage(signupError, "もう一度お試しください"));
+			return;
 		}
+
+		// 2. 自動ログイン
+		const { error: loginError } = await supabase.auth.signInWithPassword({
+			email: data.email,
+			password: data.password,
+		});
+
+		if (loginError) {
+			setAuthError(getErrorMessage(loginError, "ログイン処理に失敗しました"));
+			return;
+		}
+
+		// 3. 家具一覧へリダイレクト
+		router.push("/furniture");
+		toast({ title: "ようこそ！", description: "ご登録ありがとうございます。" });
 	};
 
 	const handleGoogleSignup = async () => {
@@ -110,7 +127,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 							</div>
 
 							{authError && <p className="text-sm text-red-500">{authError}</p>}
-							{message && <p className="text-sm text-green-600">{message}</p>}
 
 							<LoadingButton
 								type="submit"

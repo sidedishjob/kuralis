@@ -54,7 +54,6 @@ export default function UIGallerySection() {
 								alt={img.alt}
 								fill
 								sizes="(max-width: 768px) 100vw, 50vw"
-								priority={img.src === "/images/furniture-list.png"}
 								className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
 							/>
 						</div>

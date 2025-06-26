@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/constants/icons";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +44,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 		setIsLoading(false);
 
 		if (error) {
-			setAuthError(error.message);
+			setAuthError(getErrorMessage(error, "もう一度お試しください"));
 		} else {
 			setMessage("確認メールを送信しました。メールをご確認ください。");
 			//TODO サインアップ後、家具一覧ページに遷移させるかは要検討

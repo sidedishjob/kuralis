@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import type { FurnitureMeta } from "@/types/furniture_meta";
 
 /**
@@ -7,7 +7,7 @@ import type { FurnitureMeta } from "@/types/furniture_meta";
  * @returns カテゴリー一覧、設置場所一覧データ（エラー時は空配列）
  */
 export async function getFurnitureMeta(userId: string): Promise<FurnitureMeta> {
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 
 	// カテゴリ一覧（全ユーザー共通）
 	const { data: categories, error: categoriesError } = await supabase

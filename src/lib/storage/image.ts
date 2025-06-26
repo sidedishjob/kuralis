@@ -14,8 +14,8 @@ export function sanitizeFileName(name: string): string {
  * Supabase Storage に画像をアップロードして public URL を返す
  */
 export async function uploadFurnitureImage(file: File): Promise<string> {
-	const { createSupabaseServerClient } = await import("@/lib/supabase/server"); // 遅延import
-	const supabase = await createSupabaseServerClient();
+	const { createServerSupabase } = await import("@/lib/supabase/server"); // 遅延import
+	const supabase = await createServerSupabase();
 
 	const safeFileName = sanitizeFileName(file.name);
 	const fileName = `${uuidv4()}-${safeFileName}`;

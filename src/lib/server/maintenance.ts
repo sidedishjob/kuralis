@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import type { MaintenanceSummary } from "@/types/maintenance";
 
 /**
@@ -14,7 +14,7 @@ export async function getMaintenanceSummary(
 	furnitureId: string
 ): Promise<MaintenanceSummary | null> {
 	try {
-		const supabase = await createSupabaseServerClient();
+		const supabase = await createServerSupabase();
 
 		// 1. 家具に紐づくアクティブなタスク一覧を取得
 		const { data: tasks, error: taskError } = await supabase

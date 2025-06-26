@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import { uploadFurnitureImage } from "../storage/image";
 
@@ -8,7 +8,7 @@ import { uploadFurnitureImage } from "../storage/image";
  * @returns 家具一覧データ（エラー時は空配列）
  */
 export async function getFurniture(userId: string) {
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 
 	const { data, error } = await supabase
 		.from("furniture")
@@ -33,7 +33,7 @@ export async function getFurniture(userId: string) {
  * @returns 家具情報（存在しなければ null）
  */
 export async function getFurnitureById(id: string, userId: string) {
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 
 	const { data, error } = await supabase
 		.from("furniture")
@@ -81,7 +81,7 @@ export async function getFurnitureById(id: string, userId: string) {
  * @throws 登録失敗・アップロード失敗・バリデーション失敗時にエラーを投げる
  */
 export async function registerFurniture(formData: FormData, userId: string) {
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 
 	// 必須項目の取得とバリデーション
 	const name = formData.get("name") as string;
@@ -110,5 +110,8 @@ export async function registerFurniture(formData: FormData, userId: string) {
 		},
 	]);
 
-	if (insertError) throw new Error(`登録失敗: ${insertError.message}`);
+	if (insertError) {
+		console.error("家具登録エラー:", insertError.message);
+		throw new Error("家具の登録に失敗しました");
+	}
 }

@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerSupabase } from "@/lib/supabase/server";
 import type { MaintenanceSummaryItem } from "@/types/maintenance";
 import type { PostgrestError } from "@supabase/supabase-js";
 
@@ -21,7 +21,7 @@ function checkSupabaseError<T>(data: T | null, error: PostgrestError | null, nam
  * 全家具のメンテナンスタスク概要を取得（SSR 専用）
  */
 export async function getAllMaintenanceSummary(userId: string): Promise<MaintenanceSummaryItem[]> {
-	const supabase = await createSupabaseServerClient();
+	const supabase = await createServerSupabase();
 
 	// 1. 家具一覧を取得
 	const { data: furnitures, error: furnError } = await supabase

@@ -16,10 +16,24 @@ import Image from "next/image";
 
 export default function AboutPage() {
 	return (
-		<main className="overflow-hidden">
+		<main>
 			{/* Hero Section - Enhanced */}
-			<section className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center px-4 relative">
-				<div className="relative space-y-12">
+			<section className="relative isolate min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center px-4">
+				{/* 上部のぼかし背景 */}
+				<div
+					aria-hidden="true"
+					className="absolute inset-x-0 -top-40 -z-10 overflow-hidden blur-3xl sm:-top-80"
+				>
+					<div
+						style={{
+							clipPath:
+								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+						}}
+						className="relative left-1/2 -translate-x-1/2 rotate-[30deg] aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72rem]"
+					/>
+				</div>
+
+				<div className="relative space-y-12 pb-30">
 					<div className="inline-flex items-center gap-2 px-4 py-2 bg-kuralis-100 rounded-full text-kuralis-700 text-sm font-medium animate-fade-in">
 						<FiStar className="w-4 h-4" />
 						家具管理の新しい体験
@@ -40,19 +54,36 @@ export default function AboutPage() {
 				<div className="absolute bottom-16 animate-bounce">
 					<FiArrowDown size={32} className="text-kuralis-600" />
 				</div>
+				{/* 下部のぼかし背景 */}
+				<div
+					aria-hidden="true"
+					className="absolute inset-x-0 bottom-[-8rem] sm:bottom-[-16rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-42rem)]"
+				>
+					<div
+						style={{
+							clipPath:
+								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+						}}
+						className="relative left-1/2 -translate-x-1/2 aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+					/>
+				</div>
 			</section>
 
 			{/* Story Section - Enhanced */}
 			<section className="py-40 bg-gradient-to-b from-kuralis-50 to-white relative">
 				<div className="max-w-5xl mx-auto px-6 space-y-8">
 					<div className="space-y-4">
-						<h2 className="text-4xl md:text-5xl font-bold text-kuralis-900 tracking-tight">
+						<h2 className="text-3xl md:text-5xl font-bold text-kuralis-900 tracking-tight">
 							なぜ「kuralis」なのか？
 						</h2>
 						<div className="w-20 h-1 bg-kuralis-600 rounded-full"></div>
 					</div>
 					<div className="space-y-6 text-kuralis-700 text-lg leading-relaxed">
-						<p>家は、暮らしの舞台。そして家具は、その演出家。</p>
+						<p>
+							家は、暮らしの舞台
+							<br className="md:hidden" />
+							そして家具は、その演出家
+						</p>
 						<p>
 							私たちは家具を「使い捨て」ではなく、「共に育てる存在」として見ています。
 						</p>
@@ -76,7 +107,7 @@ export default function AboutPage() {
 				<div className="absolute inset-0 bg-gradient-to-r from-kuralis-50 to-white opacity-50"></div>
 				<div className="relative z-10 mx-auto max-w-4xl space-y-16 px-6">
 					<div className="text-center space-y-8">
-						<h2 className="text-4xl md:text-6xl text-kuralis-900 leading-tight font-bold">
+						<h2 className="text-3xl md:text-6xl text-kuralis-900 leading-tight font-bold">
 							家具との暮らしを
 							<br />
 							<span className="text-kuralis-600">大切にする人のための</span>
@@ -130,7 +161,7 @@ export default function AboutPage() {
 			<section className="py-40 bg-gradient-to-b from-white to-kuralis-50 relative">
 				<div className="container mx-auto px-6">
 					<div className="text-center mb-20">
-						<h2 className="text-4xl md:text-5xl font-bold text-kuralis-900 mb-6">
+						<h2 className="text-3xl md:text-5xl font-bold text-kuralis-900 mb-6">
 							私たちの価値観
 						</h2>
 						<p className="text-xl text-kuralis-700 max-w-2xl mx-auto">
@@ -193,7 +224,7 @@ export default function AboutPage() {
 			<section className="relative py-32 bg-gradient-to-bl from-kuralis-50 via-white to-kuralis-100">
 				<div className="max-w-7xl mx-auto px-6">
 					<div className="text-center mb-20">
-						<h2 className="text-5xl md:text-6xl tracking-tight font-bold text-kuralis-900 mb-8">
+						<h2 className="text-4xl md:text-6xl tracking-tight font-bold text-kuralis-900 mb-8">
 							kuralis in Action
 						</h2>
 						<p className="text-xl text-kuralis-700 max-w-3xl mx-auto leading-relaxed">
@@ -244,9 +275,8 @@ export default function AboutPage() {
 										alt={img.alt}
 										fill
 										sizes="(max-width: 768px) 100vw, 50vw"
-										className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+										className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
 									/>
-									<div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 								</div>
 								<div className="p-8 space-y-6">
 									<div className="flex items-center gap-3">
@@ -290,7 +320,7 @@ export default function AboutPage() {
 						<div className="bg-white p-12 rounded-2xl shadow-xl border border-kuralis-100">
 							<div className="grid md:grid-cols-2 gap-12 items-center">
 								<div className="space-y-6">
-									<p className="text-xl text-kuralis-700 leading-relaxed">
+									<p className="text-lg text-kuralis-700 leading-relaxed">
 										インテリアを愛する一人の開発者が、
 										<br />
 										家具との暮らしをもっと楽しめるようにと開発しました。
@@ -309,7 +339,7 @@ export default function AboutPage() {
 									<div className="text-2xl font-bold text-kuralis-900 mb-2">
 										家具愛好家
 									</div>
-									<div className="text-kuralis-700">
+									<div className="text-kuralis-700 text-sm md:text-base">
 										インテリア × テクノロジー
 									</div>
 								</div>
@@ -321,11 +351,10 @@ export default function AboutPage() {
 
 			{/* CTA - Enhanced */}
 			<section className="py-40 bg-gradient-to-br from-kuralis-800 to-kuralis-600 relative overflow-hidden">
-				<div className="absolute inset-0 bg-[url('/hero-pattern.svg')] bg-repeat opacity-10"></div>
 				<div className="relative z-10 container mx-auto px-6 text-center">
 					<div className="max-w-3xl mx-auto space-y-12">
 						<div className="space-y-6">
-							<h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
+							<h2 className="text-3xl md:text-6xl font-bold text-white tracking-tight">
 								家具を育て始める
 							</h2>
 							<p className="text-xl text-kuralis-200 leading-relaxed">

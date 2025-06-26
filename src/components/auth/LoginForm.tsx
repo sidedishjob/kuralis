@@ -92,11 +92,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 							</div>
 
 							<div className="grid gap-3">
-								<div className="flex items-center">
+								<div className="flex items-center h-4">
 									<Label htmlFor="password">パスワード</Label>
 									<Link
 										href="/auth/reset-request"
-										className="ml-auto text-xs font-light text-muted-foreground underline-offset-4 hover:underline "
+										className="ml-auto text-xs font-light text-muted-foreground underline-offset-4 hover:underline"
 										tabIndex={-1}
 									>
 										パスワードをお忘れですか？

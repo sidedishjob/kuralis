@@ -112,7 +112,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 							</div>
 
 							<div className="grid gap-3">
-								<Label htmlFor="password">パスワード</Label>
+								<Label htmlFor="password" className="h-4">
+									パスワード
+								</Label>
 								<Input
 									id="password"
 									type="password"

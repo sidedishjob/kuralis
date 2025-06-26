@@ -43,8 +43,8 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 
 	const linkClassName =
 		variant === "desktop"
-			? "inline-flex items-center h-10 text-sm text-kuralis-500 hover:text-kuralis-900 transition-colors duration-300 font-semibold tracking-tighter-custom"
-			: "block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-semibold tracking-tighter-custom";
+			? "inline-flex items-center h-10 text-sm text-kuralis-500 hover:text-kuralis-900 transition-colors duration-300 font-medium tracking-tighter-custom"
+			: "block text-lg text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 font-medium tracking-tighter-custom";
 
 	if (loading) {
 		return variant === "desktop" ? (

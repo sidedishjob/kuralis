@@ -52,8 +52,10 @@
 | **UI / スタイル**  | Tailwind CSS 4.1.7 / shadcn/ui / Radix UI / lucide-react  |
 | **ルーティング**   | react-router-dom ^6.22.3                                  |
 | **メール送信**     | nodemailer ^7.0.3                                         |
-| **CI / CD**        | GitHub Actions / Vercel                                   |
+| **CI / CD**        | GitHub Actions（Vercel CLI による手動デプロイ）           |
 | **その他**         | date-fns / clsx / eslint / prettier                       |
+
+※ Vercel の Git 連携による自動デプロイは無効化しており、CI成功時に GitHub Actions 経由で明示的に CLI デプロイしています。
 
 ### 🧑‍💻 技術選定理由
 

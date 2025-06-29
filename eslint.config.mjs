@@ -13,10 +13,13 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-	...compat.extends("next/core-web-vitals", "next/typescript"),
-	...tseslint.configs.recommended, // Bolt由来
 	{
-		files: ["**/*.{ts,tsx}"],
+		ignores: [".next/", "node_modules/", "out/", "dist/", "coverage/"],
+	},
+	...compat.extends("next/core-web-vitals", "next/typescript"),
+	...tseslint.configs.recommended,
+	{
+		files: ["**/*.{js,mjs,ts,tsx,jsx}"],
 		plugins: {
 			"react-hooks": reactHooks,
 			"react-refresh": reactRefresh,

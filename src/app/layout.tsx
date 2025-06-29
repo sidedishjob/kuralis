@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import "./globals.css";
 import PageViewListener from "./_analytics/pageviewListener";
 import { Suspense } from "react";

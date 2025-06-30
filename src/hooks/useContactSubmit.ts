@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "./useToast";
 import { ContactSchema } from "@/lib/validation";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { API_ROUTES } from "@/lib/api/route";
 
 /**
  * お問い合わせ送信用のカスタムフック
@@ -16,7 +17,7 @@ export function useContactSubmit() {
 
 	const submitContact = async (data: ContactSchema) => {
 		try {
-			const res = await fetch("/api/contact", {
+			const res = await fetch(API_ROUTES.contact, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),

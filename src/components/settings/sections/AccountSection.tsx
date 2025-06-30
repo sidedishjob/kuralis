@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";
 import { useToast } from "@/hooks/useToast";
+import { API_ROUTES } from "@/lib/api/route";
 
 export const AccountSection = () => {
 	const [open, setOpen] = useState(false);
@@ -37,7 +38,7 @@ export const AccountSection = () => {
 
 	const handleDelete = async () => {
 		setIsLoading(true);
-		const res = await fetch("/api/delete-user", { method: "POST" });
+		const res = await fetch(API_ROUTES.deleteUser, { method: "POST" });
 		if (!res.ok) {
 			alert("削除に失敗しました");
 			setIsLoading(false);

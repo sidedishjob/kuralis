@@ -6,4 +6,7 @@ export const API_ROUTES = {
 	furnitureMeta: "/api/furniture/meta",
 	maintenanceRecord: "/api/maintenance/record",
 	maintenanceRecordById: (id: string) => `/api/maintenance/record/${id}`,
+	contact: "/api/contact",
+	deleteUser: "/api/delete-user",
+	logClientError: "/api/log-client-error",
 };

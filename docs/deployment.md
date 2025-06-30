@@ -76,7 +76,7 @@ npm start
 - メール認証の有効化
 - Google認証の有効化（必要な場合）
 
-4. 環境変数の設定
+4. 環境変数の設定（Vercelの場合）
 
 - NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, EMAIL_USER, EMAIL_PASS, EMAIL_TO, NEXT_PUBLIC_SITE_URL
 
@@ -85,34 +85,57 @@ npm start
 ### GitHub Actions
 
 ```yaml
-name: CI/CD
+name: CI + Deploy to Vercel
 
 on:
-    push:
-        branches: [main]
     pull_request:
-        branches: [main]
+        branches: [main, develop]
+    push:
+        branches: [main, develop]
 
 jobs:
-    build:
+    ci-and-deploy:
         runs-on: ubuntu-latest
+
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
               with:
-                  node-version: "18"
-            - run: npm ci
-            - run: npm run build
-            - run: npm run lint
-            - run: npm run test
+                  node-version: 20
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run ESLint
+              run: npm run lint
+
+            - name: Run Prettier Check
+              run: npm run prettier:check
+
+            - name: Deploy to Vercel (Production or Preview)
+              if: success()
+              run: |
+                  if [[ "$GITHUB_REF_NAME" == "main" ]]; then
+                    echo "Deploying to PRODUCTION..."
+                    npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
+                  else
+                    echo "Deploying to PREVIEW (develop)..."
+                    npx vercel --token=${{ secrets.VERCEL_TOKEN }} --yes
+                  fi
+              env:
+                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 ```
 
-## モニタリングとログ
+<!-- ## モニタリングとログ
 
 - アプリケーションログは`logs`ディレクトリに保存
 - エラーログは`logs/error.log`に記録
 - メンテナンス履歴は`logs/maintenance.log`に記録
-- Next.js Analytics/Supabaseダッシュボードでパフォーマンス監視
+- Next.js Analytics/Supabaseダッシュボードでパフォーマンス監視 -->
 
 ## バックアップとリカバリー
 

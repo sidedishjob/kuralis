@@ -67,13 +67,13 @@ export const siteMetadata = {
 	// プライバシーポリシー
 	privacyPolicy: {
 		url: "/privacy",
-		lastUpdated: "2025-06-10",
+		lastUpdated: "2025-07-01",
 	},
 
 	// 利用規約
 	termsOfService: {
 		url: "/terms",
-		lastUpdated: "2025-06-10",
+		lastUpdated: "2025-07-01",
 	},
 
 	// サポート情報

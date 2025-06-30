@@ -112,7 +112,7 @@ export default function PrivacyPage() {
 							</Link>
 						</p>
 					</section>
-					<p className="text-sm text-gray-500">施行日：2025年6月10日</p>
+					<p className="text-sm text-gray-500">施行日：2025年7月1日</p>
 				</div>
 			</div>
 		</div>

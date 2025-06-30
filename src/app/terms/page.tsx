@@ -129,7 +129,7 @@ export default function TermsPage() {
 							紛争が生じた場合、当社所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。
 						</p>
 					</section>
-					<p className="text-sm text-gray-500">施行日：2025年6月10日</p>
+					<p className="text-sm text-gray-500">施行日：2025年7月1日</p>
 				</div>
 			</div>
 		</div>

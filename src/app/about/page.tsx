@@ -17,7 +17,7 @@ import Image from "next/image";
 export default function AboutPage() {
 	return (
 		<main>
-			{/* Hero Section - Enhanced */}
+			{/* Hero Section */}
 			<section className="relative isolate min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center text-center px-4">
 				{/* 上部のぼかし背景 */}
 				<div
@@ -69,7 +69,7 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* Story Section - Enhanced */}
+			{/* Story Section */}
 			<section className="py-40 bg-gradient-to-b from-kuralis-50 to-white relative">
 				<div className="max-w-5xl mx-auto px-6 space-y-8">
 					<div className="space-y-4">
@@ -102,12 +102,12 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* Concept Section - Enhanced */}
+			{/* Concept Section */}
 			<section className="py-40 relative">
 				<div className="absolute inset-0 bg-gradient-to-r from-kuralis-50 to-white opacity-50"></div>
 				<div className="relative z-10 mx-auto max-w-4xl space-y-16 px-6">
 					<div className="text-center space-y-8">
-						<h2 className="text-3xl md:text-6xl text-kuralis-900 leading-tight font-bold">
+						<h2 className="text-3xl md:text-5xl text-kuralis-900 leading-tight font-bold">
 							家具との暮らしを
 							<br />
 							<span className="text-kuralis-600">大切にする人のための</span>
@@ -157,7 +157,7 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* Core Values Section - Enhanced */}
+			{/* Core Values Section */}
 			<section className="py-40 bg-gradient-to-b from-white to-kuralis-50 relative">
 				<div className="container mx-auto px-6">
 					<div className="text-center mb-20">
@@ -220,11 +220,11 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* UI ギャラリー - Enhanced */}
+			{/* UI ギャラリー */}
 			<section className="relative py-32 bg-gradient-to-bl from-kuralis-50 via-white to-kuralis-100">
 				<div className="max-w-7xl mx-auto px-6">
 					<div className="text-center mb-20">
-						<h2 className="text-4xl md:text-6xl tracking-tight font-bold text-kuralis-900 mb-8">
+						<h2 className="text-3xl md:text-5xl tracking-tight font-bold text-kuralis-900 mb-8">
 							kuralis in Action
 						</h2>
 						<p className="text-xl text-kuralis-700 max-w-3xl mx-auto leading-relaxed">
@@ -306,12 +306,12 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* Developer Section - Enhanced */}
+			{/* Developer Section */}
 			<section className="py-40 bg-gradient-to-b from-kuralis-50 to-white">
 				<div className="max-w-4xl mx-auto px-6">
 					<div className="text-center space-y-12">
 						<div className="space-y-6">
-							<h2 className="text-4xl md:text-5xl font-bold text-kuralis-900">
+							<h2 className="text-3xl md:text-5xl font-bold text-kuralis-900">
 								開発者について
 							</h2>
 							<div className="w-20 h-1 bg-kuralis-600 rounded-full mx-auto"></div>
@@ -334,7 +334,7 @@ export default function AboutPage() {
 										</p>
 									</div>
 								</div>
-								<div className="bg-gradient-to-br from-kuralis-200 to-kuralis-300 p-8 rounded-2xl text-center">
+								<div className="bg-gradient-to-br from-kuralis-100 to-kuralis-300 p-8 rounded-2xl text-center">
 									<div className="text-6xl mb-4">🏠</div>
 									<div className="text-2xl font-bold text-kuralis-900 mb-2">
 										家具愛好家
@@ -349,12 +349,12 @@ export default function AboutPage() {
 				</div>
 			</section>
 
-			{/* CTA - Enhanced */}
+			{/* CTA */}
 			<section className="py-40 bg-gradient-to-br from-kuralis-800 to-kuralis-600 relative overflow-hidden">
 				<div className="relative z-10 container mx-auto px-6 text-center">
 					<div className="max-w-3xl mx-auto space-y-12">
 						<div className="space-y-6">
-							<h2 className="text-3xl md:text-6xl font-bold text-white tracking-tight">
+							<h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
 								家具を育て始める
 							</h2>
 							<p className="text-xl text-kuralis-200 leading-relaxed">

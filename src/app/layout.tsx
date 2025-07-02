@@ -4,6 +4,7 @@ import PageViewListener from "./_analytics/pageviewListener";
 import { Suspense } from "react";
 import Script from "next/script";
 import { GA_ID, existsGaId } from "@/lib/gtag";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/common/layout/Header";
 import { Footer } from "@/components/common/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthProvider";
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						</Script>
 					</>
 				)}
+				<Analytics />
 			</body>
 		</html>
 	);

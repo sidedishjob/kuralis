@@ -154,7 +154,7 @@ export function generateMetadata({
 			},
 		},
 		verification: {
-			google: "google-site-verification-code", // Google Search Consoleの検証コード
+			google: "cNerVpuLRHQp6bOFRclL0Klmoon5uoVEubRqxM9LbMo", // Google Search Consoleの検証コード
 			yandex: "yandex-verification-code", // Yandex Webmasterの検証コード
 			bing: "bing-verification-code", // Bing Webmaster Toolsの検証コード
 		},

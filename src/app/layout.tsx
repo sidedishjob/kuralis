@@ -10,9 +10,9 @@ import { Footer } from "@/components/common/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { inter, notoSansJP } from "@/constants/fonts";
-import { siteMetadata } from "@/constants/metadata";
+import { generateMetadata } from "@/constants/metadata";
 
-export const metadata = siteMetadata;
+export const metadata = generateMetadata();
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (

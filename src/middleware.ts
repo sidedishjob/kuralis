@@ -46,6 +46,8 @@ export async function middleware(req: NextRequest) {
 		"/about",
 		"/contact",
 		"/contact/thanks",
+		"/sitemap.xml",
+		"/robots.txt",
 	];
 
 	const pathname = req.nextUrl.pathname;

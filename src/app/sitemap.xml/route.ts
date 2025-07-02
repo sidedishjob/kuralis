@@ -1,6 +1,6 @@
 export async function GET() {
 	const baseUrl = "https://kuralis.homes";
-	const staticPaths = ["/", "/about", "/contact", "/contact/thanks", "/privacy", "/terms"];
+	const staticPaths = ["/", "/about", "/contact", "/privacy", "/terms"];
 
 	const urls = staticPaths
 		.map((path) => {

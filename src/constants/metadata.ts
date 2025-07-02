@@ -134,6 +134,13 @@ export function generateMetadata({
 			images: [image || siteMetadata.ogImage.url],
 		},
 		icons: {
+			icon: [
+				{
+					url: siteMetadata.favicon.url,
+					sizes: siteMetadata.favicon.sizes,
+					type: siteMetadata.favicon.type,
+				},
+			],
 			apple: [
 				{
 					url: siteMetadata.appleTouchIcon.url,

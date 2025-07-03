@@ -366,7 +366,7 @@ export default function AboutPage() {
 
 						<div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
 							<Link
-								href="/furniture"
+								href="/auth/signup"
 								className="group inline-flex items-center gap-3 px-10 py-5 bg-white text-kuralis-900 rounded-xl hover:bg-kuralis-50 transition-all duration-300 shadow-2xl hover:shadow-3xl hover:-translate-y-1 font-semibold text-lg"
 							>
 								Start Collection

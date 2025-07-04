@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/constants/icons";
+import { GuestLoginButton } from "./GuestLoginButton";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
 	const router = useRouter();
@@ -70,13 +71,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 								Googleでログイン
 							</Button>
 						</div>
-
-						<div className="after:border-border relative text-center text-xs after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-							<span className="bg-card text-muted-foreground relative z-10 px-2">
+						<div className="flex items-center justify-between gap-4">
+							<hr className="flex-grow border-border" />
+							<span className="text-xs text-muted-foreground whitespace-nowrap">
 								またはメールでログイン
 							</span>
+							<hr className="flex-grow border-border" />
 						</div>
-
 						<form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
 							<div className="grid gap-3">
 								<Label htmlFor="email">メールアドレス</Label>
@@ -122,10 +123,22 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 								type="submit"
 								isLoading={isLoading}
 								loadingText="ログイン中..."
+								className="w-full"
 							>
 								ログイン
 							</LoadingButton>
 						</form>
+
+						<div className="flex items-center justify-between gap-4">
+							<hr className="flex-grow border-border" />
+							<span className="text-xs text-muted-foreground whitespace-nowrap">
+								またはゲストとして試す
+							</span>
+							<hr className="flex-grow border-border" />
+						</div>
+						<div className="w-full flex justify-center">
+							<GuestLoginButton />
+						</div>
 
 						<div className="text-center text-xs">
 							アカウントをお持ちでないですか？

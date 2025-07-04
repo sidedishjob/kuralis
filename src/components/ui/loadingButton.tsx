@@ -6,6 +6,8 @@ import { Loader2 } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
 import { buttonVariants } from "./buttonVariants";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface LoadingButtonProps
 	extends React.ComponentProps<"button">,
@@ -27,9 +29,14 @@ export function LoadingButton({
 	disabled,
 	...props
 }: LoadingButtonProps) {
-	return (
+	const { isGuestUser } = useAuth();
+
+	const isActuallyDisabled = isLoading || disabled || isGuestUser;
+	const tooltipMessage = isGuestUser ? "ゲストユーザーのため操作できません" : "";
+
+	const button = (
 		<Button
-			disabled={isLoading || disabled}
+			disabled={isActuallyDisabled}
 			variant={variant}
 			size={size}
 			className={cn(className)}
@@ -52,5 +59,16 @@ export function LoadingButton({
 				)}
 			</span>
 		</Button>
+	);
+
+	return isGuestUser ? (
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<span>{button}</span>
+			</TooltipTrigger>
+			<TooltipContent>{tooltipMessage}</TooltipContent>
+		</Tooltip>
+	) : (
+		button
 	);
 }

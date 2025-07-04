@@ -86,12 +86,7 @@ export default function PasswordChangeForm() {
 				)}
 			</div>
 
-			<LoadingButton
-				type="submit"
-				isLoading={isSubmitting}
-				loadingText="更新中..."
-				className="w-full"
-			>
+			<LoadingButton type="submit" isLoading={isSubmitting} loadingText="更新中...">
 				パスワードを更新
 			</LoadingButton>
 		</form>

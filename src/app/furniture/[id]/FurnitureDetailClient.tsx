@@ -243,7 +243,9 @@ export default function FurnitureDetailClient({
 															家具を削除しますか？
 														</DialogTitle>
 														<DialogDescription>
-															この操作は取り消せません。本当に
+															この操作は取り消せません。
+															<br className="md:hidden" />
+															本当に
 															{furnitureToUse.name}
 															を削除しますか？
 														</DialogDescription>
@@ -255,6 +257,7 @@ export default function FurnitureDetailClient({
 															isLoading={isDeleting}
 															loadingText="削除中..."
 															onClick={handleDelete}
+															className="w-full"
 														>
 															削除する
 														</LoadingButton>

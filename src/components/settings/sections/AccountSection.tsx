@@ -84,11 +84,17 @@ export const AccountSection = () => {
 							<DialogHeader>
 								<DialogTitle>本当にアカウントを削除しますか？</DialogTitle>
 								<DialogDescription>
-									すべてのデータが完全に削除され、元に戻すことはできません。
+									すべてのデータが完全に削除され、
+									<br className="md:hidden" />
+									元に戻すことはできません。
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
-								<Button variant="outline" onClick={() => setOpen(false)}>
+								<Button
+									variant="outline"
+									onClick={() => setOpen(false)}
+									className="mt-2"
+								>
 									キャンセル
 								</Button>
 								<LoadingButton
@@ -97,6 +103,7 @@ export const AccountSection = () => {
 									onClick={handleDelete}
 									isLoading={isLoading}
 									loadingText="削除中..."
+									className="w-full mt-2"
 								>
 									削除する
 								</LoadingButton>

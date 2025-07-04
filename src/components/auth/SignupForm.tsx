@@ -134,6 +134,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 								type="submit"
 								isLoading={isLoading}
 								loadingText="登録中..."
+								className="w-full"
 							>
 								登録する
 							</LoadingButton>

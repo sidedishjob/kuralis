@@ -70,7 +70,7 @@ export default function Step2UI({
 
 	return (
 		<div className="space-y-4 md:space-y-8">
-			<h1 className="text-xl md:text-3xl tracking-tighter-custom text-center mb-6 text-kuralis-900">
+			<h1 className="text-xl md:text-3xl font-bold tracking-tighter-custom text-center mb-6 text-kuralis-900">
 				家具の名前と写真を入力してください
 			</h1>
 
@@ -171,7 +171,7 @@ export default function Step2UI({
 				</div>
 			</div>
 
-			<div className="pt-8">
+			<div className="w-full pt-8">
 				<LoadingButton
 					onClick={onSubmit}
 					isLoading={isLoading}

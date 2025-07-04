@@ -21,6 +21,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useMaintenanceTasks } from "@/hooks/useMaintenanceTasks";
 import { useAddMaintenanceRecord } from "@/hooks/useAddMaintenanceRecord";
@@ -43,7 +44,7 @@ const unitMap: Record<MaintenanceCycleUnit, string> = {
 
 export default function MaintenanceClient({ furniture }: Props) {
 	const getTodayDate = () => new Date().toISOString().split("T")[0];
-
+	const { isGuestUser } = useAuth();
 	const { toast } = useToast();
 
 	const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
@@ -356,6 +357,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 									<span className="text-sm text-kuralis-600">タスクの状態</span>
 									<Switch
 										checked={task.is_active}
+										disabled={isGuestUser}
 										onCheckedChange={(checked) =>
 											handleUpdateTaskActive(task.id, checked)
 										}

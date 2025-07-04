@@ -38,7 +38,9 @@ export async function PATCH(
 			.from("maintenance_tasks")
 			.update({ is_active })
 			.eq("id", taskId)
-			.eq("furniture_id", id);
+			.eq("furniture_id", id)
+			.select()
+			.single();
 
 		if (error) {
 			throw new Error(`メンテナンスタスク更新エラー: ${error.message}`);

@@ -121,8 +121,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 			.from("furniture")
 			.delete()
 			.eq("id", id)
-			.eq("user_id", user.id);
-
+			.eq("user_id", user.id)
+			.select()
+			.single();
 		if (deleteError) throw new Error(`家具削除エラー: ${deleteError.message}`);
 
 		return NextResponse.json({ success: true }, { status: 200 });

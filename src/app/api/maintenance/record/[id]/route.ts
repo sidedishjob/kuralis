@@ -24,7 +24,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 		const { error: deleteError } = await supabase
 			.from("maintenance_records")
 			.delete()
-			.eq("id", id);
+			.eq("id", id)
+			.select()
+			.single();
 
 		if (deleteError) {
 			throw new Error(`メンテナンス履歴削除エラー: ${deleteError.message}`);

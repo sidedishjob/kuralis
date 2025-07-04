@@ -13,7 +13,7 @@ export async function getFurnitureMeta(userId: string): Promise<FurnitureMeta> {
 	const { data: categories, error: categoriesError } = await supabase
 		.from("categories")
 		.select("id, name")
-		.order("name", { ascending: true });
+		.order("id", { ascending: true });
 
 	// ロケーション一覧（デフォルト & そのユーザー専用）
 	const { data: locations, error: locationsError } = await supabase

@@ -47,3 +47,26 @@ declare global {
 		gtag: GtagFunction;
 	}
 }
+
+/**
+ * 任意のイベントを GA に送信（例：クリック）
+ */
+export const event = ({
+	action,
+	category,
+	label,
+	value,
+}: {
+	action: string;
+	category: string;
+	label: string;
+	value?: number;
+}): void => {
+	if (!window.gtag || !existsGaId) return;
+
+	window.gtag("event", action, {
+		event_category: category,
+		event_label: label,
+		value,
+	});
+};

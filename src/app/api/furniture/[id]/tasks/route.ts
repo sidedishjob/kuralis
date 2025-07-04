@@ -65,7 +65,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 /**
- * POST: メンテナンスタスクの追加追加
+ * POST: メンテナンスタスクの追加
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const res = NextResponse.next();

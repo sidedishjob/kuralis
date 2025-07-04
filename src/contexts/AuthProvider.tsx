@@ -34,7 +34,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		setUser(null);
 	};
 
-	const contextValue: AuthContextType = { user, loading, logout };
+	// ゲストユーザー判定
+	const guestEmail = process.env.NEXT_PUBLIC_GUEST_EMAIL;
+	const isGuestUser = user?.email === guestEmail;
+
+	const contextValue: AuthContextType = { user, loading, logout, isGuestUser };
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };

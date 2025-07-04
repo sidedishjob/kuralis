@@ -21,7 +21,7 @@ interface NavigationLinksProps {
 }
 
 export function NavigationLinks({ variant = "desktop", onLinkClick }: NavigationLinksProps) {
-	const { user, loading, logout } = useAuth();
+	const { user, loading, logout, isGuestUser } = useAuth();
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -107,7 +107,7 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 						className="text-sm text-kuralis-500 hover:text-kuralis-900"
 					>
 						<FiUser />
-						{user.email}
+						{isGuestUser ? "ゲストユーザー" : user.email}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-40 font-medium">

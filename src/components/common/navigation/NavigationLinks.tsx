@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { event } from "@/lib/gtag";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -27,6 +28,12 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 
 	const handleLogout = async () => {
 		try {
+			event({
+				action: "click",
+				category: "Navigation",
+				label: "ログアウト",
+			});
+
 			await logout();
 			toast({ title: "ログアウトしました" });
 			router.push("/");
@@ -55,13 +62,34 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 	if (!user) {
 		return (
 			<>
-				<Link href="/about" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/about"
+					className={linkClassName}
+					onClick={() => {
+						event({ action: "click", category: "Navigation", label: "アプリについて" });
+						onLinkClick?.();
+					}}
+				>
 					アプリについて
 				</Link>
-				<Link href="/contact" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/contact"
+					className={linkClassName}
+					onClick={() => {
+						event({ action: "click", category: "Navigation", label: "お問い合わせ" });
+						onLinkClick?.();
+					}}
+				>
 					お問い合わせ
 				</Link>
-				<Link href="/auth/login" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/auth/login"
+					className={linkClassName}
+					onClick={() => {
+						event({ action: "click", category: "Navigation", label: "ログイン" });
+						onLinkClick?.();
+					}}
+				>
 					<FiLogIn className="inline mr-2" />
 					ログイン
 				</Link>
@@ -72,16 +100,48 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 	if (variant === "mobile") {
 		return (
 			<>
-				<Link href="/furniture" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/furniture"
+					className={linkClassName}
+					onClick={() => {
+						event({ action: "click", category: "Navigation", label: "家具一覧" });
+						onLinkClick?.();
+					}}
+				>
 					家具一覧
 				</Link>
-				<Link href="/maintenance" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/maintenance"
+					className={linkClassName}
+					onClick={() => {
+						event({
+							action: "click",
+							category: "Navigation",
+							label: "メンテナンス予定",
+						});
+						onLinkClick?.();
+					}}
+				>
 					メンテナンス予定
 				</Link>
-				<Link href="/settings" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/settings"
+					className={linkClassName}
+					onClick={() => {
+						event({ action: "click", category: "Navigation", label: "設定" });
+						onLinkClick?.();
+					}}
+				>
 					設定
 				</Link>
-				<Link href="/about" className={linkClassName} onClick={onLinkClick}>
+				<Link
+					href="/about"
+					className={linkClassName}
+					onClick={() => {
+						event({ action: "click", category: "Navigation", label: "アプリについて" });
+						onLinkClick?.();
+					}}
+				>
 					アプリについて
 				</Link>
 				<button onClick={handleLogout} className={linkClassName}>
@@ -94,10 +154,22 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 
 	return (
 		<>
-			<Link href="/furniture" className={linkClassName}>
+			<Link
+				href="/furniture"
+				className={linkClassName}
+				onClick={() =>
+					event({ action: "click", category: "Navigation", label: "家具一覧" })
+				}
+			>
 				家具一覧
 			</Link>
-			<Link href="/maintenance" className={linkClassName}>
+			<Link
+				href="/maintenance"
+				className={linkClassName}
+				onClick={() =>
+					event({ action: "click", category: "Navigation", label: "メンテナンス予定" })
+				}
+			>
 				メンテナンス予定
 			</Link>
 			<DropdownMenu>
@@ -111,10 +183,24 @@ export function NavigationLinks({ variant = "desktop", onLinkClick }: Navigation
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-40 font-medium">
-					<DropdownMenuItem onClick={() => router.push("/settings")}>
+					<DropdownMenuItem
+						onClick={() => {
+							event({ action: "click", category: "Navigation", label: "設定" });
+							router.push("/settings");
+						}}
+					>
 						設定
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => router.push("/about")}>
+					<DropdownMenuItem
+						onClick={() => {
+							event({
+								action: "click",
+								category: "Navigation",
+								label: "アプリについて",
+							});
+							router.push("/about");
+						}}
+					>
 						アプリについて
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />

@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 
 import { createServerSupabase } from "@/lib/supabase/server";
+import TrackedLink from "@/components/common/navigation/TrackedLink";
 import UIGallerySection from "@/components/common/sections/UIGallerySection";
 
 // Value Props セクションの内容
@@ -90,19 +91,21 @@ export default async function Page() {
 					使い手として、<span className="text-kuralis-900">家具と暮らす。</span>
 				</p>
 				<div className="flex flex-col md:flex-row justify-center gap-5">
-					<Link
+					<TrackedLink
 						href="/auth/signup"
+						label="Start Collection"
 						className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-kuralis-900 border-2 border-kuralis-900 text-white text-lg font-medium rounded-lg hover:bg-kuralis-50 hover:text-kuralis-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
 					>
 						Start Collection
 						<FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-					</Link>
-					<Link
+					</TrackedLink>
+					<TrackedLink
 						href="/auth/login"
+						label="Login"
 						className="px-8 py-4 text-kuralis-900 text-lg font-medium bg-white border-2 border-kuralis-900 rounded-lg hover:bg-kuralis-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
 					>
 						Login
-					</Link>
+					</TrackedLink>
 				</div>
 
 				{/* 下部のぼかし背景 */}
@@ -213,13 +216,14 @@ export default async function Page() {
 					</p>
 
 					{/* CTA ボタン */}
-					<Link
+					<TrackedLink
 						href="/auth/signup"
+						label="無料ではじめる"
 						className="group inline-flex items-center gap-3 px-8 py-4 text-lg font-medium rounded-full bg-kuralis-900 text-white border-2 border-kuralis-900 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 hover:bg-kuralis-50 hover:text-kuralis-900 hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.15)] hover:-translate-y-0.5"
 					>
 						無料ではじめる
 						<FiArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-					</Link>
+					</TrackedLink>
 
 					{/* 追加情報 */}
 					<div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-kuralis-500">

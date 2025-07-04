@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { event } from "@/lib/gtag";
 import { useToast } from "@/hooks/useToast";
 import { LoadingButton } from "@/components/ui/loadingButton";
 
@@ -14,6 +15,12 @@ export const GuestLoginButton = () => {
 
 	const handleGuestLogin = async () => {
 		setIsLoading(true);
+
+		event({
+			action: "click",
+			category: "Auth",
+			label: "ゲストログイン",
+		});
 
 		const { error } = await supabase.auth.signInWithPassword({
 			email: process.env.NEXT_PUBLIC_GUEST_EMAIL!,

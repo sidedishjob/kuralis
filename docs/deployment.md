@@ -34,6 +34,8 @@ EMAIL_USER=your-gmail-address
 EMAIL_PASS=your-gmail-app-password
 EMAIL_TO=admin-receive-address
 NEXT_PUBLIC_SITE_URL=your-host-url
+NEXT_PUBLIC_GUEST_EMAIL=guest-user-email
+NEXT_PUBLIC_GUEST_PASSWORD=guest-user-password
 ```
 
 4. 開発サーバーの起動

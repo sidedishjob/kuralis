@@ -103,7 +103,7 @@ export const AccountSection = () => {
 									onClick={handleDelete}
 									isLoading={isLoading}
 									loadingText="削除中..."
-									className="w-full mt-2"
+									className="w-full md:w-auto mt-2"
 								>
 									削除する
 								</LoadingButton>

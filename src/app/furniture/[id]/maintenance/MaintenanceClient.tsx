@@ -452,7 +452,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 									isLoading={isTaskAdding}
 									loadingText="追加中..."
 									disabled={!isValid}
-									className="w-full mt-2 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+									className="w-full md:w-auto mt-2 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
 								>
 									追加する
 								</LoadingButton>

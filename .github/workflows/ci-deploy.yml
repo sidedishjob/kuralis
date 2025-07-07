@@ -28,10 +28,6 @@ jobs:
             - name: Run Prettier Check
               run: npm run prettier:check
 
-            # Vercel プロジェクトを CLI で明示的にリンク
-            - name: Link Vercel Project
-              run: npx vercel link --token=${{ secrets.VERCEL_TOKEN }} --yes --project ${{ secrets.VERCEL_PROJECT_ID }} --org ${{ secrets.VERCEL_ORG_ID }}
-
             # 条件付きデプロイ（main → Production / develop → Preview）
             - name: Deploy to Vercel (Production or Preview)
               if: success()

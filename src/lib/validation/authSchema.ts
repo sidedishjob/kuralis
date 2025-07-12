@@ -1,16 +1,20 @@
 import { z } from "zod";
 
+// 必須文字列
+const requiredString = (message: string) =>
+	z.string({ required_error: message }).min(1, { message });
+
 /**
  * ログインフォーム用バリデーションスキーマ
  * - メールアドレスは必須: メールアドレス形式
  * - パスワードは必須: 6文字以上、半角英数字
  */
 export const loginSchema = z.object({
-	email: z
-		.string({ required_error: "メールアドレスは必須です" })
-		.email({ message: "有効なメールアドレスを入力してください" }),
+	email: requiredString("メールアドレスを入力してください").email({
+		message: "有効なメールアドレスを入力してください",
+	}),
 	password: z
-		.string({ required_error: "パスワードは必須です" })
+		.string({ required_error: "パスワードを入力してください" })
 		.min(6, { message: "パスワードは6文字以上で入力してください" })
 		.regex(/^[a-zA-Z0-9]+$/, {
 			message: "パスワードは半角英数字のみで入力してください",
@@ -29,11 +33,11 @@ export type LoginSchema = z.infer<typeof loginSchema>;
  * - 将来的に確認用パスワードなどを追加する余地あり
  */
 export const signupSchema = z.object({
-	email: z
-		.string({ required_error: "メールアドレスは必須です" })
-		.email({ message: "有効なメールアドレスを入力してください" }),
+	email: requiredString("メールアドレスを入力してください").email({
+		message: "有効なメールアドレスを入力してください",
+	}),
 	password: z
-		.string({ required_error: "パスワードは必須です" })
+		.string({ required_error: "パスワードを入力してください" })
 		.min(6, { message: "パスワードは6文字以上で入力してください" })
 		.regex(/^[a-zA-Z0-9]+$/, {
 			message: "パスワードは半角英数字のみで入力してください",
@@ -83,7 +87,7 @@ export type PasswordChangeSchema = z.infer<typeof passwordChangeSchema>;
  */
 export const passwordResetSchema = z.object({
 	newPassword: z
-		.string({ required_error: "パスワードは必須です" })
+		.string({ required_error: "パスワードを入力してください" })
 		.min(6, "パスワードは6文字以上で入力してください")
 		.regex(/^[a-zA-Z0-9]+$/, {
 			message: "新しいパスワードは半角英数字のみで入力してください",

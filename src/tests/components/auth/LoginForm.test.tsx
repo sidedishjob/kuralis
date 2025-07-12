@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { mockAuthUser } from "@/tests/utils/setupAuthMock";
+import type { AuthResponse } from "@supabase/supabase-js";
 
 // 共通のモック設定
 const mockPush = vi.fn();
@@ -134,8 +135,8 @@ describe("LoginForm", () => {
 			const user = userEvent.setup();
 
 			// ログイン処理を遅延させる
-			let resolveSignIn: (value: any) => void;
-			const signInPromise = new Promise((resolve) => {
+			let resolveSignIn: (value: AuthResponse) => void;
+			const signInPromise = new Promise<AuthResponse>((resolve) => {
 				resolveSignIn = resolve;
 			});
 			mockSignInWithPassword.mockReturnValue(signInPromise);
@@ -151,7 +152,7 @@ describe("LoginForm", () => {
 			expect(screen.getByRole("button", { name: /ログイン中.../ })).toBeDisabled();
 
 			// ログイン完了
-			resolveSignIn!({ error: null });
+			resolveSignIn!({ error: null } as AuthResponse);
 
 			await waitFor(() => {
 				expect(mockPush).toHaveBeenCalledWith("/furniture");

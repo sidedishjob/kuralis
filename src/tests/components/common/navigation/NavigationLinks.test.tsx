@@ -1,276 +1,213 @@
 import { render, screen } from "@testing-library/react";
-import { NavigationLinks } from "@/components/common/navigation/NavigationLinks";
+import { Mock } from "vitest";
+import { mockAuthUser } from "@/tests/utils/setupAuthMock";
 
-// useAuth() をモックする（通常ユーザー）
-vi.mock("@/hooks/useAuth", () => ({
-	useAuth: () => ({
-		user: null,
-		loading: false,
-		logout: vi.fn(),
-		isGuestUser: false,
-	}),
-}));
+// 共通のモック設定
+const mockPush = vi.fn();
+const mockToast = vi.fn();
 
-// useToast もモック（使われないがエラー防止）
-vi.mock("@/hooks/useToast", () => ({
-	useToast: () => ({ toast: vi.fn() }),
-}));
-
-// router もモック（未使用）
 vi.mock("next/navigation", () => ({
-	useRouter: () => ({ push: vi.fn() }),
+	useRouter: () => ({ push: mockPush }),
 }));
 
-// gtag モック（クリックイベント用）
-vi.mock("@/lib/gtag", () => ({
-	event: vi.fn(),
+vi.mock("@/hooks/useToast", () => ({
+	useToast: () => ({ toast: mockToast }),
 }));
 
-describe("NavigationLinks - 初期レンダリング", () => {
-	test("未ログインかつ loading=false のとき、アプリについて・お問い合わせ・ログインが表示される", () => {
-		render(<NavigationLinks variant="desktop" />);
+vi.mock("@/lib/utils/getErrorMessage", () => ({
+	getErrorMessage: (err: unknown, fallback: string) =>
+		err instanceof Error ? err.message : fallback,
+}));
 
-		expect(screen.getByText("アプリについて")).toBeInTheDocument();
-		expect(screen.getByText("お問い合わせ")).toBeInTheDocument();
-		expect(screen.getByText("ログイン")).toBeInTheDocument();
-	});
-});
+describe("NavigationLinks", () => {
+	let NavigationLinks: typeof import("@/components/common/navigation/NavigationLinks").NavigationLinks;
 
-describe("NavigationLinks - loading中の表示", () => {
-	beforeEach(() => {
-		vi.resetModules(); // モックを初期化
-	});
-
-	test("loading=true の場合（desktop）、スケルトンが表示される", async () => {
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: null,
-				loading: true,
-				logout: vi.fn(),
-				isGuestUser: false,
-			}),
-		}));
-
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render } = await import("@testing-library/react");
-
-		const { container } = render(<NavigationLinks variant="desktop" />);
-		const skeleton = container.querySelector("div.w-64.h-10");
-		expect(skeleton).toBeInTheDocument();
-	});
-
-	test("loading=true の場合（mobile）、何も表示されない", async () => {
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: null,
-				loading: true,
-				logout: vi.fn(),
-				isGuestUser: false,
-			}),
-		}));
-
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render } = await import("@testing-library/react");
-
-		const { container } = render(<NavigationLinks variant="mobile" />);
-		expect(container).toBeEmptyDOMElement();
-	});
-});
-
-describe("NavigationLinks - ログイン済みの表示（desktop）", () => {
-	beforeEach(() => {
+	// 共通セットアップ
+	const setupComponent = async () => {
 		vi.resetModules();
-	});
+		const mod = await import("@/components/common/navigation/NavigationLinks");
+		NavigationLinks = mod.NavigationLinks;
+	};
 
-	test("user が存在するとき、「家具一覧」「メンテナンス予定」リンクとユーザーの dropdown が表示される", async () => {
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: { email: "test@example.com" },
-				loading: false,
-				logout: vi.fn(),
-				isGuestUser: false,
-			}),
-		}));
-
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render, screen } = await import("@testing-library/react");
-
-		render(<NavigationLinks variant="desktop" />);
-
-		// 基本リンクの表示を確認
-		expect(screen.getByText("家具一覧")).toBeInTheDocument();
-		expect(screen.getByText("メンテナンス予定")).toBeInTheDocument();
-
-		// ドロップダウンのボタン（ユーザー名）が表示されていることを確認
-		expect(screen.getByText("test@example.com")).toBeInTheDocument();
-	});
-});
-
-describe("NavigationLinks - ログイン済みの表示（mobile）", () => {
 	beforeEach(() => {
-		vi.resetModules();
+		vi.clearAllMocks();
 	});
 
-	test("user が存在するとき、「家具一覧」「メンテナンス予定」「設定」「アプリについて」「ログアウト」リンクが表示される", async () => {
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: { email: "test@example.com" },
-				loading: false,
-				logout: vi.fn(),
-				isGuestUser: false,
-			}),
-		}));
+	describe("初期レンダリング", () => {
+		beforeEach(async () => {
+			mockAuthUser({ user: null });
+			await setupComponent();
+		});
 
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render, screen } = await import("@testing-library/react");
+		test("未ログインかつ loading=false のとき、アプリについて・お問い合わせ・ログインが表示される", () => {
+			render(<NavigationLinks variant="desktop" />);
 
-		render(<NavigationLinks variant="mobile" />);
-
-		// リンクの表示を確認
-		expect(screen.getByText("家具一覧")).toBeInTheDocument();
-		expect(screen.getByText("メンテナンス予定")).toBeInTheDocument();
-		expect(screen.getByText("設定")).toBeInTheDocument();
-		expect(screen.getByText("アプリについて")).toBeInTheDocument();
-		expect(screen.getByText("ログアウト")).toBeInTheDocument();
-	});
-});
-
-describe("NavigationLinks - ゲストユーザー表示（desktop）", () => {
-	beforeEach(() => {
-		vi.resetModules();
+			expect(screen.getByText("アプリについて")).toBeInTheDocument();
+			expect(screen.getByText("お問い合わせ")).toBeInTheDocument();
+			expect(screen.getByText("ログイン")).toBeInTheDocument();
+		});
 	});
 
-	test("isGuestUser = true の場合、「ゲストユーザー」と表示される", async () => {
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: { email: "test@example.com" },
-				loading: false,
-				logout: vi.fn(),
-				isGuestUser: true,
-			}),
-		}));
+	describe("loading中の表示", () => {
+		beforeEach(async () => {
+			mockAuthUser({ user: null, loading: true });
+			await setupComponent();
+		});
 
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render, screen } = await import("@testing-library/react");
+		test("loading=true の場合（desktop）、スケルトンが表示される", () => {
+			const { container } = render(<NavigationLinks variant="desktop" />);
+			const skeleton = container.querySelector("div.w-64.h-10");
+			expect(skeleton).toBeInTheDocument();
+		});
 
-		render(<NavigationLinks variant="desktop" />);
-
-		expect(screen.getByText("ゲストユーザー")).toBeInTheDocument();
-	});
-});
-
-describe("NavigationLinks - ログアウト動作", () => {
-	beforeEach(() => {
-		vi.resetModules();
+		test("loading=true の場合（mobile）、何も表示されない", () => {
+			const { container } = render(<NavigationLinks variant="mobile" />);
+			expect(container).toBeEmptyDOMElement();
+		});
 	});
 
-	test("ログアウトボタンをクリックすると logout() が呼ばれる", async () => {
-		const logoutMock = vi.fn();
+	describe("ログイン済みの表示", () => {
+		beforeEach(async () => {
+			mockAuthUser();
+			await setupComponent();
+		});
 
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: { email: "test@example.com" },
-				loading: false,
-				logout: logoutMock,
-				isGuestUser: false,
-			}),
-		}));
+		test("desktop: user が存在するとき、基本リンクとドロップダウンが表示される", () => {
+			render(<NavigationLinks variant="desktop" />);
 
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render, screen } = await import("@testing-library/react");
-		const userEvent = (await import("@testing-library/user-event")).default;
+			expect(screen.getByText("家具一覧")).toBeInTheDocument();
+			expect(screen.getByText("メンテナンス予定")).toBeInTheDocument();
+			expect(screen.getByText("test@example.com")).toBeInTheDocument();
+		});
 
-		render(<NavigationLinks variant="mobile" />);
+		test("mobile: user が存在するとき、全てのリンクが表示される", () => {
+			render(<NavigationLinks variant="mobile" />);
 
-		const logoutButton = screen.getByRole("button", { name: "ログアウト" });
-		await userEvent.click(logoutButton);
-
-		expect(logoutMock).toHaveBeenCalledTimes(1);
-	});
-});
-
-describe("NavigationLinks - ログアウト後に toast が呼ばれる", () => {
-	beforeEach(() => {
-		vi.resetModules();
+			expect(screen.getByText("家具一覧")).toBeInTheDocument();
+			expect(screen.getByText("メンテナンス予定")).toBeInTheDocument();
+			expect(screen.getByText("設定")).toBeInTheDocument();
+			expect(screen.getByText("アプリについて")).toBeInTheDocument();
+			expect(screen.getByText("ログアウト")).toBeInTheDocument();
+		});
 	});
 
-	test("ログアウト成功時に toast が呼ばれる", async () => {
-		const logoutMock = vi.fn().mockResolvedValue(undefined); // logout() 成功を想定
-		const toastMock = vi.fn();
+	describe("ゲストユーザー表示", () => {
+		beforeEach(async () => {
+			mockAuthUser({ isGuestUser: true });
+			await setupComponent();
+		});
 
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: { email: "test@example.com" },
-				loading: false,
-				logout: logoutMock,
-				isGuestUser: false,
-			}),
-		}));
-
-		vi.doMock("@/hooks/useToast", () => ({
-			useToast: () => ({ toast: toastMock }),
-		}));
-
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render, screen } = await import("@testing-library/react");
-		const userEvent = (await import("@testing-library/user-event")).default;
-
-		render(<NavigationLinks variant="mobile" />);
-		const logoutButton = screen.getByRole("button", { name: "ログアウト" });
-
-		await userEvent.click(logoutButton);
-
-		expect(logoutMock).toHaveBeenCalledTimes(1);
-		expect(toastMock).toHaveBeenCalledWith(
-			expect.objectContaining({ title: "ログアウトしました" })
-		);
-	});
-});
-
-describe("NavigationLinks - ログアウト失敗時にエラートーストが表示される", () => {
-	beforeEach(() => {
-		vi.resetModules();
+		test("isGuestUser = true の場合、「ゲストユーザー」と表示される", () => {
+			render(<NavigationLinks variant="desktop" />);
+			expect(screen.getByText("ゲストユーザー")).toBeInTheDocument();
+		});
 	});
 
-	test("logout() がエラーを投げた場合、エラートーストが表示される", async () => {
-		const logoutMock = vi.fn().mockRejectedValue(new Error("サーバーエラー"));
-		const toastMock = vi.fn();
+	describe("リンクの動作", () => {
+		describe("ログイン時", () => {
+			beforeEach(async () => {
+				mockAuthUser();
+				await setupComponent();
+			});
 
-		vi.doMock("@/hooks/useAuth", () => ({
-			useAuth: () => ({
-				user: { email: "error@example.com" },
-				loading: false,
-				logout: logoutMock,
-				isGuestUser: false,
-			}),
-		}));
+			test.each([
+				["mobile", "家具一覧", "/furniture"],
+				["mobile", "メンテナンス予定", "/maintenance"],
+				["mobile", "設定", "/settings"],
+				["mobile", "アプリについて", "/about"],
+				["desktop", "家具一覧", "/furniture"],
+				["desktop", "メンテナンス予定", "/maintenance"],
+			] as const)("%s: %s リンクは %s に設定されている", (variant, label, href) => {
+				render(<NavigationLinks variant={variant} />);
+				const link = screen.getByRole("link", { name: label });
+				expect(link).toHaveAttribute("href", href);
+			});
 
-		vi.doMock("@/hooks/useToast", () => ({
-			useToast: () => ({ toast: toastMock }),
-		}));
+			test("desktop: ドロップダウン内に設定・アプリについてが表示される", async () => {
+				const user = (await import("@testing-library/user-event")).default.setup();
 
-		vi.doMock("@/lib/utils/getErrorMessage", () => ({
-			getErrorMessage: (err: unknown, fallback: string) =>
-				err instanceof Error ? err.message : fallback,
-		}));
+				render(<NavigationLinks variant="desktop" />);
+				await user.click(screen.getByRole("button", { name: "test@example.com" }));
 
-		const { NavigationLinks } = await import("@/components/common/navigation/NavigationLinks");
-		const { render, screen } = await import("@testing-library/react");
-		const userEvent = (await import("@testing-library/user-event")).default;
+				expect(await screen.findByRole("menuitem", { name: "設定" })).toBeInTheDocument();
+				expect(
+					await screen.findByRole("menuitem", { name: "アプリについて" })
+				).toBeInTheDocument();
+			});
+		});
 
-		render(<NavigationLinks variant="mobile" />);
-		const logoutButton = screen.getByRole("button", { name: "ログアウト" });
+		describe("未ログイン時", () => {
+			beforeEach(async () => {
+				mockAuthUser({ user: null });
+				await setupComponent();
+			});
 
-		await userEvent.click(logoutButton);
+			test.each([
+				["アプリについて", "/about"],
+				["お問い合わせ", "/contact"],
+				["ログイン", "/auth/login"],
+			])("desktop: %s リンクは %s に設定されている", (label, href) => {
+				render(<NavigationLinks variant="desktop" />);
+				const link = screen.getByRole("link", { name: label });
+				expect(link).toHaveAttribute("href", href);
+			});
+		});
+	});
 
-		expect(logoutMock).toHaveBeenCalledTimes(1);
+	describe("ログアウト動作", () => {
+		let logoutMock: Mock<() => Promise<void>>;
 
-		expect(toastMock).toHaveBeenCalledWith(
-			expect.objectContaining({
-				title: "ログアウトに失敗しました",
-				description: "サーバーエラー",
-				variant: "destructive",
-			})
-		);
+		beforeEach(async () => {
+			logoutMock = vi.fn();
+			mockAuthUser({ logout: logoutMock });
+			await setupComponent();
+		});
+
+		test("ログアウトボタンを押すと logout() が呼ばれる", async () => {
+			const userEvent = (await import("@testing-library/user-event")).default;
+
+			render(<NavigationLinks variant="mobile" />);
+			await userEvent.click(screen.getByRole("button", { name: "ログアウト" }));
+
+			expect(logoutMock).toHaveBeenCalledTimes(1);
+		});
+
+		test("ログアウト成功時にトーストが表示され、ホームに遷移する", async () => {
+			logoutMock.mockResolvedValue(undefined);
+			const userEvent = (await import("@testing-library/user-event")).default;
+
+			render(<NavigationLinks variant="mobile" />);
+			await userEvent.click(screen.getByRole("button", { name: "ログアウト" }));
+
+			expect(logoutMock).toHaveBeenCalledTimes(1);
+			expect(mockToast).toHaveBeenCalledWith(
+				expect.objectContaining({ title: "ログアウトしました" })
+			);
+			expect(mockPush).toHaveBeenCalledWith("/");
+		});
+
+		test("ログアウト失敗時にエラートーストが表示される", async () => {
+			const error = new Error("サーバーエラー");
+			logoutMock.mockRejectedValue(error);
+
+			// 一時的に console.error を抑制
+			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+			const userEvent = (await import("@testing-library/user-event")).default;
+
+			render(<NavigationLinks variant="mobile" />);
+			await userEvent.click(screen.getByRole("button", { name: "ログアウト" }));
+
+			expect(logoutMock).toHaveBeenCalledTimes(1);
+			expect(mockToast).toHaveBeenCalledWith(
+				expect.objectContaining({
+					title: "ログアウトに失敗しました",
+					description: "サーバーエラー",
+					variant: "destructive",
+				})
+			);
+
+			// 元に戻す（他のテストへの影響を防ぐ）
+			consoleErrorSpy.mockRestore();
+		});
 	});
 });

@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+// 必須文字列
+const requiredString = (message: string) =>
+	z.string({ required_error: message }).min(1, { message });
+
 /**
  * お問い合わせフォーム用バリデーションスキーマ
  *
@@ -9,25 +13,19 @@ import { z } from "zod";
  * - メッセージ（message）：必須、1文字以上、1000文字以下
  */
 export const contactSchema = z.object({
-	name: z
-		.string({ required_error: "お名前は必須です" })
-		.min(1, "お名前を入力してください")
-		.max(50, "お名前は50文字以内で入力してください"),
-	email: z
-		.string({ required_error: "メールアドレスは必須です" })
-		.email({ message: "有効なメールアドレスを入力してください" }),
-	subject: z
-		.string({ required_error: "件名名は必須です" })
-		.min(1, "件名を入力してください")
-		.max(50, {
-			message: "件名は50文字以内で入力してください",
-		}),
-	message: z
-		.string({ required_error: "メッセージは必須です" })
-		.min(1, "メッセージを入力してください")
-		.max(1000, {
-			message: "メッセージは1000文字以内で入力してください",
-		}),
+	name: requiredString("お名前を入力してください").max(
+		50,
+		"お名前は50文字以内で入力してください"
+	),
+	email: requiredString("メールアドレスを入力してください").email({
+		message: "有効なメールアドレスを入力してください",
+	}),
+	subject: requiredString("件名を入力してください").max(50, {
+		message: "件名は50文字以内で入力してください",
+	}),
+	message: requiredString("メッセージを入力してください").max(1000, {
+		message: "メッセージは1000文字以内で入力してください",
+	}),
 });
 
 /**

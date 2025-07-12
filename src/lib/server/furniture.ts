@@ -89,7 +89,7 @@ export async function registerFurniture(formData: FormData, userId: string) {
 	const locationId = Number(formData.get("location_id"));
 
 	if (!name || !categoryId || !locationId) {
-		throw new Error("カテゴリ・設置場所・名前は必須です");
+		throw new Error("カテゴリ・設置場所・名前を入力してください");
 	}
 
 	// 画像ファイルがある場合はアップロード

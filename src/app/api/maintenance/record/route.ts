@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 		const { taskId, performedAt }: MaintenanceHistory = await req.json();
 
 		if (!taskId || !performedAt) {
-			throw new ApiError(400, "taskId と performedAt は必須です");
+			throw new ApiError(400, "taskId と performedAt を入力してください");
 		}
 
 		// 1. 対象タスクを取得（周期取得のため）

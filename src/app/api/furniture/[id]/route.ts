@@ -56,7 +56,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 		const notes = formData.get("notes") as string;
 
 		if (!name?.trim() || !locationId) {
-			throw new ApiError(400, "設置場所・名前は必須です");
+			throw new ApiError(400, "設置場所・名前を入力してください");
 		}
 
 		// 1. 画像があればアップロードしてURL取得

@@ -107,8 +107,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 									id="password"
 									type="password"
 									placeholder="6文字以上の半角英数字"
-									{...register("password", { required: "パスワードは必須です" })}
-									// required
+									{...register("password")}
 								/>
 								{errors.password && (
 									<p className="text-sm text-red-500">

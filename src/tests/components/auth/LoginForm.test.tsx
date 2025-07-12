@@ -38,7 +38,7 @@ describe("LoginForm", () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
 		// 通常ユーザーとしてセットアップ（LoadingButtonが有効になるように）
-		mockAuthUser({ isGuestUser: false });
+		mockAuthUser();
 		await setupComponent();
 	});
 

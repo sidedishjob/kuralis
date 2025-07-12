@@ -48,7 +48,7 @@ describe("LoginForm", () => {
 
 			expect(screen.getByText("おかえりなさい")).toBeInTheDocument();
 			expect(screen.getByText("Googleアカウントまたはメールでログイン")).toBeInTheDocument();
-			expect(screen.getByText("Googleでログイン")).toBeInTheDocument();
+			expect(screen.getByRole("button", { name: "Googleでログイン" })).toBeInTheDocument();
 			expect(screen.getByLabelText("メールアドレス")).toBeInTheDocument();
 			expect(screen.getByLabelText("パスワード")).toBeInTheDocument();
 			expect(screen.getByRole("button", { name: "ログイン" })).toBeInTheDocument();
@@ -58,17 +58,25 @@ describe("LoginForm", () => {
 		test("リンクが正しく設定されている", () => {
 			render(<LoginFormComponent />);
 
-			const forgotPasswordLink = screen.getByText("パスワードをお忘れですか？");
-			expect(forgotPasswordLink.closest("a")).toHaveAttribute("href", "/auth/reset-request");
+			const forgotPasswordLink = screen.getByRole("link", {
+				name: "パスワードをお忘れですか？",
+			});
+			expect(forgotPasswordLink).toHaveAttribute("href", "/auth/reset-request");
 
-			const signupLink = screen.getByText("サインアップ");
-			expect(signupLink.closest("a")).toHaveAttribute("href", "/auth/signup");
+			const signupLink = screen.getByRole("link", {
+				name: "サインアップ",
+			});
+			expect(signupLink).toHaveAttribute("href", "/auth/signup");
 
-			const termsLink = screen.getByText("利用規約");
-			expect(termsLink.closest("a")).toHaveAttribute("href", "/terms");
+			const termsLink = screen.getByRole("link", {
+				name: "利用規約",
+			});
+			expect(termsLink).toHaveAttribute("href", "/terms");
 
-			const privacyLink = screen.getByText("プライバシーポリシー");
-			expect(privacyLink.closest("a")).toHaveAttribute("href", "/privacy");
+			const privacyLink = screen.getByRole("link", {
+				name: "プライバシーポリシー",
+			});
+			expect(privacyLink).toHaveAttribute("href", "/privacy");
 		});
 	});
 
@@ -77,7 +85,7 @@ describe("LoginForm", () => {
 			const user = userEvent.setup();
 			render(<LoginFormComponent />);
 
-			const googleButton = screen.getByText("Googleでログイン");
+			const googleButton = screen.getByRole("button", { name: "Googleでログイン" });
 			await user.click(googleButton);
 
 			expect(mockSignInWithOAuth).toHaveBeenCalledWith({

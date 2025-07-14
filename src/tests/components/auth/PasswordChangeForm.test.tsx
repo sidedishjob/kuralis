@@ -1,0 +1,173 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import PasswordChangeForm from "@/components/auth/PasswordChangeForm";
+
+declare global {
+	var mockGetUser: ReturnType<typeof vi.fn>;
+	var mockSignInWithPassword: ReturnType<typeof vi.fn>;
+	var mockUpdateUser: ReturnType<typeof vi.fn>;
+	var mockToast: ReturnType<typeof vi.fn>;
+}
+
+// モックは vi.mock() の中で定義し globalThis に出す
+vi.mock("@/lib/supabase/client", () => {
+	const mockGetUser = vi.fn();
+	const mockSignInWithPassword = vi.fn();
+	const mockUpdateUser = vi.fn();
+
+	// globalThis に出してテスト内で使えるように
+	Object.assign(globalThis, {
+		mockGetUser,
+		mockSignInWithPassword,
+		mockUpdateUser,
+	});
+
+	return {
+		supabase: {
+			auth: {
+				getUser: mockGetUser,
+				signInWithPassword: mockSignInWithPassword,
+				updateUser: mockUpdateUser,
+			},
+		},
+	};
+});
+
+vi.mock("@/hooks/useToast", () => {
+	const mockToast = vi.fn();
+	Object.assign(globalThis, { mockToast });
+	return {
+		useToast: () => ({ toast: mockToast }),
+	};
+});
+
+vi.mock("@/lib/utils/getErrorMessage", () => ({
+	getErrorMessage: (err: unknown, fallback: string) =>
+		err instanceof Error ? err.message : fallback,
+}));
+
+describe("PasswordChangeForm", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		globalThis.mockGetUser.mockResolvedValue({
+			data: { user: { email: "test@example.com" } },
+			error: null,
+		});
+	});
+
+	test("フォームの要素が表示される", () => {
+		render(<PasswordChangeForm />);
+		expect(screen.getByLabelText("現在のパスワード")).toBeInTheDocument();
+		expect(screen.getByLabelText("新しいパスワード")).toBeInTheDocument();
+		expect(screen.getByLabelText("新しいパスワード（確認）")).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: "パスワードを更新" })).toBeInTheDocument();
+	});
+
+	test("正しくパスワード変更処理が呼ばれる", async () => {
+		const user = userEvent.setup();
+
+		globalThis.mockSignInWithPassword.mockResolvedValue({ data: {}, error: null });
+		globalThis.mockUpdateUser.mockResolvedValue({ data: {}, error: null });
+
+		render(<PasswordChangeForm />);
+		await user.type(screen.getByLabelText("現在のパスワード"), "current123");
+		await user.type(screen.getByLabelText("新しいパスワード"), "newPassword123");
+		await user.type(screen.getByLabelText("新しいパスワード（確認）"), "newPassword123");
+		await user.click(screen.getByRole("button", { name: "パスワードを更新" }));
+
+		await waitFor(() => {
+			expect(globalThis.mockSignInWithPassword).toHaveBeenCalledWith({
+				email: "test@example.com",
+				password: "current123",
+			});
+			expect(globalThis.mockUpdateUser).toHaveBeenCalledWith({
+				password: "newPassword123",
+			});
+			expect(globalThis.mockToast).toHaveBeenCalledWith(
+				expect.objectContaining({ title: "パスワードを更新しました。" })
+			);
+		});
+
+		expect(screen.getByLabelText("現在のパスワード")).toHaveValue("");
+		expect(screen.getByLabelText("新しいパスワード")).toHaveValue("");
+		expect(screen.getByLabelText("新しいパスワード（確認）")).toHaveValue("");
+	});
+
+	test("認証に失敗した場合にエラートーストを表示", async () => {
+		const user = userEvent.setup();
+		globalThis.mockSignInWithPassword.mockResolvedValue({
+			error: { message: "Invalid password" },
+		});
+
+		render(<PasswordChangeForm />);
+
+		await user.type(screen.getByLabelText("現在のパスワード"), "wrongpassword");
+		await user.type(screen.getByLabelText("新しいパスワード"), "newpassword123");
+		await user.type(screen.getByLabelText("新しいパスワード（確認）"), "newpassword123");
+		await user.click(screen.getByRole("button", { name: "パスワードを更新" }));
+
+		await waitFor(() => {
+			expect(mockToast).toHaveBeenCalledWith(
+				expect.objectContaining({
+					title: "認証に失敗しました",
+				})
+			);
+		});
+	});
+
+	describe("フォームバリデーション", () => {
+		test("現在のパスワードが空の場合、エラーが表示される", async () => {
+			const user = userEvent.setup();
+			render(<PasswordChangeForm />);
+
+			await user.type(screen.getByLabelText("新しいパスワード"), "newpassword123");
+			await user.type(screen.getByLabelText("新しいパスワード（確認）"), "newpassword123");
+			await user.click(screen.getByRole("button", { name: "パスワードを更新" }));
+
+			await waitFor(() => {
+				expect(
+					screen.getByText("現在のパスワードは6文字以上で入力してください")
+				).toBeInTheDocument();
+			});
+
+			expect(globalThis.mockSignInWithPassword).not.toHaveBeenCalled();
+			expect(globalThis.mockUpdateUser).not.toHaveBeenCalled();
+		});
+
+		test("新しいパスワードが空または短すぎる場合、エラーが表示される", async () => {
+			const user = userEvent.setup();
+			render(<PasswordChangeForm />);
+
+			await user.type(screen.getByLabelText("現在のパスワード"), "currentpassword");
+			await user.type(screen.getByLabelText("新しいパスワード"), "123");
+			await user.type(screen.getByLabelText("新しいパスワード（確認）"), "123");
+			await user.click(screen.getByRole("button", { name: "パスワードを更新" }));
+
+			await waitFor(() => {
+				expect(
+					screen.getByText("新しいパスワードは6文字以上で入力してください")
+				).toBeInTheDocument();
+			});
+
+			expect(globalThis.mockSignInWithPassword).not.toHaveBeenCalled();
+			expect(globalThis.mockUpdateUser).not.toHaveBeenCalled();
+		});
+
+		test("新しいパスワードと確認用が一致しない場合、エラーが表示される", async () => {
+			const user = userEvent.setup();
+			render(<PasswordChangeForm />);
+
+			await user.type(screen.getByLabelText("現在のパスワード"), "currentpassword");
+			await user.type(screen.getByLabelText("新しいパスワード"), "newpassword123");
+			await user.type(screen.getByLabelText("新しいパスワード（確認）"), "mismatch123");
+			await user.click(screen.getByRole("button", { name: "パスワードを更新" }));
+
+			await waitFor(() => {
+				expect(screen.getByText("パスワードが一致しません")).toBeInTheDocument();
+			});
+
+			expect(globalThis.mockSignInWithPassword).not.toHaveBeenCalled();
+			expect(globalThis.mockUpdateUser).not.toHaveBeenCalled();
+		});
+	});
+});

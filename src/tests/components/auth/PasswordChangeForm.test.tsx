@@ -1,59 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import PasswordChangeForm from "@/components/auth/PasswordChangeForm";
-
-// declare global {
-// 	var mockGetUser: ReturnType<typeof vi.fn>;
-// 	var mockSignInWithPassword: ReturnType<typeof vi.fn>;
-// 	var mockUpdateUser: ReturnType<typeof vi.fn>;
-// 	var mockToast: ReturnType<typeof vi.fn>;
-// }
-
-// // モックは vi.mock() の中で定義し globalThis に出す
-// vi.mock("@/lib/supabase/client", () => {
-// 	const mockGetUser = vi.fn();
-// 	const mockSignInWithPassword = vi.fn();
-// 	const mockUpdateUser = vi.fn();
-
-// 	// globalThis に出してテスト内で使えるように
-// 	Object.assign(globalThis, {
-// 		mockGetUser,
-// 		mockSignInWithPassword,
-// 		mockUpdateUser,
-// 	});
-
-// 	return {
-// 		supabase: {
-// 			auth: {
-// 				getUser: mockGetUser,
-// 				signInWithPassword: mockSignInWithPassword,
-// 				updateUser: mockUpdateUser,
-// 			},
-// 		},
-// 	};
-// });
-
-// vi.mock("@/hooks/useToast", () => {
-// 	const mockToast = vi.fn();
-// 	Object.assign(globalThis, { mockToast });
-// 	return {
-// 		useToast: () => ({ toast: mockToast }),
-// 	};
-// });
-
-// vi.mock("@/lib/utils/getErrorMessage", () => ({
-// 	getErrorMessage: (err: unknown, fallback: string) =>
-// 		err instanceof Error ? err.message : fallback,
-// }));
 
 describe("PasswordChangeForm", () => {
-	// beforeEach(() => {
-	// 	vi.clearAllMocks();
-	// 	globalThis.mockGetUser.mockResolvedValue({
-	// 		data: { user: { email: "test@example.com" } },
-	// 		error: null,
-	// 	});
-	// });
 	// ローカルモック関数定義
 	let mockGetUser: ReturnType<typeof vi.fn>;
 	let mockSignInWithPassword: ReturnType<typeof vi.fn>;

@@ -5,11 +5,11 @@ export interface Furniture {
 	brand: string;
 	category_id: number;
 	location_id: number;
-	image_url: string;
-	purchased_at: string;
-	purchased_from: string;
-	next_due_date: string;
-	notes: string;
+	image_url: string | null;
+	purchased_at: string | null;
+	purchased_from: string | null;
+	next_due_date: string | null;
+	notes: string | null;
 }
 
 export type FurnitureWithExtras = Furniture & {

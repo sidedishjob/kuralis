@@ -223,6 +223,9 @@ describe("FurnitureDetailClient", () => {
 		});
 
 		test("保存失敗時にエラートーストが表示される", async () => {
+			// 一時的に console.error を抑制
+			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
 			const user = userEvent.setup();
 			updateFurnitureMock.mockRejectedValue(new Error("保存に失敗しました"));
 
@@ -244,6 +247,9 @@ describe("FurnitureDetailClient", () => {
 					variant: "destructive",
 				});
 			});
+
+			// 元に戻す（他のテストへの影響を防ぐ）
+			consoleErrorSpy.mockRestore();
 		});
 	});
 
@@ -311,6 +317,9 @@ describe("FurnitureDetailClient", () => {
 		});
 
 		test("削除失敗時にエラートーストが表示される", async () => {
+			// 一時的に console.error を抑制
+			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
 			const user = userEvent.setup();
 			deleteFurnitureMock.mockRejectedValue(new Error("削除に失敗しました"));
 
@@ -332,6 +341,9 @@ describe("FurnitureDetailClient", () => {
 					variant: "destructive",
 				});
 			});
+
+			// 元に戻す（他のテストへの影響を防ぐ）
+			consoleErrorSpy.mockRestore();
 		});
 	});
 

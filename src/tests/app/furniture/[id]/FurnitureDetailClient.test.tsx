@@ -123,54 +123,6 @@ describe("FurnitureDetailClient", () => {
 		});
 	});
 
-	// describe("ローディング状態", () => {
-	// 	test("ローディング中はスケルトンが表示される", () => {
-	// 		const { useFurnitureById } = require("@/hooks/useFurnitureById");
-	// 		useFurnitureById.mockReturnValue({
-	// 			furniture: null,
-	// 			isLoading: true,
-	// 			error: null,
-	// 			mutate: mutateMock,
-	// 		});
-
-	// 		render(
-	// 			<FurnitureDetailClient
-	// 				initialFurniture={mockFurniture}
-	// 				initialLocations={mockLocations}
-	// 				initialMaintenanceSummary={mockSummary}
-	// 			/>
-	// 		);
-
-	// 		// スケルトンローダーが表示されることを確認
-	// 		const skeletonElements = screen.getAllByText(
-	// 			(content, element) => element?.classList.contains("animate-pulse") || false
-	// 		);
-	// 		expect(skeletonElements.length).toBeGreaterThan(0);
-	// 	});
-	// });
-
-	// describe("エラーハンドリング", () => {
-	// 	test("エラー時にエラーメッセージが表示される", () => {
-	// 		const { useFurnitureById } = require("@/hooks/useFurnitureById");
-	// 		useFurnitureById.mockReturnValue({
-	// 			furniture: null,
-	// 			isLoading: false,
-	// 			error: new Error("データの取得に失敗しました"),
-	// 			mutate: mutateMock,
-	// 		});
-
-	// 		render(
-	// 			<FurnitureDetailClient
-	// 				initialFurniture={mockFurniture}
-	// 				initialLocations={mockLocations}
-	// 				initialMaintenanceSummary={mockSummary}
-	// 			/>
-	// 		);
-
-	// 		expect(screen.getByText("データの取得に失敗しました")).toBeInTheDocument();
-	// 	});
-	// });
-
 	describe("編集機能", () => {
 		test("編集ボタンで編集モードに切り替わる", async () => {
 			const user = userEvent.setup();
@@ -406,36 +358,55 @@ describe("FurnitureDetailClient", () => {
 			// updateFurnitureが呼ばれないことを確認
 			expect(updateFurnitureMock).not.toHaveBeenCalled();
 		});
+
+		test("名前が空の場合、エラーメッセージが表示される", async () => {
+			const user = userEvent.setup();
+			render(
+				<FurnitureDetailClient
+					initialFurniture={mockFurniture}
+					initialLocations={mockLocations}
+					initialMaintenanceSummary={mockSummary}
+				/>
+			);
+
+			await user.click(screen.getByRole("button", { name: "編集" }));
+			const nameInput = screen.getByDisplayValue("サンプル家具");
+			await user.clear(nameInput);
+
+			await user.click(screen.getByRole("button", { name: "保存する" }));
+
+			expect(screen.getByText(/家具名を入力してください/)).toBeInTheDocument();
+		});
 	});
 
-	// describe("画像アップロード", () => {
-	// 	test("画像が選択されたときに保存時にFormDataに含まれる", async () => {
-	// 		const user = userEvent.setup();
-	// 		const mockFile = new File(["test"], "test.jpg", { type: "image/jpeg" });
-	// 		updateFurnitureMock.mockResolvedValue(mockFurniture);
+	describe("タブ切り替え", () => {
+		test("購入情報タブに切り替わると、購入日や店舗が表示される", async () => {
+			render(
+				<FurnitureDetailClient
+					initialFurniture={mockFurniture}
+					initialLocations={mockLocations}
+					initialMaintenanceSummary={mockSummary}
+				/>
+			);
 
-	// 		render(
-	// 			<FurnitureDetailClient
-	// 				initialFurniture={mockFurniture}
-	// 				initialLocations={mockLocations}
-	// 				initialMaintenanceSummary={mockSummary}
-	// 			/>
-	// 		);
+			await userEvent.click(screen.getByRole("tab", { name: /購入情報/ }));
+			expect(screen.getByText("購入日")).toBeInTheDocument();
+			expect(screen.getByText("購入店舗")).toBeInTheDocument();
+		});
 
-	// 		await user.click(screen.getByRole("button", { name: "編集" }));
+		test("メンテナンスタブに切り替えると、メンテナンス概要が表示される", async () => {
+			render(
+				<FurnitureDetailClient
+					initialFurniture={mockFurniture}
+					initialLocations={mockLocations}
+					initialMaintenanceSummary={mockSummary}
+				/>
+			);
 
-	// 		// 画像アップロードの input を探す（実際のコンポーネントの実装に依存）
-	// 		const fileInput =
-	// 			screen.getByLabelText(/画像/i) || screen.getByRole("button", { name: /画像/i });
-	// 		if (fileInput) {
-	// 			await user.upload(fileInput, mockFile);
-	// 		}
-
-	// 		await user.click(screen.getByRole("button", { name: "保存する" }));
-
-	// 		await waitFor(() => {
-	// 			expect(updateFurnitureMock).toHaveBeenCalledWith(expect.any(FormData));
-	// 		});
-	// 	});
-	// });
+			await userEvent.click(screen.getByRole("tab", { name: /メンテナンス/ }));
+			expect(screen.getByText("メンテナンス概要")).toBeInTheDocument();
+			expect(screen.getByText("次回予定")).toBeInTheDocument();
+			expect(screen.getByText("メンテ対象")).toBeInTheDocument();
+		});
+	});
 });

@@ -224,6 +224,7 @@ export default function FurnitureDetailClient({
 											<button
 												type="button"
 												onClick={() => setIsEditing(true)}
+												aria-label="編集"
 												className="h-10 p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
 											>
 												<FiEdit2 size={18} />
@@ -232,6 +233,7 @@ export default function FurnitureDetailClient({
 												<DialogTrigger asChild>
 													<button
 														type="button"
+														aria-label="削除"
 														className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50"
 													>
 														<FiTrash2 size={18} />

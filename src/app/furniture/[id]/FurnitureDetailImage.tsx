@@ -9,7 +9,7 @@ import { FurnitureEditSchema } from "@/lib/validation";
 
 interface Props {
 	isEditing: boolean;
-	imageUrl?: string;
+	imageUrl: string | null;
 	selectedImage: File | null;
 	setSelectedImage: (file: File | null) => void;
 }

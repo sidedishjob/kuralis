@@ -29,11 +29,6 @@ describe("PasswordChangeForm", () => {
 		vi.doMock("@/hooks/useToast", () => ({
 			useToast: () => ({ toast: mockToast }),
 		}));
-
-		vi.doMock("@/lib/utils/getErrorMessage", () => ({
-			getErrorMessage: (err: unknown, fallback: string) =>
-				err instanceof Error ? err.message : fallback,
-		}));
 	});
 
 	test("フォームの要素が表示される", async () => {

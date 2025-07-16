@@ -37,14 +37,6 @@ describe("GuestLoginButton", () => {
 		vi.doMock("next/navigation", () => ({
 			useRouter: () => ({ push: mockRouterPush }),
 		}));
-
-		vi.doMock("@/lib/gtag", () => ({
-			event: vi.fn(),
-		}));
-
-		vi.doMock("@/lib/utils/getErrorMessage", () => ({
-			getErrorMessage: (_err: unknown, fallback: string) => fallback,
-		}));
 	});
 
 	afterEach(() => {

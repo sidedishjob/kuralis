@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ErrorMessage } from "@/components/common/ui/ErrorMessage";
 
 describe("ErrorMessage", () => {
@@ -22,13 +23,14 @@ describe("ErrorMessage", () => {
 	});
 
 	// 4. onRetry が指定された場合
-	test("再試行ボタンが表示され、クリックできる", () => {
+	test("再試行ボタンが表示され、クリックできる", async () => {
+		const user = userEvent.setup();
 		const handleRetry = vi.fn();
 		render(<ErrorMessage error="test" onRetry={handleRetry} />);
 		const button = screen.getByRole("button", { name: /再試行/i });
 		expect(button).toBeInTheDocument();
 
-		fireEvent.click(button);
+		await user.click(button);
 		expect(handleRetry).toHaveBeenCalledTimes(1);
 	});
 

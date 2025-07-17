@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import FurnitureListClient from "@/app/furniture/FurnitureListClient";
 import type { Furniture } from "@/types/furniture";
 import type { Category, Location } from "@/types/furniture_meta";
@@ -80,7 +81,8 @@ describe("FurnitureListClient", () => {
 	});
 
 	describe("検索機能", () => {
-		test("家具名でフィルターされる", () => {
+		test("家具名でフィルターされる", async () => {
+			const user = userEvent.setup();
 			render(
 				<FurnitureListClient
 					initialFurniture={mockFurniture}
@@ -88,14 +90,15 @@ describe("FurnitureListClient", () => {
 					initialLocations={mockLocations}
 				/>
 			);
-			fireEvent.change(screen.getByPlaceholderText("search..."), {
-				target: { value: "チェア" },
-			});
+			const input = screen.getByPlaceholderText("search...");
+			await user.clear(input);
+			await user.type(input, "チェア");
 			expect(screen.getByText("チェアA")).toBeInTheDocument();
 			expect(screen.queryByText("テーブルB")).not.toBeInTheDocument();
 		});
 
-		test("ブランド名でもフィルターされる", () => {
+		test("ブランド名でもフィルターされる", async () => {
+			const user = userEvent.setup();
 			render(
 				<FurnitureListClient
 					initialFurniture={mockFurniture}
@@ -103,16 +106,17 @@ describe("FurnitureListClient", () => {
 					initialLocations={mockLocations}
 				/>
 			);
-			fireEvent.change(screen.getByPlaceholderText("search..."), {
-				target: { value: "無印" },
-			});
+			const input = screen.getByPlaceholderText("search...");
+			await user.clear(input);
+			await user.type(input, "無印");
 			expect(screen.getByText("テーブルB")).toBeInTheDocument();
 			expect(screen.queryByText("チェアA")).not.toBeInTheDocument();
 		});
 	});
 
 	describe("フィルタ機能", () => {
-		test("カテゴリフィルタが動作する", () => {
+		test("カテゴリフィルタが動作する", async () => {
+			const user = userEvent.setup();
 			render(
 				<FurnitureListClient
 					initialFurniture={mockFurniture}
@@ -121,14 +125,15 @@ describe("FurnitureListClient", () => {
 				/>
 			);
 
-			fireEvent.click(screen.getByText("Category"));
-			fireEvent.click(screen.getByText("チェア"));
+			await user.click(screen.getByText("Category"));
+			await user.click(screen.getByText("チェア"));
 
 			expect(screen.getByText("チェアA")).toBeInTheDocument();
 			expect(screen.queryByText("テーブルB")).not.toBeInTheDocument();
 		});
 
-		test("ロケーションフィルタが動作する", () => {
+		test("ロケーションフィルタが動作する", async () => {
+			const user = userEvent.setup();
 			render(
 				<FurnitureListClient
 					initialFurniture={mockFurniture}
@@ -137,8 +142,8 @@ describe("FurnitureListClient", () => {
 				/>
 			);
 
-			fireEvent.click(screen.getByText("Location"));
-			fireEvent.click(screen.getByText("ダイニング"));
+			await user.click(screen.getByText("Location"));
+			await user.click(screen.getByText("ダイニング"));
 
 			expect(screen.getByText("テーブルB")).toBeInTheDocument();
 			expect(screen.queryByText("チェアA")).not.toBeInTheDocument();
@@ -166,8 +171,9 @@ describe("FurnitureListClient", () => {
 			expect(screen.getByText("次へ")).toBeInTheDocument();
 		});
 
-		test("次へボタンでステップが進む", () => {
+		test("次へボタンでステップが進む", async () => {
 			vi.spyOn(window.localStorage.__proto__, "getItem").mockReturnValue(null);
+			const user = userEvent.setup();
 
 			render(
 				<FurnitureListClient
@@ -177,14 +183,15 @@ describe("FurnitureListClient", () => {
 				/>
 			);
 
-			fireEvent.click(screen.getByText("次へ"));
+			await user.click(screen.getByText("次へ"));
 
 			expect(screen.getByText("主な機能")).toBeInTheDocument(); // ステップ2
 		});
 
-		test("スキップボタンでオンボーディングが終了し、localStorageが設定される", () => {
+		test("スキップボタンでオンボーディングが終了し、localStorageが設定される", async () => {
 			const setItemMock = window.localStorage.setItem;
 			vi.spyOn(window.localStorage.__proto__, "getItem").mockReturnValue(null);
+			const user = userEvent.setup();
 
 			render(
 				<FurnitureListClient
@@ -194,15 +201,16 @@ describe("FurnitureListClient", () => {
 				/>
 			);
 
-			fireEvent.click(screen.getByText("スキップ"));
+			await user.click(screen.getByText("スキップ"));
 
 			expect(setItemMock).toHaveBeenCalledWith("hasSeenOnboarding", "true");
 			expect(screen.queryByText("次へ")).not.toBeInTheDocument();
 		});
 
-		test("最終ステップで完了ボタンをクリックするとlocalStorageに設定される", () => {
+		test("最終ステップで完了ボタンをクリックするとlocalStorageに設定される", async () => {
 			const setItemMock = window.localStorage.setItem;
 			vi.spyOn(window.localStorage.__proto__, "getItem").mockReturnValue(null);
+			const user = userEvent.setup();
 
 			render(
 				<FurnitureListClient
@@ -212,11 +220,11 @@ describe("FurnitureListClient", () => {
 				/>
 			);
 
-			fireEvent.click(screen.getByText("次へ"));
-			fireEvent.click(screen.getByText("次へ"));
+			await user.click(screen.getByText("次へ"));
+			await user.click(screen.getByText("次へ"));
 
 			expect(screen.getByText("さっそく始めましょう")).toBeInTheDocument(); // 最終ステップ
-			fireEvent.click(screen.getByText("家具を登録する"));
+			await user.click(screen.getByText("家具を登録する"));
 
 			expect(setItemMock).toHaveBeenCalledWith("hasSeenOnboarding", "true");
 			expect(screen.queryByText("次へ")).not.toBeInTheDocument();

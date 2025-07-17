@@ -2,15 +2,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Step1UI from "@/app/furniture/register/Step1UI";
 
-// 共通props
-const baseProps = {
-	category: null,
-	location: null,
-	setCategory: vi.fn(),
-	setLocation: vi.fn(),
-	onNext: vi.fn(),
-};
-
 // useFurnitureMeta を直接モック
 vi.mock("@/hooks/useFurnitureMeta", () => ({
 	useFurnitureMeta: () => ({

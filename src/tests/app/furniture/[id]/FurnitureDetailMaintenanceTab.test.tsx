@@ -306,8 +306,10 @@ describe("FurnitureDetailMaintenanceTab", () => {
 
 	describe("期限切れの判定", () => {
 		test("今日の日付の場合、期限切れとして表示される", () => {
-			const today = new Date().toISOString().split("T")[0];
-			const summaryToday = { ...mockSummary, nearestDueDate: today };
+			const yesterday = new Date(Date.now() - 86400000) // 前日
+				.toISOString()
+				.split("T")[0];
+			const summaryToday = { ...mockSummary, nearestDueDate: yesterday };
 			render(
 				<TestWrapper>
 					<FurnitureDetailMaintenanceTab

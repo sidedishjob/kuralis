@@ -49,7 +49,8 @@ const sheetVariants = cva(
 
 // SheetContentのprops型
 interface SheetContentProps
-	extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
+	extends
+		React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
 		VariantProps<typeof sheetVariants> {}
 
 // Sheet本体

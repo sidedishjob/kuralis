@@ -10,8 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface LoadingButtonProps
-	extends React.ComponentProps<"button">,
-		VariantProps<typeof buttonVariants> {
+	extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
 	isLoading?: boolean;
 	loadingText?: string;
 	forceMinWidth?: boolean;

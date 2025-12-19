@@ -68,7 +68,7 @@
 
 | カテゴリ           | 技術                                                      |
 | ------------------ | --------------------------------------------------------- |
-| **フロントエンド** | Next.js 15.3.5 (App Router) / React 19.0.0 / TypeScript 5 |
+| **フロントエンド** | Next.js 16.1.0 (App Router) / React 19.2.3 / TypeScript 5 |
 | **バックエンド**   | Supabase 2.49.4 (PostgreSQL 15, Auth, Storage)            |
 | **データ取得**     | SWR                                                       |
 | **フォーム**       | react-hook-form 7.57.0 / Zod 3.25.57                      |

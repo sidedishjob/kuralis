@@ -61,7 +61,7 @@ export default function FurnitureDetailClient({
 		defaultValues: {
 			name: initialFurniture.name,
 			brand: initialFurniture.brand || "",
-			location_id: initialFurniture.location_id,
+			location_id: initialFurniture.location_id ?? undefined,
 			purchased_at: initialFurniture.purchased_at || "",
 			purchased_from: initialFurniture.purchased_from || "",
 			notes: initialFurniture.notes || "",
@@ -76,7 +76,7 @@ export default function FurnitureDetailClient({
 			methods.reset({
 				name: furniture.name,
 				brand: furniture.brand || "",
-				location_id: furniture.location_id,
+				location_id: furniture.location_id ?? undefined,
 				purchased_at: furniture.purchased_at || "",
 				purchased_from: furniture.purchased_from || "",
 				notes: furniture.notes || "",

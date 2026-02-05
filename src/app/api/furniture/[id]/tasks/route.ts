@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { handleApiError } from "@/lib/utils/handleApiError";
 import { maintenanceTaskSchema } from "@/lib/validation";
-import type { MaintenanceTaskWithRecords } from "@/types/maintenance";
+import type { MaintenanceStatus, MaintenanceTaskWithRecords } from "@/types/maintenance";
+import { isMaintenanceCycleUnit, MAINTENANCE_CYCLE_UNITS } from "@/types/maintenance";
 import { ApiError } from "@/lib/errors/ApiError";
 
-const VALID_UNITS = ["days", "weeks", "months", "years"];
+const VALID_UNITS = MAINTENANCE_CYCLE_UNITS;
 
 /**
  * GET: 家具IDに紐づくメンテナンスタスクと履歴の取得
@@ -47,12 +48,40 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 			.order("performed_at", { ascending: false });
 
 		if (recordError) throw new Error(`メンテナンス履歴取得エラー: ${recordError.message}`);
+		const safeRecords = records ?? [];
 
 		// 3. タスク単位に履歴をグルーピング
 		const result: MaintenanceTaskWithRecords[] = tasks.map((task) => {
-			const taskRecords = records.filter((r) => r.task_id === task.id);
+			if (!isMaintenanceCycleUnit(task.cycle_unit)) {
+				throw new Error(`不正なcycle_unitが検出されました: ${task.cycle_unit}`);
+			}
+			if (task.is_active === null) {
+				throw new Error(`is_activeがnullのタスクが検出されました: ${task.id}`);
+			}
+			if (!task.created_at) {
+				throw new Error(`created_atがnullのタスクが検出されました: ${task.id}`);
+			}
+
+			const taskRecords = safeRecords
+				.filter(
+					(
+						record
+					): record is typeof record & { task_id: string; status: MaintenanceStatus } =>
+						record.task_id === task.id && record.status !== null
+				)
+				.map((record) => ({
+					id: record.id,
+					task_id: record.task_id,
+					performed_at: record.performed_at,
+					next_due_date: record.next_due_date,
+					status: record.status,
+				}));
 			return {
 				...task,
+				cycle_unit: task.cycle_unit,
+				is_active: task.is_active,
+				created_at: task.created_at,
+				description: task.description ?? undefined,
 				records: taskRecords,
 				next_due_date: taskRecords[0]?.next_due_date ?? null,
 			};
@@ -96,7 +125,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 			throw new ApiError(400, "周期値が不正です。数値を入力してください。");
 		}
 
-		if (!VALID_UNITS.includes(cycleUnit)) {
+		if (!isMaintenanceCycleUnit(cycleUnit)) {
 			throw new ApiError(
 				400,
 				`周期単位が不正です。使用可能な単位: ${VALID_UNITS.join(", ")}`

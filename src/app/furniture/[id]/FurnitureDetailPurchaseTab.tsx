@@ -4,6 +4,7 @@ import { FiCalendar, FiMapPin } from "react-icons/fi";
 import { useFormContext } from "react-hook-form";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import type { FurnitureEditSchema } from "@/lib/validation";
+import { format } from "date-fns";
 
 interface Props {
 	furniture: FurnitureWithExtras;
@@ -37,7 +38,7 @@ export default function FurnitureDetailPurchaseTab({ furniture, isEditing }: Pro
 					) : (
 						<div className="flex-1 min-w-0 font-normal tracking-tighter-custom truncate">
 							{furniture.purchased_at &&
-								new Date(furniture.purchased_at).toLocaleDateString()}
+								format(new Date(furniture.purchased_at), "yyyy/MM/dd")}
 						</div>
 					)}
 					{errors.purchased_at && (

@@ -8,7 +8,7 @@ import type { Database } from "@/lib/database.types";
  * Supabaseのセッションを自動更新するmiddleware
  * 認証の判定やリダイレクトは各ページで行う
  */
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
 	const response = NextResponse.next({
 		request: {
 			headers: req.headers,

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import type { CookieOptions } from "@supabase/ssr";
 import { createServerClient } from "@supabase/ssr";
+import type { Database } from "@/lib/database.types";
 
 /**
  * Supabaseのセッションを自動更新するmiddleware
@@ -13,17 +15,16 @@ export async function middleware(req: NextRequest) {
 		},
 	});
 
-	const supabase = createServerClient(
+	const supabase = createServerClient<Database>(
 		process.env.NEXT_PUBLIC_SUPABASE_URL!,
 		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 		{
 			cookies: {
-				get: (name) => req.cookies.get(name)?.value,
-				set: (name, value, options) => {
-					response.cookies.set({ name, value, ...options });
-				},
-				remove: (name, options) => {
-					response.cookies.set({ name, value: "", ...options });
+				getAll: () => req.cookies.getAll(),
+				setAll: (cookies: { name: string; value: string; options: CookieOptions }[]) => {
+					cookies.forEach((cookie) => {
+						response.cookies.set(cookie.name, cookie.value, cookie.options);
+					});
 				},
 			},
 		}

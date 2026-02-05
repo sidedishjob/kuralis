@@ -51,10 +51,21 @@ export async function getMaintenanceSummary(
 				nearestDueDate: null,
 			};
 		}
+		const validRecords = records.filter(
+			(record): record is typeof record & { task_id: string; next_due_date: string } =>
+				Boolean(record.task_id) && Boolean(record.next_due_date)
+		);
+		if (validRecords.length === 0) {
+			return {
+				activeTaskCount,
+				nearestTaskName: null,
+				nearestDueDate: null,
+			};
+		}
 
 		// 3. 各タスクごとに「最新の記録（最も新しい performed_at）」を抽出
 		const latestPerTask = Object.values(
-			records.reduce(
+			validRecords.reduce(
 				(acc, record) => {
 					const existing = acc[record.task_id];
 					const current = new Date(record.performed_at);
@@ -63,7 +74,7 @@ export async function getMaintenanceSummary(
 					}
 					return acc;
 				},
-				{} as Record<string, (typeof records)[0]>
+				{} as Record<string, (typeof validRecords)[0]>
 			)
 		);
 

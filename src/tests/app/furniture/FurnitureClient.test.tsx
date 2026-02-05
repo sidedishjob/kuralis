@@ -1,8 +1,33 @@
 import { render, screen } from "@testing-library/react";
+import type React from "react";
 import userEvent from "@testing-library/user-event";
 import FurnitureListClient from "@/app/furniture/FurnitureListClient";
 import type { Furniture } from "@/types/furniture";
 import type { Category, Location } from "@/types/furniture_meta";
+
+vi.mock("next/link", () => ({
+	default: ({
+		href,
+		onClick,
+		children,
+		...props
+	}: {
+		href: string;
+		onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+		children: React.ReactNode;
+	}) => (
+		<a
+			href={href}
+			onClick={(event) => {
+				event.preventDefault();
+				onClick?.(event);
+			}}
+			{...props}
+		>
+			{children}
+		</a>
+	),
+}));
 
 // モックデータ
 const mockFurniture: Furniture[] = [

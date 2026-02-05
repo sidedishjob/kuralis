@@ -43,6 +43,9 @@
 }
 
 :root {
+	--font-noto: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
+		"Yu Gothic", "Yu Gothic UI", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-inter: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);

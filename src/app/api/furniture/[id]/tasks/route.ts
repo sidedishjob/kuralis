@@ -51,16 +51,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 		const safeRecords = records ?? [];
 
 		// 3. タスク単位に履歴をグルーピング
-		const result: MaintenanceTaskWithRecords[] = tasks.map((task) => {
+		const result: MaintenanceTaskWithRecords[] = tasks.reduce((acc, task) => {
 			if (!isMaintenanceCycleUnit(task.cycle_unit)) {
-				throw new Error(`不正なcycle_unitが検出されました: ${task.cycle_unit}`);
+				console.warn(
+					`不正なcycle_unitが検出されました: ${task.cycle_unit} (task_id=${task.id})`
+				);
+				return acc;
 			}
-			if (task.is_active === null) {
-				throw new Error(`is_activeがnullのタスクが検出されました: ${task.id}`);
-			}
-			if (!task.created_at) {
-				throw new Error(`created_atがnullのタスクが検出されました: ${task.id}`);
-			}
+
+			const taskIsActive = task.is_active ?? false;
+			const taskCreatedAt = task.created_at ?? new Date(0).toISOString();
 
 			const taskRecords = safeRecords
 				.filter(
@@ -76,16 +76,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 					next_due_date: record.next_due_date,
 					status: record.status,
 				}));
-			return {
+
+			acc.push({
 				...task,
 				cycle_unit: task.cycle_unit,
-				is_active: task.is_active,
-				created_at: task.created_at,
+				is_active: taskIsActive,
+				created_at: taskCreatedAt,
 				description: task.description ?? undefined,
 				records: taskRecords,
 				next_due_date: taskRecords[0]?.next_due_date ?? null,
-			};
-		});
+			});
+			return acc;
+		}, [] as MaintenanceTaskWithRecords[]);
 
 		return NextResponse.json(result, { status: 200 });
 	} catch (error: unknown) {

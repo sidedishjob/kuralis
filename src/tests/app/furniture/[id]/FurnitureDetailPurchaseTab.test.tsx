@@ -70,7 +70,8 @@ describe("FurnitureDetailPurchaseTab", () => {
 
 			expect(screen.getByText("購入日")).toBeInTheDocument();
 			expect(screen.getByText("購入店舗")).toBeInTheDocument();
-			expect(screen.getByText("2024/5/1")).toBeInTheDocument();
+			const expectedDate = new Date(mockFurniture.purchased_at as string).toLocaleDateString();
+			expect(screen.getByText(expectedDate)).toBeInTheDocument();
 			expect(screen.getByText("オンラインストア")).toBeInTheDocument();
 		});
 

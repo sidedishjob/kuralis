@@ -78,7 +78,7 @@ export default async function Page() {
 							clipPath:
 								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
 						}}
-						className="relative left-1/2 -translate-x-1/2 rotate-[30deg] aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72rem]"
+						className="relative left-1/2 -translate-x-1/2 rotate-30 aspect-video w-xl bg-linear-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%-30rem)] sm:w-6xl"
 					/>
 				</div>
 
@@ -110,14 +110,14 @@ export default async function Page() {
 				{/* 下部のぼかし背景 */}
 				<div
 					aria-hidden="true"
-					className="absolute inset-x-0 bottom-[-8rem] sm:bottom-[-16rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-42rem)]"
+					className="absolute inset-x-0 -bottom-32 sm:-bottom-64 -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-42rem)]"
 				>
 					<div
 						style={{
 							clipPath:
 								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
 						}}
-						className="relative left-1/2 -translate-x-1/2 aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+						className="relative left-1/2 -translate-x-1/2 aspect-video w-xl bg-linear-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-6xl"
 					/>
 				</div>
 			</section>
@@ -178,12 +178,12 @@ export default async function Page() {
 			</section>
 
 			{/* サブCTA */}
-			<section className="relative py-32 text-center overflow-hidden bg-gradient-to-br from-kuralis-50 via-white to-kuralis-100">
+			<section className="relative py-32 text-center overflow-hidden bg-linear-to-br from-kuralis-50 via-white to-kuralis-100">
 				{/* 背景装飾 */}
 				<div className="absolute inset-0">
 					{/* グラデーション円 */}
-					<div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-kuralis-200/30 to-kuralis-300/20 rounded-full blur-3xl animate-pulse"></div>
-					<div className="absolute top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-l from-kuralis-100/40 to-kuralis-200/30 rounded-full blur-2xl animate-pulse delay-1000"></div>
+					<div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-linear-to-r from-kuralis-200/30 to-kuralis-300/20 rounded-full blur-3xl animate-pulse"></div>
+					<div className="absolute top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-linear-to-l from-kuralis-100/40 to-kuralis-200/30 rounded-full blur-2xl animate-pulse delay-1000"></div>
 
 					{/* 浮遊する装飾要素 */}
 					<div className="absolute top-1/4 left-1/6 w-3 h-3 bg-kuralis-300 rounded-full animate-bounce delay-500"></div>
@@ -202,7 +202,7 @@ export default async function Page() {
 					<h2 className="text-3xl md:text-4xl mb-6 tracking-tight font-bold text-kuralis-900 leading-tight">
 						大切な家具と、
 						<br />
-						<span className="bg-gradient-to-r from-kuralis-700 to-kuralis-900 bg-clip-text text-transparent">
+						<span className="bg-linear-to-r from-kuralis-700 to-kuralis-900 bg-clip-text text-transparent">
 							もっと心地よく暮らそう。
 						</span>
 					</h2>
@@ -242,7 +242,7 @@ export default async function Page() {
 				</div>
 
 				{/* 下部グラデーション */}
-				<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+				<div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white to-transparent pointer-events-none"></div>
 			</section>
 
 			{/* フッター */}

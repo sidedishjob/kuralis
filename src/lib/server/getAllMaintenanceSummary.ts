@@ -48,10 +48,14 @@ export async function getAllMaintenanceSummary(userId: string): Promise<Maintena
 		.in("task_id", taskIds);
 	const safeRecords = checkSupabaseError(records, recordError, "records");
 	if (safeRecords.length === 0) return [];
+	const recordsWithTaskId = safeRecords.filter(
+		(record): record is typeof record & { task_id: string } => Boolean(record.task_id)
+	);
+	if (recordsWithTaskId.length === 0) return [];
 
 	// 4. 各 task_id ごとに最新履歴のみ抽出
-	const latestRecordsMap = new Map<string, (typeof safeRecords)[0]>();
-	for (const rec of safeRecords) {
+	const latestRecordsMap = new Map<string, (typeof recordsWithTaskId)[0]>();
+	for (const rec of recordsWithTaskId) {
 		const existing = latestRecordsMap.get(rec.task_id);
 		if (!existing || new Date(existing.performed_at) < new Date(rec.performed_at)) {
 			latestRecordsMap.set(rec.task_id, rec);

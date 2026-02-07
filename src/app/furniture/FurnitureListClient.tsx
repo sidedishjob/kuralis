@@ -39,7 +39,7 @@ export default function FurnitureListClient({
 			const matchesSearch =
 				searchQuery === "" ||
 				furniture.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				furniture.brand.toLowerCase().includes(searchQuery.toLowerCase());
+				(furniture.brand ?? "").toLowerCase().includes(searchQuery.toLowerCase());
 
 			const matchesCategory =
 				activeCategory === null || furniture.category_id === activeCategory;

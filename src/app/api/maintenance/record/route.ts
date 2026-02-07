@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { calculateNextDueDate } from "@/lib/utils/maintenance";
+import { isMaintenanceCycleUnit } from "@/types/maintenance";
 import { handleApiError } from "@/lib/utils/handleApiError";
 import { ApiError } from "@/lib/errors/ApiError";
 import type { MaintenanceHistory } from "@/types/maintenance";
@@ -41,6 +42,10 @@ export async function POST(req: NextRequest) {
 		}
 
 		// 2. 次回予定日を算出
+		if (!isMaintenanceCycleUnit(task.cycle_unit)) {
+			throw new Error(`不正なcycle_unitが検出されました: ${task.cycle_unit}`);
+		}
+
 		const nextDueDate = calculateNextDueDate(performedAt, task.cycle_value, task.cycle_unit);
 
 		// 3. INSERT 実行（履歴登録）

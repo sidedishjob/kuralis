@@ -23,6 +23,12 @@ export interface MaintenanceHistory {
 
 export type MaintenanceCycleUnit = "days" | "weeks" | "months" | "years";
 
+export const MAINTENANCE_CYCLE_UNITS = ["days", "weeks", "months", "years"] as const;
+
+export function isMaintenanceCycleUnit(value: string): value is MaintenanceCycleUnit {
+	return (MAINTENANCE_CYCLE_UNITS as readonly string[]).includes(value);
+}
+
 export type MaintenanceStatus = "completed" | "skipped" | "partial";
 
 export interface MaintenanceRecord {

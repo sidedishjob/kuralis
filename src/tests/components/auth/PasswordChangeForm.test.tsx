@@ -32,9 +32,8 @@ describe("PasswordChangeForm", () => {
 	});
 
 	test("フォームの要素が表示される", async () => {
-		const { default: PasswordChangeForm } = await import(
-			"@/components/auth/PasswordChangeForm"
-		);
+		const { default: PasswordChangeForm } =
+			await import("@/components/auth/PasswordChangeForm");
 		render(<PasswordChangeForm />);
 		expect(screen.getByLabelText("現在のパスワード")).toBeInTheDocument();
 		expect(screen.getByLabelText("新しいパスワード")).toBeInTheDocument();
@@ -51,9 +50,8 @@ describe("PasswordChangeForm", () => {
 		mockSignInWithPassword.mockResolvedValue({ data: {}, error: null });
 		mockUpdateUser.mockResolvedValue({ data: {}, error: null });
 
-		const { default: PasswordChangeForm } = await import(
-			"@/components/auth/PasswordChangeForm"
-		);
+		const { default: PasswordChangeForm } =
+			await import("@/components/auth/PasswordChangeForm");
 		const user = userEvent.setup();
 
 		render(<PasswordChangeForm />);
@@ -87,9 +85,8 @@ describe("PasswordChangeForm", () => {
 		});
 		mockSignInWithPassword.mockResolvedValue({ error: { message: "Invalid password" } });
 
-		const { default: PasswordChangeForm } = await import(
-			"@/components/auth/PasswordChangeForm"
-		);
+		const { default: PasswordChangeForm } =
+			await import("@/components/auth/PasswordChangeForm");
 		const user = userEvent.setup();
 
 		render(<PasswordChangeForm />);
@@ -109,9 +106,8 @@ describe("PasswordChangeForm", () => {
 
 	describe("フォームバリデーション", () => {
 		test("現在のパスワードが空の場合、エラーが表示される", async () => {
-			const { default: PasswordChangeForm } = await import(
-				"@/components/auth/PasswordChangeForm"
-			);
+			const { default: PasswordChangeForm } =
+				await import("@/components/auth/PasswordChangeForm");
 			const user = userEvent.setup();
 
 			render(<PasswordChangeForm />);
@@ -130,9 +126,8 @@ describe("PasswordChangeForm", () => {
 		});
 
 		test("新しいパスワードが空または短すぎる場合、エラーが表示される", async () => {
-			const { default: PasswordChangeForm } = await import(
-				"@/components/auth/PasswordChangeForm"
-			);
+			const { default: PasswordChangeForm } =
+				await import("@/components/auth/PasswordChangeForm");
 			const user = userEvent.setup();
 
 			render(<PasswordChangeForm />);
@@ -152,9 +147,8 @@ describe("PasswordChangeForm", () => {
 		});
 
 		test("新しいパスワードと確認用が一致しない場合、エラーが表示される", async () => {
-			const { default: PasswordChangeForm } = await import(
-				"@/components/auth/PasswordChangeForm"
-			);
+			const { default: PasswordChangeForm } =
+				await import("@/components/auth/PasswordChangeForm");
 			const user = userEvent.setup();
 
 			render(<PasswordChangeForm />);

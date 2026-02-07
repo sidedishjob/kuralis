@@ -21,7 +21,7 @@ const config = {
 				"accordion-up": "accordion-up 0.2s ease-out",
 			},
 			fontFamily: {
-				sans: ["var(--font-noto)", "var(--font-inter)", "system-ui", "sans-serif"],
+				sans: ["var(--font-sans)"],
 			},
 			letterSpacing: {
 				"tighter-custom": "-0.03em",

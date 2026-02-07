@@ -23,8 +23,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<Suspense>
 						<PageViewListener />
 					</Suspense>
-					<div className="flex-grow flex flex-col">
-						<main className="flex-grow">{children}</main>
+					<div className="grow flex flex-col">
+						<main className="grow">{children}</main>
 						<Toaster />
 					</div>
 					<Footer />

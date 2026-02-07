@@ -70,7 +70,7 @@ describe("FurnitureDetailPurchaseTab", () => {
 
 			expect(screen.getByText("購入日")).toBeInTheDocument();
 			expect(screen.getByText("購入店舗")).toBeInTheDocument();
-			expect(screen.getByText("2024/5/1")).toBeInTheDocument();
+			expect(screen.getByText("2024/05/01")).toBeInTheDocument();
 			expect(screen.getByText("オンラインストア")).toBeInTheDocument();
 		});
 
@@ -335,8 +335,7 @@ describe("FurnitureDetailPurchaseTab", () => {
 			);
 
 			// toLocaleDateString()の結果を確認
-			const expectedDate = new Date("2024-05-01").toLocaleDateString();
-			expect(screen.getByText(expectedDate)).toBeInTheDocument();
+			expect(screen.getByText("2024/05/01")).toBeInTheDocument();
 		});
 
 		test("異なる日付形式でも正しく表示される", () => {
@@ -350,8 +349,7 @@ describe("FurnitureDetailPurchaseTab", () => {
 				</TestWrapper>
 			);
 
-			const expectedDate = new Date("2024-12-25").toLocaleDateString();
-			expect(screen.getByText(expectedDate)).toBeInTheDocument();
+			expect(screen.getByText("2024/12/25")).toBeInTheDocument();
 		});
 	});
 

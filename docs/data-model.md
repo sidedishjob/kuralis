@@ -52,8 +52,8 @@ CREATE TABLE maintenance_tasks (
     cycle_value INT NOT NULL,
     cycle_unit VARCHAR(10) NOT NULL CHECK (cycle_unit IN ('days', 'weeks', 'months', 'years')),
     description TEXT,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
 

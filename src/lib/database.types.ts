@@ -156,33 +156,33 @@ export type Database = {
 			};
 			maintenance_tasks: {
 				Row: {
-					created_at: string | null;
+					created_at: string;
 					cycle_unit: string;
 					cycle_value: number;
 					description: string | null;
 					furniture_id: string;
 					id: string;
-					is_active: boolean | null;
+					is_active: boolean;
 					name: string;
 				};
 				Insert: {
-					created_at?: string | null;
+					created_at?: string;
 					cycle_unit: string;
 					cycle_value: number;
 					description?: string | null;
 					furniture_id: string;
 					id?: string;
-					is_active?: boolean | null;
+					is_active?: boolean;
 					name: string;
 				};
 				Update: {
-					created_at?: string | null;
+					created_at?: string;
 					cycle_unit?: string;
 					cycle_value?: number;
 					description?: string | null;
 					furniture_id?: string;
 					id?: string;
-					is_active?: boolean | null;
+					is_active?: boolean;
 					name?: string;
 				};
 				Relationships: [

@@ -244,7 +244,7 @@ export default function FurnitureListClient({
 			{/* 登録 */}
 			<Link
 				href="/furniture/register"
-				className="fixed bottom-24 right-4 md:bottom-28 md:right-8 w-12 h-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
+				className="fixed bottom-24 right-4 md:bottom-28 md:right-8 size-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
 			>
 				<FiPlus size={20} className="transition-colors duration-300" />
 			</Link>

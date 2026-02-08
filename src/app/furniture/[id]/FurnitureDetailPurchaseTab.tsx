@@ -25,7 +25,7 @@ export default function FurnitureDetailPurchaseTab({ furniture, isEditing }: Pro
 
 			{(isEditing || furniture.purchased_at) && (
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiCalendar size={16} className="mr-2" />
 						<span>購入日</span>
 					</div>
@@ -49,7 +49,7 @@ export default function FurnitureDetailPurchaseTab({ furniture, isEditing }: Pro
 
 			{(isEditing || furniture.purchased_from) && (
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiMapPin size={16} className="mr-2" />
 						<span>購入店舗</span>
 					</div>

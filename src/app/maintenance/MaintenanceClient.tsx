@@ -22,7 +22,7 @@ export default function MaintenanceClient({ summary }: MaintenanceClientProps) {
 		<div className="container mx-auto py-12 px-6 md:px-12">
 			{/* ヘッダー */}
 			<div className="flex items-center justify-between mb-8">
-				<div className="space-y-1 flex-shrink">
+				<div className="space-y-1 shrink">
 					<h1 className="text-2xl font-bold tracking-tighter-custom">メンテナンス予定</h1>
 					<p className="text-sm text-kuralis-600 hidden md:block">
 						家具のメンテナンス予定を管理します

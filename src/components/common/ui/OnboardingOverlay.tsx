@@ -22,18 +22,18 @@ const STEPS: OnboardingStep[] = [
 		title: "家具と暮らすための記録アプリ",
 		description:
 			"kuralisは、家具との思い出を記録し、適切なメンテナンスをサポートするアプリです。",
-		icon: <FiHeart className="w-8 h-8" />,
+		icon: <FiHeart className="size-8" />,
 	},
 	{
 		title: "主な機能",
 		description:
 			"家具の登録、メンテナンス記録の管理、次回メンテナンス予定の確認など、家具との暮らしをより豊かにする機能を提供します。",
-		icon: <FiBook className="w-8 h-8" />,
+		icon: <FiBook className="size-8" />,
 	},
 	{
 		title: "さっそく始めましょう",
 		description: "家具を登録して、メンテナンス記録を始めましょう。",
-		icon: <FiPlus className="w-8 h-8" />,
+		icon: <FiPlus className="size-8" />,
 	},
 ];
 
@@ -57,7 +57,7 @@ export function OnboardingOverlay({
 				</button>
 
 				<div className="text-center space-y-6">
-					<div className="w-16 h-16 rounded-full bg-kuralis-100 flex items-center justify-center mx-auto text-kuralis-600">
+					<div className="size-16 rounded-full bg-kuralis-100 flex items-center justify-center mx-auto text-kuralis-600">
 						{currentStepData.icon}
 					</div>
 
@@ -72,7 +72,7 @@ export function OnboardingOverlay({
 						{STEPS.map((_, index) => (
 							<div
 								key={index}
-								className={`w-2 h-2 rounded-full transition-all duration-300 ${
+								className={`size-2 rounded-full transition-all duration-300 ${
 									index + 1 === currentStep
 										? "bg-kuralis-900 scale-125"
 										: "bg-kuralis-200"

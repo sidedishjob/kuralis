@@ -87,7 +87,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 				<CardContent>
 					<div className="grid gap-6">
 						<Button variant="outline" className="w-full" onClick={handleGoogleSignup}>
-							<Icons.google className="mr-2 h-5 w-5 text-neutral-700" />
+							<Icons.google className="mr-2 size-5 text-neutral-700" />
 							Googleで登録
 						</Button>
 

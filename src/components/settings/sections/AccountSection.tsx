@@ -58,7 +58,7 @@ export const AccountSection = () => {
 		<Card>
 			<CardHeader>
 				<CardTitle className="flex items-center">
-					<FiUser className="w-5 h-5 mr-1" />
+					<FiUser className="size-5 mr-1" />
 					アカウント
 				</CardTitle>
 			</CardHeader>

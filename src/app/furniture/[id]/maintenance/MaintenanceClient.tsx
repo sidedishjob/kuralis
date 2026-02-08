@@ -193,7 +193,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 					</h1>
 					<Button
 						onClick={() => setIsAddTaskDialogOpen(true)}
-						className="hidden md:block w-10 h-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
+						className="hidden md:block size-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
 					>
 						<FiPlus size={16} />
 					</Button>
@@ -221,7 +221,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 							>
 								<div className="flex items-center space-x-3 mb-4">
 									<div className="text-kuralis-600">
-										<FiTool className="w-5 h-5" />
+										<FiTool className="size-5" />
 									</div>
 									<div className="grow">
 										<h3 className="tracking-tighter-custom text-lg">
@@ -268,11 +268,11 @@ export default function MaintenanceClient({ furniture }: Props) {
 												disabled={!newHistoryDate}
 												variant="ghost"
 												forceMinWidth={false}
-												className="p-1 w-8 h-8 inline-flex items-center justify-center text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400"
+												className="p-1 size-8 inline-flex items-center justify-center text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400"
 											>
 												<FiPlus
 													size={14}
-													className="w-10 h-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom text-white"
+													className="size-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom text-white"
 												/>
 											</LoadingButton>
 											<button
@@ -300,7 +300,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 									<div
 										className={`space-y-1 ${
 											task.records.length >= 5
-												? "max-h-[7.5rem] overflow-y-auto pr-1"
+												? "max-h-30 overflow-y-auto pr-1"
 												: ""
 										}`}
 									>
@@ -372,7 +372,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 				<div className="md:hidden w-full flex items-center justify-center">
 					<Button
 						onClick={() => setIsAddTaskDialogOpen(true)}
-						className="w-10 h-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
+						className="size-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
 					>
 						<FiPlus size={16} />
 					</Button>

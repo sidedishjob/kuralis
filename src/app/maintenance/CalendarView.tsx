@@ -84,7 +84,7 @@ export default function CalendarView({
 					return (
 						<div
 							key={day.toISOString()}
-							className={`min-h-[80px] md:min-h-[100px] p-1 md:p-2 bg-white ${
+							className={`min-h-20 md:min-h-25 p-1 md:p-2 bg-white ${
 								!isCurrentMonth ? "text-kuralis-400" : ""
 							}`}
 						>

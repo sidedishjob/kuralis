@@ -32,7 +32,7 @@ const images = [
 
 export default function UIGallerySection() {
 	return (
-		<section className="relative py-24  bg-gradient-to-bl from-kuralis-50 via-white to-kuralis-100">
+		<section className="relative py-24  bg-linear-to-bl from-kuralis-50 via-white to-kuralis-100">
 			<h2 className="text-4xl md:text-5xl tracking-tight text-center font-bold text-kuralis-900 mb-8">
 				kuralis in Action
 			</h2>
@@ -48,7 +48,7 @@ export default function UIGallerySection() {
 						key={img.src}
 						className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
 					>
-						<div className="relative aspect-[16/9] group">
+						<div className="relative aspect-video group">
 							<Image
 								src={img.src}
 								alt={img.alt}
@@ -59,7 +59,7 @@ export default function UIGallerySection() {
 						</div>
 						<div className="p-4 md:p-6 space-y-2">
 							<h3 className="text-base text-kuralis-900 tracking-tight flex items-center gap-2 font-semibold">
-								<FiImage className="text-kuralis-500 w-5 h-5" />
+								<FiImage className="text-kuralis-500 size-5" />
 								{img.title}
 							</h3>
 							<p className="text-sm uppercase text-kuralis-700 bg-kuralis-50 px-3 py-1 rounded shadow-sm tracking-wide font-medium">
@@ -70,7 +70,7 @@ export default function UIGallerySection() {
 				))}
 			</div>
 			{/* 下部グラデーション */}
-			<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+			<div className="absolute bottom-0 inset-x-0 h-32 bg-linear-to-t from-white to-transparent pointer-events-none"></div>
 		</section>
 	);
 }

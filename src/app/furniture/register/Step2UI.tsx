@@ -124,14 +124,14 @@ export default function Step2UI({
 					/>
 					{image ? (
 						<div className="space-y-2">
-							<div className="relative aspect-[4/3] w-full">
+							<div className="relative aspect-4/3 w-full">
 								{image instanceof File && (
 									<Image
 										src={URL.createObjectURL(image)}
 										alt="Preview"
 										fill
 										sizes="(max-width: 768px) 100vw, 33vw"
-										className="w-full h-full object-cover"
+										className="size-full object-cover"
 										unoptimized
 									/>
 								)}
@@ -155,7 +155,7 @@ export default function Step2UI({
 					) : (
 						<label
 							htmlFor="furniture-image"
-							className="aspect-[4/3] w-full h-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
+							className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
 						>
 							<FiUpload
 								size={32}

@@ -7,7 +7,7 @@ export const PolicySection = () => {
 		<Card>
 			<CardHeader>
 				<CardTitle className="flex items-center">
-					<MdOutlinePolicy className="w-5 h-5 mr-1" />
+					<MdOutlinePolicy className="size-5 mr-1" />
 					ポリシー
 				</CardTitle>
 			</CardHeader>

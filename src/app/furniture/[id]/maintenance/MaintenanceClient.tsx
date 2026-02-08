@@ -223,7 +223,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 									<div className="text-kuralis-600">
 										<FiTool className="w-5 h-5" />
 									</div>
-									<div className="flex-grow">
+									<div className="grow">
 										<h3 className="tracking-tighter-custom text-lg">
 											{task.name}
 										</h3>
@@ -300,7 +300,7 @@ export default function MaintenanceClient({ furniture }: Props) {
 									<div
 										className={`space-y-1 ${
 											task.records.length >= 5
-												? "max-h-30 overflow-y-auto pr-1"
+												? "max-h-[7.5rem] overflow-y-auto pr-1"
 												: ""
 										}`}
 									>
@@ -383,6 +383,9 @@ export default function MaintenanceClient({ furniture }: Props) {
 					<DialogContent>
 						<DialogHeader>
 							<DialogTitle>メンテナンスタスクの追加</DialogTitle>
+							<DialogDescription>
+								タスク名と実施周期を入力して追加します。
+							</DialogDescription>
 						</DialogHeader>
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
 							<div>

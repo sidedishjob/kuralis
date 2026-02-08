@@ -7,9 +7,10 @@ import type { Furniture } from "@/types/furniture";
 
 interface FurnitureCardProps {
 	furniture: Furniture;
+	priorityImage?: boolean;
 }
 
-export function FurnitureCard({ furniture }: FurnitureCardProps) {
+export function FurnitureCard({ furniture, priorityImage = false }: FurnitureCardProps) {
 	const Card = () => (
 		<div className="block group relative overflow-hidden">
 			<div className="aspect-[4/3] transform group-hover:-translate-y-8 transition-transform duration-700 ease-natural">
@@ -19,6 +20,8 @@ export function FurnitureCard({ furniture }: FurnitureCardProps) {
 						alt={furniture.name}
 						width={400}
 						height={300}
+						loading={priorityImage ? "eager" : "lazy"}
+						priority={priorityImage}
 						className="w-full h-full object-cover"
 						unoptimized
 					/>

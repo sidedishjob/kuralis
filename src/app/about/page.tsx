@@ -29,13 +29,13 @@ export default function AboutPage() {
 							clipPath:
 								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
 						}}
-						className="relative left-1/2 -translate-x-1/2 rotate-[30deg] aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72rem]"
+						className="relative left-1/2 -translate-x-1/2 rotate-30 aspect-video w-xl bg-linear-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%-30rem)] sm:w-6xl"
 					/>
 				</div>
 
 				<div className="relative space-y-12 pb-30">
 					<div className="inline-flex items-center gap-2 px-4 py-2 bg-kuralis-100 rounded-full text-kuralis-700 text-sm font-medium animate-fade-in">
-						<FiStar className="w-4 h-4" />
+						<FiStar className="size-4" />
 						家具管理の新しい体験
 					</div>
 					<h1 className="text-6xl md:text-8xl tracking-tight text-kuralis-900 animate-fade-in font-bold">
@@ -57,20 +57,20 @@ export default function AboutPage() {
 				{/* 下部のぼかし背景 */}
 				<div
 					aria-hidden="true"
-					className="absolute inset-x-0 bottom-[-8rem] sm:bottom-[-16rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-42rem)]"
+					className="absolute inset-x-0 -bottom-32 sm:-bottom-64 -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-42rem)]"
 				>
 					<div
 						style={{
 							clipPath:
 								"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
 						}}
-						className="relative left-1/2 -translate-x-1/2 aspect-video w-[36rem] bg-gradient-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+						className="relative left-1/2 -translate-x-1/2 aspect-video w-xl bg-linear-to-tr from-kuralis-600 to-kuralis-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-6xl"
 					/>
 				</div>
 			</section>
 
 			{/* Story Section */}
-			<section className="py-40 bg-gradient-to-b from-kuralis-50 to-white relative">
+			<section className="py-40 bg-linear-to-b from-kuralis-50 to-white relative">
 				<div className="max-w-5xl mx-auto px-6 space-y-8">
 					<div className="space-y-4">
 						<h2 className="text-3xl md:text-5xl font-bold text-kuralis-900 tracking-tight">
@@ -104,7 +104,7 @@ export default function AboutPage() {
 
 			{/* Concept Section */}
 			<section className="py-40 relative">
-				<div className="absolute inset-0 bg-gradient-to-r from-kuralis-50 to-white opacity-50"></div>
+				<div className="absolute inset-0 bg-linear-to-r from-kuralis-50 to-white opacity-50"></div>
 				<div className="relative z-10 mx-auto max-w-4xl space-y-16 px-6">
 					<div className="text-center space-y-8">
 						<h2 className="text-3xl md:text-5xl text-kuralis-900 leading-tight font-bold">
@@ -125,17 +125,17 @@ export default function AboutPage() {
 					<div className="grid md:grid-cols-3 gap-8">
 						{[
 							{
-								icon: <FiTarget className="w-8 h-8" />,
+								icon: <FiTarget className="size-8" />,
 								title: "シンプル",
 								desc: "必要最小限の機能で、直感的に使える",
 							},
 							{
-								icon: <FiHeart className="w-8 h-8" />,
+								icon: <FiHeart className="size-8" />,
 								title: "愛情",
 								desc: "家具への思いを形に残せる",
 							},
 							{
-								icon: <FiTrendingUp className="w-8 h-8" />,
+								icon: <FiTrendingUp className="size-8" />,
 								title: "成長",
 								desc: "記録が積み重なることで物語が生まれる",
 							},
@@ -144,7 +144,7 @@ export default function AboutPage() {
 								key={idx}
 								className="bg-white p-8 rounded-2xl shadow-lg border border-kuralis-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
 							>
-								<div className="w-16 h-16 bg-kuralis-100 rounded-2xl flex items-center justify-center text-kuralis-600 mb-6">
+								<div className="size-16 bg-kuralis-100 rounded-2xl flex items-center justify-center text-kuralis-600 mb-6">
 									{feature.icon}
 								</div>
 								<h3 className="text-xl font-bold text-kuralis-900 mb-4">
@@ -158,7 +158,7 @@ export default function AboutPage() {
 			</section>
 
 			{/* Core Values Section */}
-			<section className="py-40 bg-gradient-to-b from-white to-kuralis-50 relative">
+			<section className="py-40 bg-linear-to-b from-white to-kuralis-50 relative">
 				<div className="container mx-auto px-6">
 					<div className="text-center mb-20">
 						<h2 className="text-3xl md:text-5xl font-bold text-kuralis-900 mb-6">
@@ -172,19 +172,19 @@ export default function AboutPage() {
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
 						{[
 							{
-								icon: <FiHeart className="w-8 h-8 text-kuralis-600" />,
+								icon: <FiHeart className="size-8 text-kuralis-600" />,
 								title: "育てる記録",
 								desc: "メンテナンス履歴や思い出を記録し、家具との関係を育んでいきます。",
 								features: ["メンテナンス履歴", "思い出の記録", "成長の可視化"],
 							},
 							{
-								icon: <FiUser className="w-8 h-8 text-kuralis-600" />,
+								icon: <FiUser className="size-8 text-kuralis-600" />,
 								title: "使い手の体験",
 								desc: "使い手の視点から、家具との暮らしをより豊かにします。",
 								features: ["直感的な操作", "パーソナライズ", "使い手中心設計"],
 							},
 							{
-								icon: <FiFeather className="w-8 h-8 text-kuralis-600" />,
+								icon: <FiFeather className="size-8 text-kuralis-600" />,
 								title: "感性に訴えるUI",
 								desc: "美しく使いやすいインターフェースで、日々の記録を楽しく続けられます。",
 								features: ["美しいデザイン", "快適な操作性", "継続しやすさ"],
@@ -194,7 +194,7 @@ export default function AboutPage() {
 								key={idx}
 								className="bg-white p-8 rounded-2xl shadow-lg border border-kuralis-100 hover:shadow-xl transition-all duration-300 group"
 							>
-								<div className="w-16 h-16 rounded-2xl bg-kuralis-100 flex items-center justify-center mx-auto mb-8 group-hover:bg-kuralis-200 transition-colors">
+								<div className="size-16 rounded-2xl bg-kuralis-100 flex items-center justify-center mx-auto mb-8 group-hover:bg-kuralis-200 transition-colors">
 									{item.icon}
 								</div>
 								<h3 className="text-2xl font-bold text-kuralis-900 text-center mb-6">
@@ -209,7 +209,7 @@ export default function AboutPage() {
 											key={featureIdx}
 											className="flex items-center gap-3 text-sm text-kuralis-600"
 										>
-											<FiCheckCircle className="w-4 h-4 text-kuralis-500 flex-shrink-0" />
+											<FiCheckCircle className="size-4 text-kuralis-500 shrink-0" />
 											{feature}
 										</li>
 									))}
@@ -221,7 +221,7 @@ export default function AboutPage() {
 			</section>
 
 			{/* UI ギャラリー */}
-			<section className="relative py-32 bg-gradient-to-bl from-kuralis-50 via-white to-kuralis-100">
+			<section className="relative py-32 bg-linear-to-bl from-kuralis-50 via-white to-kuralis-100">
 				<div className="max-w-7xl mx-auto px-6">
 					<div className="text-center mb-20">
 						<h2 className="text-3xl md:text-5xl tracking-tight font-bold text-kuralis-900 mb-8">
@@ -269,7 +269,7 @@ export default function AboutPage() {
 								key={img.src}
 								className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2"
 							>
-								<div className="relative aspect-[16/9] overflow-hidden">
+								<div className="relative aspect-video overflow-hidden">
 									<Image
 										src={img.src}
 										alt={img.alt}
@@ -280,7 +280,7 @@ export default function AboutPage() {
 								</div>
 								<div className="p-8 space-y-6">
 									<div className="flex items-center gap-3">
-										<FiImage className="text-kuralis-500 w-6 h-6" />
+										<FiImage className="text-kuralis-500 size-6" />
 										<h3 className="text-xl font-bold text-kuralis-900">
 											{img.title}
 										</h3>
@@ -294,7 +294,7 @@ export default function AboutPage() {
 												key={featureIdx}
 												className="flex items-center gap-2 text-sm text-kuralis-600"
 											>
-												<FiCheckCircle className="w-4 h-4 text-kuralis-500 flex-shrink-0" />
+												<FiCheckCircle className="size-4 text-kuralis-500 shrink-0" />
 												{feature}
 											</li>
 										))}
@@ -307,7 +307,7 @@ export default function AboutPage() {
 			</section>
 
 			{/* Developer Section */}
-			<section className="py-40 bg-gradient-to-b from-kuralis-50 to-white">
+			<section className="py-40 bg-linear-to-b from-kuralis-50 to-white">
 				<div className="max-w-4xl mx-auto px-6">
 					<div className="text-center space-y-12">
 						<div className="space-y-6">
@@ -334,7 +334,7 @@ export default function AboutPage() {
 										</p>
 									</div>
 								</div>
-								<div className="bg-gradient-to-br from-kuralis-100 to-kuralis-300 p-8 rounded-2xl text-center">
+								<div className="bg-linear-to-br from-kuralis-100 to-kuralis-300 p-8 rounded-2xl text-center">
 									<div className="text-6xl mb-4">🏠</div>
 									<div className="text-2xl font-bold text-kuralis-900 mb-2">
 										家具愛好家
@@ -350,7 +350,7 @@ export default function AboutPage() {
 			</section>
 
 			{/* CTA */}
-			<section className="py-40 bg-gradient-to-br from-kuralis-800 to-kuralis-600 relative overflow-hidden">
+			<section className="py-40 bg-linear-to-br from-kuralis-800 to-kuralis-600 relative overflow-hidden">
 				<div className="relative z-10 container mx-auto px-6 text-center">
 					<div className="max-w-3xl mx-auto space-y-12">
 						<div className="space-y-6">
@@ -370,14 +370,14 @@ export default function AboutPage() {
 								className="group inline-flex items-center gap-3 px-10 py-5 bg-white text-kuralis-900 rounded-xl hover:bg-kuralis-50 transition-all duration-300 shadow-2xl hover:shadow-3xl hover:-translate-y-1 font-semibold text-lg"
 							>
 								Start Collection
-								<FiArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+								<FiArrowRight className="size-6 group-hover:translate-x-1 transition-transform" />
 							</Link>
 							<Link
 								href="/contact"
 								className="group inline-flex items-center gap-3 px-10 py-5 border-2 border-white text-white rounded-xl hover:bg-white hover:text-kuralis-900 transition-all duration-300 font-semibold text-lg"
 							>
 								お問い合わせ
-								<FiMail className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+								<FiMail className="size-6 group-hover:translate-x-1 transition-transform" />
 							</Link>
 						</div>
 

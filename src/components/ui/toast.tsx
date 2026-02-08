@@ -18,7 +18,7 @@ const ToastViewport = React.forwardRef<
 	<ToastPrimitives.Viewport
 		ref={ref}
 		className={cn(
-			"fixed bottom-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
+			"fixed bottom-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-105",
 			className
 		)}
 		{...props}
@@ -87,7 +87,7 @@ const ToastClose = React.forwardRef<
 		suppressHydrationWarning
 		{...props}
 	>
-		<FiX className="h-4 w-4" />
+		<FiX className="size-4" />
 	</ToastPrimitives.Close>
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;

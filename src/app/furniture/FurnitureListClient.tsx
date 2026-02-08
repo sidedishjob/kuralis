@@ -50,6 +50,16 @@ export default function FurnitureListClient({
 		});
 	}, [initialFurniture, searchQuery, activeCategory, activeLocation]);
 
+	const priorityImageFurnitureIds = useMemo(() => {
+		const ids: string[] = [];
+		for (const furniture of filteredFurniture) {
+			if (!furniture.image_url) continue;
+			ids.push(furniture.id);
+			if (ids.length >= 6) break;
+		}
+		return new Set(ids);
+	}, [filteredFurniture]);
+
 	const handleOnboardingNext = () => setOnboardingStep((prev) => (prev ? prev + 1 : null));
 	const handleOnboardingSkip = () => {
 		setOnboardingStep(null);
@@ -78,7 +88,7 @@ export default function FurnitureListClient({
 			</header>
 
 			<div className="flex flex-col md:flex-row md:gap-12">
-				<aside className="hidden md:block w-40 flex-shrink-0">
+				<aside className="hidden md:block w-40 shrink-0">
 					<div className="space-y-1 md:space-y-4">
 						{/* Category Filter */}
 						<div className="space-y-3">
@@ -173,7 +183,7 @@ export default function FurnitureListClient({
 				</aside>
 
 				{/* メインリスト */}
-				<div className="flex-grow min-w-0">
+				<div className="grow min-w-0">
 					<div className="mb-8">
 						<div className="relative">
 							<input
@@ -210,7 +220,11 @@ export default function FurnitureListClient({
 
 					<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
 						{filteredFurniture?.map((furniture) => (
-							<FurnitureCard key={furniture.id} furniture={furniture} />
+							<FurnitureCard
+								key={furniture.id}
+								furniture={furniture}
+								priorityImage={priorityImageFurnitureIds.has(furniture.id)}
+							/>
 						))}
 						{filteredFurniture.length === 0 && (
 							<div className="text-center text-sm text-kuralis-500 mt-12 col-span-full">
@@ -230,7 +244,7 @@ export default function FurnitureListClient({
 			{/* 登録 */}
 			<Link
 				href="/furniture/register"
-				className="fixed bottom-24 right-4 md:bottom-28 md:right-8 w-12 h-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
+				className="fixed bottom-24 right-4 md:bottom-28 md:right-8 size-12 bg-kuralis-900 text-white shadow-lg hover:bg-kuralis-800 rounded-full flex items-center justify-center transition-all duration-300 ease-natural group z-50"
 			>
 				<FiPlus size={20} className="transition-colors duration-300" />
 			</Link>

@@ -38,7 +38,7 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 					メンテナンス概要
 				</h2>
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiCalendar className="mr-2" size={14} />
 						次回予定
 					</div>
@@ -51,7 +51,7 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 					</div>
 				</div>
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiTool className="mr-2" size={14} />
 						メンテ対象
 					</div>
@@ -87,7 +87,7 @@ export default function FurnitureDetailMaintenanceTab({ furniture, isEditing, su
 							rows={3}
 						/>
 					) : (
-						<p className="p-4 bg-kuralis-50 rounded-sm font-normal tracking-tighter-custom break-words">
+						<p className="p-4 bg-kuralis-50 rounded-sm font-normal tracking-tighter-custom wrap-break-word">
 							{furniture.notes}
 						</p>
 					)}

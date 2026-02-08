@@ -67,16 +67,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 								className="w-full"
 								onClick={handleGoogleLogIn}
 							>
-								<Icons.google className="mr-2 h-5 w-5 text-neutral-700" />
+								<Icons.google className="mr-2 size-5 text-neutral-700" />
 								Googleでログイン
 							</Button>
 						</div>
 						<div className="flex items-center justify-between gap-4">
-							<hr className="flex-grow border-border" />
+							<hr className="grow border-border" />
 							<span className="text-xs text-muted-foreground whitespace-nowrap">
 								またはメールでログイン
 							</span>
-							<hr className="flex-grow border-border" />
+							<hr className="grow border-border" />
 						</div>
 						<form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
 							<div className="grid gap-3">
@@ -129,11 +129,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 						</form>
 
 						<div className="flex items-center justify-between gap-4">
-							<hr className="flex-grow border-border" />
+							<hr className="grow border-border" />
 							<span className="text-xs text-muted-foreground whitespace-nowrap">
 								またはゲストとして試す
 							</span>
-							<hr className="flex-grow border-border" />
+							<hr className="grow border-border" />
 						</div>
 						<div className="w-full flex justify-center">
 							<GuestLoginButton />

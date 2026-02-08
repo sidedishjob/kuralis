@@ -65,7 +65,7 @@ export default function FurnitureDetailBasicTab({ furniture, isEditing, location
 
 				{/* Category */}
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiMapPin size={16} className="mr-2" />
 						<span>カテゴリ</span>
 					</div>
@@ -76,7 +76,7 @@ export default function FurnitureDetailBasicTab({ furniture, isEditing, location
 
 				{/* Location */}
 				<div className="flex items-center border-b border-kuralis-100 pb-4 hover:bg-kuralis-50/50 transition-colors duration-300 -mx-8 px-8">
-					<div className="w-28 md:w-36 flex-shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
+					<div className="w-28 md:w-36 shrink-0 text-kuralis-600 flex items-center font-normal tracking-tighter-custom">
 						<FiMapPin size={16} className="mr-2" />
 						<span>設置場所</span>
 					</div>

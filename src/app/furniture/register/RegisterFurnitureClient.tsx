@@ -101,7 +101,7 @@ export default function RegisterFurnitureClient() {
 				</div>
 			</header>
 
-			<main className="flex-grow container mx-auto max-w-2xl px-6 md:px-12 py-6">
+			<main className="grow container mx-auto max-w-2xl px-6 md:px-12 py-6">
 				{step === 1 ? (
 					<Step1UI
 						category={category}

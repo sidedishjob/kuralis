@@ -61,7 +61,7 @@ export function ContactForm({ onSubmit, isSuccess }: Props) {
 					id="message"
 					{...register("message")}
 					placeholder="お問い合わせ内容をご記入ください"
-					className="min-h-[200px]"
+					className="min-h-50"
 				/>
 				{errors.message && (
 					<p className="mt-1 text-sm text-red-600">{errors.message.message}</p>

@@ -176,7 +176,7 @@ export default function FurnitureDetailClient({
 				// ローディング中のSkeleton表示
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 					{/* 左カラム：画像部分 */}
-					<div className="w-full max-w-[500px] aspect-[4/3] bg-kuralis-100 rounded-sm animate-pulse" />
+					<div className="w-full max-w-125 aspect-4/3 bg-kuralis-100 rounded-sm animate-pulse" />
 
 					{/* 右カラム：タブなどの情報部分のSkeleton */}
 					<div className="space-y-6">

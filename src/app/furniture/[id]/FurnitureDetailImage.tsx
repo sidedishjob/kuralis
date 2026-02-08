@@ -133,13 +133,13 @@ export default function FurnitureDetailImage({
 		if (selectedImage) {
 			// プレビュー表示（新規選択時）
 			return (
-				<div className="relative aspect-[4/3] w-full">
+				<div className="relative aspect-4/3 w-full">
 					<Image
 						src={URL.createObjectURL(selectedImage)}
 						alt="Preview"
 						fill
 						sizes="(max-width: 768px) 100vw, 33vw"
-						className="w-full h-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
+						className="size-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
 						unoptimized
 					/>
 				</div>
@@ -147,13 +147,13 @@ export default function FurnitureDetailImage({
 		} else if (publicUrl) {
 			// 既存画像（変更不可）
 			return (
-				<div className="relative aspect-[4/3] w-full">
+				<div className="relative aspect-4/3 w-full">
 					<Image
 						src={publicUrl}
 						alt="家具画像"
 						fill
 						sizes="(max-width: 768px) 100vw, 33vw"
-						className="w-full h-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
+						className="size-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
 					/>
 				</div>
 			);
@@ -164,7 +164,7 @@ export default function FurnitureDetailImage({
 					onDrop={handleDrop}
 					onDragOver={handleDragOver}
 					onClick={() => fileInputRef.current?.click()}
-					className="aspect-[4/3] w-full h-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
+					className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
 				>
 					<input
 						ref={fileInputRef}
@@ -185,7 +185,7 @@ export default function FurnitureDetailImage({
 		} else {
 			// 画像なし・編集不可
 			return (
-				<div className="aspect-[4/3] w-full h-full flex flex-col items-center justify-center text-kuralis-400">
+				<div className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400">
 					<FiUpload size={32} className="mb-2" />
 					<p className="text-sm">No image</p>
 				</div>

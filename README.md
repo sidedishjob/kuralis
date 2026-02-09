@@ -57,7 +57,7 @@
 ## その他機能
 
 - Skeleton UI によるローディング体験向上
-- 共通化された API レイヤー (SWR / React Query / Axios 切り替え可能)
+- SWR によるデータ取得
 - React Hook Form + Zod による型安全なフォームバリデーション
 - Row Level Security (RLS) & Supabase Policy による堅牢なデータ保護
 - GitHub Actions による CI / Prettier・ESLint の自動チェック
@@ -69,12 +69,11 @@
 | カテゴリ           | 技術                                                      |
 | ------------------ | --------------------------------------------------------- |
 | **フロントエンド** | Next.js 16.1.0 (App Router) / React 19.2.3 / TypeScript 5 |
-| **バックエンド**   | Supabase 2.49.4 (PostgreSQL 15, Auth, Storage)            |
-| **データ取得**     | SWR                                                       |
+| **バックエンド**   | Supabase 2.94.1 (PostgreSQL 15, Auth, Storage)            |
+| **データ取得**     | SWR 2.3.3                                                 |
 | **フォーム**       | react-hook-form 7.57.0 / Zod 3.25.57                      |
 | **状態管理**       | React Context API + Custom Hook                           |
 | **UI / スタイル**  | Tailwind CSS 4.1.7 / shadcn/ui / Radix UI / lucide-react  |
-| **ルーティング**   | react-router-dom 6.22.3                                   |
 | **メール送信**     | nodemailer 7.0.3                                          |
 | **CI / CD**        | GitHub Actions（Vercel CLI による手動デプロイ）           |
 | **その他**         | date-fns / clsx / eslint / prettier                       |

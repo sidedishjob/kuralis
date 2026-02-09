@@ -4,8 +4,8 @@
 
 ### 前提条件
 
-- Node.js 18以上
-- npm 9以上
+- Node.js 22以上
+- npm 10以上
 - Git
 
 ### セットアップ手順
@@ -106,7 +106,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: 22.14.0
 
             - name: Install dependencies
               run: npm ci

@@ -5,7 +5,7 @@
 kuralisは以下のようなアーキテクチャで構築されています：
 
 - **フロントエンド**: Next.js（App Router、サーバー/クライアントコンポーネント分離、Tailwind CSS）
-- **バックエンド**: Supabase（PostgreSQL、認証、ストレージ、Edge Functions）
+- **バックエンド**: Supabase（PostgreSQL、認証、ストレージ）
 - **インフラ構成図**: [docs/architecture/infrastructure.png](architecture/infrastructure.png)
 - **ER図**: [docs/architecture/er.png](architecture/er.png)
 
@@ -24,15 +24,15 @@ kuralisは以下のようなアーキテクチャで構築されています：
 - データベーススキーマ（PostgreSQL、RLS有効）
 - 認証（メール/Google、JWT）
 - ストレージ（画像等）
-- Edge Functions（必要に応じて）
 
 ## データフロー
 
 1. クライアントからのリクエスト（フォーム/操作）
-2. Next.jsサーバーコンポーネント/APIルートでの処理
-3. SupabaseへのAPIリクエスト（DB/認証/ストレージ）
-4. データベース処理・RLSによるアクセス制御
-5. レスポンス返却・UI更新
+2. `src/proxy.ts`（ミドルウェア）でセッション自動更新・未認証ユーザーのリダイレクト
+3. Next.jsサーバーコンポーネント/APIルートでの処理
+4. SupabaseへのAPIリクエスト（DB/認証/ストレージ）
+5. データベース処理・RLSによるアクセス制御
+6. レスポンス返却・UI更新
 
 ## セキュリティ
 

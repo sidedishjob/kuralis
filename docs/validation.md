@@ -101,7 +101,7 @@ export const contactSchema = z.object({
 		.string({ required_error: "メールアドレスを入力してください" })
 		.email({ message: "有効なメールアドレスを入力してください" }),
 	subject: z
-		.string({ required_error: "件名名を入力してください" })
+		.string({ required_error: "件名を入力してください" })
 		.min(1, "件名を入力してください")
 		.max(50, { message: "件名は50文字以内で入力してください" }),
 	message: z
@@ -213,12 +213,12 @@ export const maintenanceTaskSchema = z.object({
 
 ```typescript
 import { NextResponse } from "next/server";
-import { furnitureSchema } from "@/lib/validations/furniture";
+import { registerFurnitureSchema } from "@/lib/validation/furnitureSchema";
 
 export async function POST(req: Request) {
 	try {
 		const body = await req.json();
-		const validatedData = furnitureSchema.parse(body);
+		const validatedData = registerFurnitureSchema.parse(body);
 
 		// バリデーション済みデータを使用して処理を続行
 		const result = await createFurniture(validatedData);
@@ -275,7 +275,9 @@ export function FurnitureForm() {
 }
 ```
 
-## カスタムバリデーション
+<!-- 以下は将来実装予定のカスタムバリデーション（未実装） -->
+<!--
+## カスタムバリデーション（将来実装予定）
 
 ### 日付の範囲チェック
 
@@ -310,9 +312,7 @@ export const uniqueLocationSchema = z
 	);
 ```
 
-## エラーメッセージのカスタマイズ
-
-### エラーメッセージの定義
+### エラーメッセージ定数
 
 ```typescript
 const validationMessages = {
@@ -325,18 +325,4 @@ const validationMessages = {
 	invalidUuid: "有効なUUIDを入力してください",
 } as const;
 ```
-
-### エラーメッセージの使用
-
-```typescript
-export const customSchema = z.object({
-	name: z.string().min(1, validationMessages.required),
-	email: z.string().email(validationMessages.invalidEmail),
-	description: z
-		.string()
-		.min(10, validationMessages.minLength("説明", 10))
-		.max(1000, validationMessages.maxLength("説明", 1000)),
-	url: z.string().url(validationMessages.invalidUrl),
-	id: z.string().uuid(validationMessages.invalidUuid),
-});
-```
+-->

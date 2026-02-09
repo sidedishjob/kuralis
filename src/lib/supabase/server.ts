@@ -11,14 +11,15 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
  * SSR（page.tsx / layout.tsx / サーバー関数）用クライアント
  */
 export const createServerSupabase = async () => {
-	const cookieStore = await cookies();
+  const cookieStore = await cookies();
 
-	return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
-		cookies: {
-			getAll: () => cookieStore.getAll(),
-			setAll: (all) => all.forEach((c) => cookieStore.set(c.name, c.value, c.options)),
-		},
-	});
+  return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll: () => cookieStore.getAll(),
+      setAll: (all) =>
+        all.forEach((c) => cookieStore.set(c.name, c.value, c.options)),
+    },
+  });
 };
 
 /**
@@ -26,26 +27,26 @@ export const createServerSupabase = async () => {
  * API Route（route.ts）用クライアント
  */
 export const createSupabaseApiClient = (
-	req: Request | NextRequest,
-	res: Response | NextResponse
+  req: Request | NextRequest,
+  res: Response | NextResponse,
 ) => {
-	return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
-		cookies: {
-			getAll: () => {
-				const cookieHeader = req.headers.get("cookie") || "";
-				return cookieHeader.split(";").map((cookie) => {
-					const [name, ...rest] = cookie.trim().split("=");
-					return { name, value: rest.join("=") };
-				});
-			},
-			setAll: (cookies) => {
-				for (const cookie of cookies) {
-					res.headers.append(
-						"Set-Cookie",
-						`${cookie.name}=${cookie.value}; Path=/; HttpOnly`
-					);
-				}
-			},
-		},
-	});
+  return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll: () => {
+        const cookieHeader = req.headers.get("cookie") || "";
+        return cookieHeader.split(";").map((cookie) => {
+          const [name, ...rest] = cookie.trim().split("=");
+          return { name, value: rest.join("=") };
+        });
+      },
+      setAll: (cookies) => {
+        for (const cookie of cookies) {
+          res.headers.append(
+            "Set-Cookie",
+            `${cookie.name}=${cookie.value}; Path=/; HttpOnly`,
+          );
+        }
+      },
+    },
+  });
 };

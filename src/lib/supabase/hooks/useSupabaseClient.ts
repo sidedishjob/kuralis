@@ -12,7 +12,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
  * createBrowserClient を useMemo でラップして再生成を防止
  */
 export function useSupabaseClient() {
-	return useMemo(() => {
-		return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
-	}, []);
+  return useMemo(() => {
+    return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
+  }, []);
 }

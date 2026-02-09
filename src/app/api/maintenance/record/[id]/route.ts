@@ -6,34 +6,37 @@ import { handleApiError } from "@/lib/utils/handleApiError";
 /**
  * メンテナンス履歴の削除
  */
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-	const res = NextResponse.next();
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const res = NextResponse.next();
 
-	try {
-		const supabase = await createSupabaseApiClient(req, res);
+  try {
+    const supabase = await createSupabaseApiClient(req, res);
 
-		const {
-			data: { user },
-			error,
-		} = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-		if (error || !user) throw new ApiError(401, "未認証のため削除できません");
+    if (error || !user) throw new ApiError(401, "未認証のため削除できません");
 
-		const { id } = await params;
+    const { id } = await params;
 
-		const { error: deleteError } = await supabase
-			.from("maintenance_records")
-			.delete()
-			.eq("id", id)
-			.select()
-			.single();
+    const { error: deleteError } = await supabase
+      .from("maintenance_records")
+      .delete()
+      .eq("id", id)
+      .select()
+      .single();
 
-		if (deleteError) {
-			throw new Error(`メンテナンス履歴削除エラー: ${deleteError.message}`);
-		}
+    if (deleteError) {
+      throw new Error(`メンテナンス履歴削除エラー: ${deleteError.message}`);
+    }
 
-		return NextResponse.json({ success: true }, { status: 200 });
-	} catch (error: unknown) {
-		return handleApiError(error, "メンテナンス履歴の削除に失敗しました");
-	}
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error: unknown) {
+    return handleApiError(error, "メンテナンス履歴の削除に失敗しました");
+  }
 }

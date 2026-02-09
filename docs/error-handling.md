@@ -41,11 +41,11 @@ catch (error: unknown) {
 ### ✅ 共通関数
 
 - `handleApiError(error: unknown, fallbackMessage: string)`
-    - `ApiError` → `apiErrorResponse` で message, status, details を返す
-    - `Error` → message をログ出力 + fallbackMessage を返す
-    - `unknown` → fallbackMessage を返す
+  - `ApiError` → `apiErrorResponse` で message, status, details を返す
+  - `Error` → message をログ出力 + fallbackMessage を返す
+  - `unknown` → fallbackMessage を返す
 - `apiErrorResponse(message: string, status = 500, details = null)`
-    - `{ error: message, details }` 形式で返却
+  - `{ error: message, details }` 形式で返却
 
 ---
 
@@ -55,15 +55,15 @@ catch (error: unknown) {
 
 ```ts
 try {
-	await doSomething();
-	toast({ title: "成功メッセージ" });
+  await doSomething();
+  toast({ title: "成功メッセージ" });
 } catch (error: unknown) {
-	console.error("〜エラー:", error);
-	toast({
-		title: "〜に失敗しました",
-		description: getErrorMessage(error, "もう一度お試しください"),
-		variant: "destructive",
-	});
+  console.error("〜エラー:", error);
+  toast({
+    title: "〜に失敗しました",
+    description: getErrorMessage(error, "もう一度お試しください"),
+    variant: "destructive",
+  });
 }
 ```
 
@@ -72,14 +72,17 @@ try {
 ```ts
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
-function getErrorMessage(error: unknown, fallback = "エラーが発生しました"): string {
-	if (error instanceof Error) {
-		const translated = errorMessageMap[error.message];
-		// 未対応エラーならログ送信（開発環境のみ）
-		// ...
-		return translated || fallback;
-	}
-	return fallback;
+function getErrorMessage(
+  error: unknown,
+  fallback = "エラーが発生しました",
+): string {
+  if (error instanceof Error) {
+    const translated = errorMessageMap[error.message];
+    // 未対応エラーならログ送信（開発環境のみ）
+    // ...
+    return translated || fallback;
+  }
+  return fallback;
 }
 ```
 
@@ -93,8 +96,8 @@ function getErrorMessage(error: unknown, fallback = "エラーが発生しまし
 
 ```ts
 if (!res.ok) {
-	const error = await res.json().catch(() => null);
-	throw new Error(error?.message || "〜に失敗しました");
+  const error = await res.json().catch(() => null);
+  throw new Error(error?.message || "〜に失敗しました");
 }
 ```
 
@@ -110,8 +113,8 @@ if (!res.ok) {
 
 - エラーコードやメッセージは `errorMessageMap` で日本語化・カスタマイズ可能
 - 例外的に `NextResponse.json(...)` を直接返しても良い場面：
-    - バリデーションエラー: `return NextResponse.json({ message: "入力不備" }, { status: 400 })`
-    - 空配列を返すAPI: `return NextResponse.json([], { status: 200 })`
+  - バリデーションエラー: `return NextResponse.json({ message: "入力不備" }, { status: 400 })`
+  - 空配列を返すAPI: `return NextResponse.json([], { status: 200 })`
 
 ---
 

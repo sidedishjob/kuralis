@@ -6,24 +6,24 @@ import type { FurnitureWithExtras } from "@/types/furniture";
  * 家具情報を更新するカスタムフック
  */
 export function useUpdateFurniture(id: string) {
-	const updateFurniture = useCallback(
-		async (formData: FormData): Promise<FurnitureWithExtras> => {
-			const res = await fetch(API_ROUTES.furnitureById(id), {
-				method: "PUT",
-				body: formData,
-			});
+  const updateFurniture = useCallback(
+    async (formData: FormData): Promise<FurnitureWithExtras> => {
+      const res = await fetch(API_ROUTES.furnitureById(id), {
+        method: "PUT",
+        body: formData,
+      });
 
-			if (!res.ok) {
-				const msg = await res.text();
-				throw new Error(`更新に失敗しました: ${msg}`);
-			}
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(`更新に失敗しました: ${msg}`);
+      }
 
-			const updated: FurnitureWithExtras = await res.json();
+      const updated: FurnitureWithExtras = await res.json();
 
-			return updated;
-		},
-		[id]
-	);
+      return updated;
+    },
+    [id],
+  );
 
-	return { updateFurniture };
+  return { updateFurniture };
 }

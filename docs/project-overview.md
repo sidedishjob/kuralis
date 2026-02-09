@@ -38,10 +38,10 @@ kuralisは、家具の管理とメンテナンスを効率化し、家具との�
 ### バックエンド
 
 - Supabase
-    - PostgreSQL（RLS有効）
-    - Authentication（メール/Google）
-    - Storage（画像）
-    - Edge Functions
+  - PostgreSQL（RLS有効）
+  - Authentication（メール/Google）
+  - Storage（画像）
+  - Edge Functions
 
 ### 開発ツール
 

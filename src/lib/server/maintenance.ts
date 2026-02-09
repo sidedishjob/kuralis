@@ -11,85 +11,89 @@ import type { MaintenanceSummary } from "@/types/maintenance";
  * @returns MaintenanceSummaryオブジェクト
  */
 export async function getMaintenanceSummary(
-	furnitureId: string
+  furnitureId: string,
 ): Promise<MaintenanceSummary | null> {
-	try {
-		const supabase = await createServerSupabase();
+  try {
+    const supabase = await createServerSupabase();
 
-		// 1. 家具に紐づくアクティブなタスク一覧を取得
-		const { data: tasks, error: taskError } = await supabase
-			.from("maintenance_tasks")
-			.select("id, name")
-			.eq("is_active", true)
-			.eq("furniture_id", furnitureId);
+    // 1. 家具に紐づくアクティブなタスク一覧を取得
+    const { data: tasks, error: taskError } = await supabase
+      .from("maintenance_tasks")
+      .select("id, name")
+      .eq("is_active", true)
+      .eq("furniture_id", furnitureId);
 
-		if (taskError) throw new Error(`タスク取得失敗: ${taskError.message}`);
+    if (taskError) throw new Error(`タスク取得失敗: ${taskError.message}`);
 
-		if (!tasks || tasks.length === 0) {
-			return {
-				activeTaskCount: 0,
-				nearestTaskName: null,
-				nearestDueDate: null,
-			};
-		}
+    if (!tasks || tasks.length === 0) {
+      return {
+        activeTaskCount: 0,
+        nearestTaskName: null,
+        nearestDueDate: null,
+      };
+    }
 
-		const taskIds = tasks.map((t) => t.id);
-		const activeTaskCount = tasks.length;
+    const taskIds = tasks.map((t) => t.id);
+    const activeTaskCount = tasks.length;
 
-		// 2. 該当タスクに紐づく記録（履歴）を取得
-		const { data: records, error: recordError } = await supabase
-			.from("maintenance_records")
-			.select("task_id, performed_at, next_due_date, task_name")
-			.in("task_id", taskIds)
-			.not("next_due_date", "is", null);
+    // 2. 該当タスクに紐づく記録（履歴）を取得
+    const { data: records, error: recordError } = await supabase
+      .from("maintenance_records")
+      .select("task_id, performed_at, next_due_date, task_name")
+      .in("task_id", taskIds)
+      .not("next_due_date", "is", null);
 
-		if (recordError) throw new Error(`記録取得失敗: ${recordError.message}`);
-		if (!records || records.length === 0) {
-			return {
-				activeTaskCount,
-				nearestTaskName: null,
-				nearestDueDate: null,
-			};
-		}
-		const validRecords = records.filter(
-			(record): record is typeof record & { task_id: string; next_due_date: string } =>
-				Boolean(record.task_id) && Boolean(record.next_due_date)
-		);
-		if (validRecords.length === 0) {
-			return {
-				activeTaskCount,
-				nearestTaskName: null,
-				nearestDueDate: null,
-			};
-		}
+    if (recordError) throw new Error(`記録取得失敗: ${recordError.message}`);
+    if (!records || records.length === 0) {
+      return {
+        activeTaskCount,
+        nearestTaskName: null,
+        nearestDueDate: null,
+      };
+    }
+    const validRecords = records.filter(
+      (
+        record,
+      ): record is typeof record & { task_id: string; next_due_date: string } =>
+        Boolean(record.task_id) && Boolean(record.next_due_date),
+    );
+    if (validRecords.length === 0) {
+      return {
+        activeTaskCount,
+        nearestTaskName: null,
+        nearestDueDate: null,
+      };
+    }
 
-		// 3. 各タスクごとに「最新の記録（最も新しい performed_at）」を抽出
-		const latestPerTask = Object.values(
-			validRecords.reduce(
-				(acc, record) => {
-					const existing = acc[record.task_id];
-					const current = new Date(record.performed_at);
-					if (!existing || new Date(existing.performed_at) < current) {
-						acc[record.task_id] = record;
-					}
-					return acc;
-				},
-				{} as Record<string, (typeof validRecords)[0]>
-			)
-		);
+    // 3. 各タスクごとに「最新の記録（最も新しい performed_at）」を抽出
+    const latestPerTask = Object.values(
+      validRecords.reduce(
+        (acc, record) => {
+          const existing = acc[record.task_id];
+          const current = new Date(record.performed_at);
+          if (!existing || new Date(existing.performed_at) < current) {
+            acc[record.task_id] = record;
+          }
+          return acc;
+        },
+        {} as Record<string, (typeof validRecords)[0]>,
+      ),
+    );
 
-		// 4. 全タスクの中から「最も古い next_due_date」 を持つレコードを選択
-		const nearestRecord = latestPerTask.sort(
-			(a, b) => new Date(a.next_due_date).getTime() - new Date(b.next_due_date).getTime()
-		)[0];
+    // 4. 全タスクの中から「最も古い next_due_date」 を持つレコードを選択
+    const nearestRecord = latestPerTask.sort(
+      (a, b) =>
+        new Date(a.next_due_date).getTime() -
+        new Date(b.next_due_date).getTime(),
+    )[0];
 
-		return {
-			activeTaskCount,
-			nearestTaskName: nearestRecord?.task_name ?? null,
-			nearestDueDate: nearestRecord?.next_due_date ?? null,
-		};
-	} catch (error: unknown) {
-		console.error("メンテナンス取得エラー:", error);
-		return null;
-	}
+    return {
+      activeTaskCount,
+      nearestTaskName: nearestRecord?.task_name ?? null,
+      nearestDueDate: nearestRecord?.next_due_date ?? null,
+    };
+  } catch (error: unknown) {
+    console.error("メンテナンス取得エラー:", error);
+    return null;
+  }
 }

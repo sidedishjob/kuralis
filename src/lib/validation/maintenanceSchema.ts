@@ -8,14 +8,14 @@ import { z } from "zod";
  * - 周期単位（cycleUnit）は必須："days" | "weeks" | "months" | "years" のいずれか
  */
 export const maintenanceTaskSchema = z.object({
-	taskName: z
-		.string({ required_error: "タスク名を入力してください" })
-		.min(1, "タスク名を入力してください"),
-	cycleValue: z
-		.string({ required_error: "周期値を入力してください" })
-		.min(1, "周期値を入力してください")
-		.regex(/^\d+$/, "周期は正の数値で入力してください"),
-	cycleUnit: z.enum(["days", "weeks", "months", "years"]),
+  taskName: z
+    .string({ required_error: "タスク名を入力してください" })
+    .min(1, "タスク名を入力してください"),
+  cycleValue: z
+    .string({ required_error: "周期値を入力してください" })
+    .min(1, "周期値を入力してください")
+    .regex(/^\d+$/, "周期は正の数値で入力してください"),
+  cycleUnit: z.enum(["days", "weeks", "months", "years"]),
 });
 
 /**

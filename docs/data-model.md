@@ -130,6 +130,7 @@ CREATE POLICY "Users can manage their own locations" ON locations
 - エンドポイント: `/api/furniture`
 - メソッド: GET
 - クエリパラメータ:
+
   ```typescript
   {
     category_id?: number;
@@ -137,7 +138,9 @@ CREATE POLICY "Users can manage their own locations" ON locations
     search?: string;
   }
   ```
+
 - レスポンス:
+
   ```typescript
   {
     items: Furniture[];
@@ -150,6 +153,7 @@ CREATE POLICY "Users can manage their own locations" ON locations
 - エンドポイント: `/api/furniture/[id]`
 - メソッド: GET
 - レスポンス:
+
   ```typescript
   {
     furniture: Furniture;
@@ -165,6 +169,7 @@ CREATE POLICY "Users can manage their own locations" ON locations
 - エンドポイント: `/api/maintenance/tasks/[furniture_id]`
 - メソッド: GET
 - レスポンス:
+
   ```typescript
   {
     tasks: MaintenanceTask[];
@@ -176,6 +181,7 @@ CREATE POLICY "Users can manage their own locations" ON locations
 - エンドポイント: `/api/maintenance/records`
 - メソッド: POST
 - リクエストボディ:
+
   ```typescript
   {
     task_id: string;
@@ -184,7 +190,9 @@ CREATE POLICY "Users can manage their own locations" ON locations
     status: 'completed' | 'skipped' | 'partial';
   }
   ```
+
 - レスポンス:
+
   ```typescript
   {
     record: MaintenanceRecord;

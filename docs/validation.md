@@ -257,34 +257,34 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { furnitureSchema } from '@/lib/validations/furniture';
 
 export function FurnitureForm() {
-	const form = useForm({
-		resolver: zodResolver(furnitureSchema),
-		defaultValues: {
-			name: '',
-			brand: '',
-			category_id: undefined,
-			location_id: undefined,
-			image_url: '',
-			purchased_at: '',
-			purchased_from: '',
-			notes: '',
-		},
-	});
+  const form = useForm({
+    resolver: zodResolver(furnitureSchema),
+    defaultValues: {
+      name: '',
+      brand: '',
+      category_id: undefined,
+      location_id: undefined,
+      image_url: '',
+      purchased_at: '',
+      purchased_from: '',
+      notes: '',
+    },
+  });
 
-	const onSubmit = async (data: z.infer<typeof furnitureSchema>) => {
-		try {
-			await createFurniture(data);
-			toast.success('家具を登録しました');
-		} catch (error) {
-			toast.error('家具の登録に失敗しました');
-		}
-	};
+  const onSubmit = async (data: z.infer<typeof furnitureSchema>) => {
+    try {
+      await createFurniture(data);
+      toast.success('家具を登録しました');
+    } catch (error) {
+      toast.error('家具の登録に失敗しました');
+    }
+  };
 
-	return (
-		<form onSubmit={form.handleSubmit(onSubmit)}>
-			{/* フォームフィールド */}
-		</form>
-	);
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      {/* フォームフィールド */}
+    </form>
+  );
 }
 ```
 
@@ -296,46 +296,46 @@ export function FurnitureForm() {
 
 ```typescript
 export const dateRangeSchema = z
-	.object({
-		startDate: date,
-		endDate: date,
-	})
-	.refine((data) => new Date(data.startDate) <= new Date(data.endDate), {
-		message: "開始日は終了日以前を指定してください",
-		path: ["startDate"],
-	});
+  .object({
+    startDate: date,
+    endDate: date,
+  })
+  .refine((data) => new Date(data.startDate) <= new Date(data.endDate), {
+    message: "開始日は終了日以前を指定してください",
+    path: ["startDate"],
+  });
 ```
 
 ### 一意性チェック
 
 ```typescript
 export const uniqueLocationSchema = z
-	.object({
-		name: requiredString,
-	})
-	.refine(
-		async (data) => {
-			const exists = await checkLocationExists(data.name);
-			return !exists;
-		},
-		{
-			message: "このロケーション名は既に使用されています",
-			path: ["name"],
-		}
-	);
+  .object({
+    name: requiredString,
+  })
+  .refine(
+    async (data) => {
+      const exists = await checkLocationExists(data.name);
+      return !exists;
+    },
+    {
+      message: "このロケーション名は既に使用されています",
+      path: ["name"],
+    }
+  );
 ```
 
 ### エラーメッセージ定数
 
 ```typescript
 const validationMessages = {
-	required: "必須項目です",
-	invalidEmail: "有効なメールアドレスを入力してください",
-	minLength: (field: string, length: number) => `${field}は${length}文字以上で入力してください`,
-	maxLength: (field: string, length: number) => `${field}は${length}文字以内で入力してください`,
-	invalidFormat: (field: string) => `${field}の形式が正しくありません`,
-	invalidUrl: "有効なURLを入力してください",
-	invalidUuid: "有効なUUIDを入力してください",
+  required: "必須項目です",
+  invalidEmail: "有効なメールアドレスを入力してください",
+  minLength: (field: string, length: number) => `${field}は${length}文字以上で入力してください`,
+  maxLength: (field: string, length: number) => `${field}は${length}文字以内で入力してください`,
+  invalidFormat: (field: string) => `${field}の形式が正しくありません`,
+  invalidUrl: "有効なURLを入力してください",
+  invalidUuid: "有効なUUIDを入力してください",
 } as const;
 ```
 -->

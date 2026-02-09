@@ -40,8 +40,3 @@ kuralisは以下のようなアーキテクチャで構築されています：
 - Row Level Security (RLS) によるユーザーデータ分離
 - APIルートでの認証・権限チェック
 - 環境変数（.env）による機密情報管理
-
----
-
-- アーキテクチャ図・ER図はdocs/architecture配下に格納
-- Next.js App Router・Supabase構成・RLS・環境変数・データフロー・セキュリティはすべて実装に統一

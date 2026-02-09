@@ -28,13 +28,13 @@ import { ApiError } from "@/lib/errors/ApiError";
 import { handleApiError } from "@/lib/utils/handleApiError";
 
 if (!user) {
-	throw new ApiError(401, "認証が必要です");
+ throw new ApiError(401, "認証が必要です");
 }
 
 // ...
 
 catch (error: unknown) {
-	return handleApiError(error, "ユーザー向け失敗メッセージ");
+ return handleApiError(error, "ユーザー向け失敗メッセージ");
 }
 ```
 

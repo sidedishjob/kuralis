@@ -49,7 +49,7 @@ npm run lint && npm run prettier:check && npm run test
 - `lib/utils/` — `handleApiError`、`apiResponse`、`getErrorMessage`
 - `lib/api/route.ts` — `API_ROUTES` 定数の一元管理
 - `types/` — 共有TypeScriptドメイン型
-- `proxy.ts` — ミドルウェア：セッション自動更新 + 認証リダイレクト
+- `src/proxy.ts` — ミドルウェア：セッション自動更新 + 認証リダイレクト
 
 **データフローパターン：**
 
@@ -113,3 +113,9 @@ npm run lint && npm run prettier:check && npm run test
 1. まず Markdown 本文を構成する
 2. 次に必ずファイルに書き出す
 3. チャットには要約のみを表示する
+
+## Markdown 出力ルール
+
+- AIが新規作成・更新する `.md` は `markdownlint` と `prettier` を必ず満たすこと。
+- 見出し前後の空行、箇条書き記法、行末スペース、末尾改行などを markdownlint に従って整形すること。
+- Markdown の整形は Prettier の結果を正とする。

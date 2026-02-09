@@ -86,3 +86,30 @@ npm run lint && npm run prettier:check && npm run test
 - `architecture.md`、`api-design.md`、`data-model.md`、`auth-flow.md`
 - `error-handling.md`、`form-policy.md`、`validation.md`
 - `deployment.md`、`features-list.md`
+
+## 計画 / 調査 Rule
+
+以下の種類のアウトプットを生成した場合は、
+**必ず Markdown ファイルとして保存すること。**
+
+対象：
+
+- 実行計画（plan / roadmap / step）
+- ToDo リスト
+- 調査結果・比較・検討メモ
+
+保存先：
+
+- /.idea/claude/
+
+ファイル命名規則：
+
+- plan\_<短い英語タイトル>.md
+- todo\_<短い英語タイトル>.md
+- research\_<短い英語タイトル>.md
+
+出力ルール：
+
+1. まず Markdown 本文を構成する
+2. 次に必ずファイルに書き出す
+3. チャットには要約のみを表示する

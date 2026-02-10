@@ -59,92 +59,55 @@ npm start
 
 ### GitHub Actions
 
-CI (`.github/workflows/ci.yml`)
+#### CI（品質検証）
+
+| 項目             | 内容                                                                  |
+| ---------------- | --------------------------------------------------------------------- |
+| 対象ワークフロー | `.github/workflows/ci.yml`                                            |
+| トリガー         | `push` / `pull_request`（`main`, `develop`）                          |
+| 並列制御         | `concurrency` で同一 ref の重複実行をキャンセル                       |
+| 実行環境         | Node `22.14.0`                                                        |
+| 実行内容         | `npm ci` → `npm run lint` → `npm run prettier:check` → `npm run test` |
+
+#### CD（Vercelデプロイ）
+
+| 項目             | 内容                                                             |
+| ---------------- | ---------------------------------------------------------------- |
+| 対象ワークフロー | `.github/workflows/cd-deploy.yml`                                |
+| トリガー         | `workflow_run`（CI 完了時）                                      |
+| 実行条件         | `CI成功` かつ `event=push` かつ `head_branch in [main, develop]` |
+| 並列制御         | `concurrency` で同一ブランチの重複デプロイをキャンセル           |
+| デプロイ先       | `main` は Production（`--prod`）、`develop` は Preview           |
+| 必須シークレット | `VERCEL_TOKEN`                                                   |
+
+短い抜粋（最新の正本は workflow ファイルを参照）:
 
 ```yaml
-name: CI
-
-on:
-  pull_request:
-    branches: [main, develop]
-  push:
-    branches: [main, develop]
-
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.14.0
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Run Prettier Check
-        run: npm run prettier:check
-
-      - name: Run Tests
-        run: npm run test
+if: >-
+  github.event.workflow_run.conclusion == 'success' &&
+  github.event.workflow_run.event == 'push' &&
+  (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop')
 ```
 
-CD (`.github/workflows/cd-deploy.yml`)
-
-```yaml
-name: CD Deploy to Vercel
-
-on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-
-concurrency:
-  group: cd-deploy-${{ github.event.workflow_run.head_branch }}
-  cancel-in-progress: true
-
-jobs:
-  deploy:
-    if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.14.0
-
-      - name: Deploy to Vercel (Production or Preview)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-        run: |
-          if [[ "$HEAD_BRANCH" == "main" ]]; then
-            npx --yes vercel@50.1.3 --prod --token="$VERCEL_TOKEN" --yes
-          else
-            npx --yes vercel@50.1.3 --token="$VERCEL_TOKEN" --yes
-          fi
+```bash
+if [[ "$HEAD_BRANCH" == "main" ]]; then
+  npx --yes vercel@50.1.3 --prod --token="$VERCEL_TOKEN" --yes
+else
+  npx --yes vercel@50.1.3 --token="$VERCEL_TOKEN" --yes
+fi
 ```
+
+#### ブランチ運用とデプロイ結果
+
+- 作業ブランチ → `develop`: `Squash and merge`
+- `develop` → `main`: `Create a merge commit`
+- `develop` への push は Preview デプロイ、`main` への push は Production デプロイになるため、
+  マージ戦略とデプロイ先（Preview/Production）が対応した運用になっている
+
+#### 正本（Source of Truth）
+
+- `.github/workflows/ci.yml`
+- `.github/workflows/cd-deploy.yml`
 
 <!-- ## モニタリングとログ
 

@@ -1,13 +1,13 @@
 services:
-    kuralis:
-        build:
-            context: .
-            target: dev
-        ports:
-            - "3002:3002"
-        env_file:
-            - .env.local
-        volumes:
-            - .:/app
-            - /app/node_modules
-        command: npm run dev
+  kuralis:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3002:3002"
+    env_file:
+      - .env.local
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev

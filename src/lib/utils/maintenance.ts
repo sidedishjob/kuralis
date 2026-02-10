@@ -9,22 +9,22 @@ import type { MaintenanceCycleUnit } from "@/types/maintenance";
  * @returns 次回予定日（Dateオブジェクト）
  */
 export function calculateNextDueDate(
-	performedAt: string,
-	cycleValue: number,
-	cycleUnit: MaintenanceCycleUnit
+  performedAt: string,
+  cycleValue: number,
+  cycleUnit: MaintenanceCycleUnit,
 ): Date {
-	const baseDate = new Date(performedAt);
+  const baseDate = new Date(performedAt);
 
-	switch (cycleUnit) {
-		case "days":
-			return addDays(baseDate, cycleValue);
-		case "weeks":
-			return addWeeks(baseDate, cycleValue);
-		case "months":
-			return addMonths(baseDate, cycleValue);
-		case "years":
-			return addYears(baseDate, cycleValue);
-		default:
-			throw new Error(`Unsupported cycle unit: ${cycleUnit}`);
-	}
+  switch (cycleUnit) {
+    case "days":
+      return addDays(baseDate, cycleValue);
+    case "weeks":
+      return addWeeks(baseDate, cycleValue);
+    case "months":
+      return addMonths(baseDate, cycleValue);
+    case "years":
+      return addYears(baseDate, cycleValue);
+    default:
+      throw new Error(`Unsupported cycle unit: ${cycleUnit}`);
+  }
 }

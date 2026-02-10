@@ -12,22 +12,25 @@ import type { FurnitureWithExtras } from "@/types/furniture";
  * @param id 家具ID
  * @param initialData SSR時などに渡す初期データ（省略可）
  */
-export function useFurnitureById(id: string, initialData?: FurnitureWithExtras) {
-	// SWRで個別家具データを取得
-	const {
-		data: furniture,
-		error,
-		isLoading,
-		mutate,
-	} = useSWR<FurnitureWithExtras>(API_ROUTES.furnitureById(id), fetcher, {
-		fallbackData: initialData,
-		revalidateOnMount: initialData ? false : true,
-	});
+export function useFurnitureById(
+  id: string,
+  initialData?: FurnitureWithExtras,
+) {
+  // SWRで個別家具データを取得
+  const {
+    data: furniture,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<FurnitureWithExtras>(API_ROUTES.furnitureById(id), fetcher, {
+    fallbackData: initialData,
+    revalidateOnMount: initialData ? false : true,
+  });
 
-	return {
-		furniture,
-		isLoading,
-		error,
-		mutate,
-	};
+  return {
+    furniture,
+    isLoading,
+    error,
+    mutate,
+  };
 }

@@ -60,7 +60,7 @@
 - SWR によるデータ取得
 - React Hook Form + Zod による型安全なフォームバリデーション
 - Row Level Security (RLS) & Supabase Policy による堅牢なデータ保護
-- GitHub Actions による CI / Prettier・ESLint の自動チェック
+- GitHub Actions による CI（ESLint / Prettier / Test）とCD（Vercelデプロイ）
 
 ---
 

@@ -57,8 +57,10 @@ npm start
 
 ### GitHub Actions
 
+CI (`.github/workflows/ci.yml`)
+
 ```yaml
-name: CI + Deploy to Vercel
+name: CI
 
 on:
   pull_request:
@@ -66,8 +68,12 @@ on:
   push:
     branches: [main, develop]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  ci-and-deploy:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
@@ -78,6 +84,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.14.0
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -88,19 +96,57 @@ jobs:
       - name: Run Prettier Check
         run: npm run prettier:check
 
+      - name: Run Tests
+        run: npm run test
+```
+
+CD (`.github/workflows/cd-deploy.yml`)
+
+```yaml
+name: CD Deploy to Vercel
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+concurrency:
+  group: cd-deploy-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Deploy to Vercel (Production or Preview)
-        if: success()
-        run: |
-          if [[ "$GITHUB_REF_NAME" == "main" ]]; then
-            echo "Deploying to PRODUCTION..."
-            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
-          else
-            echo "Deploying to PREVIEW (develop)..."
-            npx vercel --token=${{ secrets.VERCEL_TOKEN }} --yes
-          fi
         env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          if [[ "$HEAD_BRANCH" == "main" ]]; then
+            npx vercel --prod --token="$VERCEL_TOKEN" --yes
+          else
+            npx vercel --token="$VERCEL_TOKEN" --yes
+          fi
 ```
 
 <!-- ## モニタリングとログ

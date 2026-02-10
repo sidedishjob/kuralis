@@ -51,7 +51,9 @@ npm start
    - メール認証の有効化
    - Google認証の有効化（必要な場合）
 4. 環境変数の設定（Vercelの場合）
-   - NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, EMAIL_USER, EMAIL_PASS, EMAIL_TO, NEXT_PUBLIC_SITE_URL
+   - NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
+     SUPABASE_SERVICE_ROLE_KEY, NEXT_PUBLIC_SITE_URL,
+     EMAIL_USER, EMAIL_PASS, EMAIL_TO
 
 ## CI/CD
 
@@ -131,11 +133,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.14.0
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Deploy to Vercel (Production or Preview)
         env:
@@ -143,9 +140,9 @@ jobs:
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
           if [[ "$HEAD_BRANCH" == "main" ]]; then
-            npx vercel --prod --token="$VERCEL_TOKEN" --yes
+            npx --yes vercel@50.1.3 --prod --token="$VERCEL_TOKEN" --yes
           else
-            npx vercel --token="$VERCEL_TOKEN" --yes
+            npx --yes vercel@50.1.3 --token="$VERCEL_TOKEN" --yes
           fi
 ```
 

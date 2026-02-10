@@ -32,7 +32,16 @@ npm run lint && npm run prettier:check && npm run test
 
 ## アーキテクチャ
 
-**技術スタック:** Next.js 16（App Router）+ React 19 + TypeScript + Supabase（PostgreSQL, Auth, Storage）+ Tailwind CSS 4
+**技術スタック:**
+
+- Next.js 16.1.6（App Router）
+- React 19.2.4
+- TypeScript 5
+- Supabase 2.95.3（PostgreSQL, Auth, Storage）
+- Tailwind CSS 4.1.7
+- Vitest 4.0.18（テストフレームワーク）
+- Zod 4.3.6（バリデーション）
+- date-fns 4.1.0（日付処理）
 
 **`src/` 配下の主要ディレクトリ：**
 
@@ -65,19 +74,159 @@ npm run lint && npm run prettier:check && npm run test
 4. `NextResponse.json(data, { status })` を返却、または `ApiError` をスロー
 5. `handleApiError(error, "ユーザー向けメッセージ")` でキャッチ
 
+**APIレスポンス形式:**
+
+- **成功時:** オブジェクトを直接返却（`{ data: ... }` ラッパーなし）
+
+  ```typescript
+  return NextResponse.json(furniture, { status: 200 });
+  ```
+
+- **失敗時:** `{ error: string, details?: unknown }` 形式
+
+  ```typescript
+  return NextResponse.json({ error: "エラーメッセージ" }, { status: 400 });
+  ```
+
 ## コーディング規約
 
 **インポート:** 常に `@/` パスエイリアス（`src/` にマッピング）を使用する。型のみのインポートには `import type` を使用する。
 
-**フォーマット（.prettierrc）:** タブ（幅4）、ダブルクォート、セミコロン、末尾カンマ（es5）、1行100文字。
+**フォーマット:** Prettierデフォルト設定を使用（タブ幅4、ダブルクォート、セミコロン、末尾カンマes5、1行100文字）。
 
-**エラーメッセージ:** ログは `〜エラー` 形式。ユーザー向けメッセージは `〜に失敗しました` 形式。詳細は `docs/error-handling.md` を参照。
+**コンポーネント設計:**
 
-**フォーム:** React Hook Form + Zod + `FormProvider` パターン。命名規則：`[Entity]Form`、`[Entity]Field`、`[entity]Schema`。詳細は `docs/form-policy.md` を参照。
+- 関数型コンポーネントのみ使用（クラスコンポーネント禁止）
+- サーバーコンポーネント優先 — `'use client'` の使用は最小限に
+- 型よりインターフェース優先（`interface` over `type`）
+- ディレクトリ名は小文字+ダッシュ（例: `maintenance-tasks/`）
 
-**テスト:** `src/tests/` に配置。Vitest + Testing Library（jsdom環境）を使用。
+**エラーメッセージ:** ログは `〜エラー` 形式。ユーザー向けメッセージは `〜に失敗しました` 形式。
+
+**エラーハンドリング詳細:**
+
+API層（`app/api/**/route.ts`）:
+
+```typescript
+import { ApiError } from "@/lib/errors/ApiError";
+import { handleApiError } from "@/lib/utils/handleApiError";
+
+// 認証エラー
+if (!user) {
+  throw new ApiError(401, "認証が必要です");
+}
+
+// エラーキャッチ
+catch (error: unknown) {
+  return handleApiError(error, "ユーザー向け失敗メッセージ");
+}
+```
+
+クライアント層（`hooks/`, `components/`）:
+
+```typescript
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+
+try {
+  await doSomething();
+  toast({ title: "成功メッセージ" });
+} catch (error: unknown) {
+  console.error("〜エラー:", error);
+  toast({
+    title: "〜に失敗しました",
+    description: getErrorMessage(error, "もう一度お試しください"),
+    variant: "destructive",
+  });
+}
+```
+
+主要ユーティリティ:
+
+- `handleApiError(error, fallbackMessage)` — API層用
+- `getErrorMessage(error, fallback)` — クライアント層用（`errorMessageMap` で日本語化）
+- `ApiError` クラス — カスタムエラー（status, message, details）
+
+詳細は `docs/error-handling.md` を参照。
+
+**フォーム:** React Hook Form + Zod + `FormProvider` パターン。
+
+基本実装:
+
+```typescript
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+function MyForm() {
+  const methods = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { ... },
+  });
+
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        {/* フィールドコンポーネント */}
+      </form>
+    </FormProvider>
+  );
+}
+```
+
+フィールドコンポーネント:
+
+- `useFormContext()` でフォーム状態にアクセス
+- `register(name)` でフィールドを登録
+- エラーは `<span role="alert">{errors[name].message}</span>` で表示
+- 必須フィールドは `<span aria-hidden="true">*</span>` + `aria-required` 属性
+
+命名規則: `[Entity]Form`、`[Entity]Field`、`[entity]Schema`。詳細は `docs/form-policy.md` を参照。
+
+**テスト:**
+
+- 配置: `src/tests/`
+- フレームワーク: Vitest 4.0.18 + Testing Library（jsdom 28.0.0環境）
+- 実行コマンド:
+  - 全テスト: `npm run test`
+  - 単体テスト: `npx vitest run src/tests/path/to/file.test.ts`
+  - カバレッジ: `npx vitest --coverage`
 
 **データベース型:** `src/lib/database.types.ts` に自動生成 — 手動編集禁止。
+
+## 品質ゲート
+
+**作業完了前に必ず実行:**
+
+```bash
+npm run lint && npm run prettier:check && npm run test
+```
+
+- すべて成功するまで作業完了としない
+- エラーがある場合は必ず修正する
+- 詳細は `AGENTS.md` の「品質ゲート（Quality gates）」セクション参照
+
+## コミットメッセージ
+
+ファイルの修正を加えて作業が一段落した際は、必ずコミットメッセージの提案を行うこと。
+
+**ルール:** `~/.claude/commit-message-rule.md` に従う
+
+**使用可能なプレフィックス:**
+
+- `feat:` — 新機能
+- `fix:` — バグ修正
+- `change:` — 既存機能の仕様変更
+- `refactor:` — リファクタリング
+- `docs:` — ドキュメント更新
+- `test:` — テスト追加・修正
+- `chore:` — ビルド・依存関係・設定変更
+
+**形式:**
+
+```text
+<prefix>: <簡潔な説明>
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+```
 
 ## ドキュメント
 
@@ -116,6 +265,32 @@ npm run lint && npm run prettier:check && npm run test
 
 ## Markdown 出力ルール
 
-- AIが新規作成・更新する `.md` は `markdownlint` と `prettier` を必ず満たすこと。
-- 見出し前後の空行、箇条書き記法、行末スペース、末尾改行などを markdownlint に従って整形すること。
-- Markdown の整形は Prettier の結果を正とする。
+- 本プロジェクトでは `markdownlint` の設定ファイルや CI による運用は行わない。
+- VS Code の標準的な `markdownlint` 拡張機能で表示される **一般的な警告が出ないこと** を目標とする。
+- AI が新規作成・更新する `.md` は、以下の記法ルールと整形方針を必ず守ること。
+
+### 見出しルール
+
+- 見出し（`#`）の前後には必ず 1 行の空行を入れる。
+- 見出し直下での強調記法（`**太字**`）は、警告の原因になりやすいため避ける。
+
+### コードブロックルール
+
+- コードブロックの前後には必ず 1 行の空行を入れる。
+- コードブロックには必ず言語名を入れる。
+
+### 箇条書きの記法ルール
+
+- 箇条書きは `-` の直後に **半角スペース 1 つ** を入れる。
+  - 正: `- item`
+  - 誤: `-   item`
+- ネストした箇条書きは **スペース 2 つ** でインデントする。
+- チェックボックス付きリストも同様に、`- [x] item` の形式とする。
+
+例:
+
+```md
+- [x] date-fns 3.6.0 → 4.1.0
+  - 更新完了
+  - 全テスト（199件）パス ✅
+```

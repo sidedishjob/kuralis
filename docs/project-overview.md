@@ -28,12 +28,13 @@ kuralisは、家具の管理とメンテナンスを効率化し、家具との�
 
 ### フロントエンド
 
-- Next.js 15（App Router）
+- Next.js 16（App Router）
 - TypeScript
+- React 19
 - Tailwind CSS
 - shadcn/ui
 - React Hook Form
-- Zod
+- Zod 4
 
 ### バックエンド
 
@@ -51,8 +52,8 @@ kuralisは、家具の管理とメンテナンスを効率化し、家具との�
 
 ## 開発環境
 
-- Node.js 18以上
-- npm 9以上
+- Node.js 22以上
+- npm 10以上
 - Git
 
 ## プロジェクト構造

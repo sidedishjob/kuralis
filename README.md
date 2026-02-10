@@ -68,10 +68,10 @@
 
 | カテゴリ           | 技術                                                      |
 | ------------------ | --------------------------------------------------------- |
-| **フロントエンド** | Next.js 16.1.0 (App Router) / React 19.2.3 / TypeScript 5 |
-| **バックエンド**   | Supabase 2.94.1 (PostgreSQL 15, Auth, Storage)            |
+| **フロントエンド** | Next.js 16.1.6 (App Router) / React 19.2.4 / TypeScript 5 |
+| **バックエンド**   | Supabase 2.95.3 (PostgreSQL 15, Auth, Storage)            |
 | **データ取得**     | SWR 2.3.3                                                 |
-| **フォーム**       | react-hook-form 7.57.0 / Zod 3.25.57                      |
+| **フォーム**       | react-hook-form 7.57.0 / Zod 4.3.6                        |
 | **状態管理**       | React Context API + Custom Hook                           |
 | **UI / スタイル**  | Tailwind CSS 4.1.7 / shadcn/ui / Radix UI / lucide-react  |
 | **メール送信**     | nodemailer 7.0.3                                          |

@@ -8,7 +8,7 @@ import { z } from "zod";
  */
 export const registerFurnitureSchema = z.object({
   name: z
-    .string({ required_error: "家具名を入力してください	" })
+    .string({ error: "家具名を入力してください" })
     .min(1, "家具名を入力してください")
     .max(100, {
       message: "家具名は100文字以内で入力してください",
@@ -45,7 +45,7 @@ export type RegisterFurnitureSchema = z.infer<typeof registerFurnitureSchema>;
  */
 export const furnitureEditSchema = z.object({
   name: z
-    .string({ required_error: "家具名を入力してください" })
+    .string({ error: "家具名を入力してください" })
     .min(1, "家具名を入力してください")
     .max(100, {
       message: "家具名は100文字以内で入力してください",
@@ -58,7 +58,7 @@ export const furnitureEditSchema = z.object({
     })
     .optional(),
   location_id: z
-    .number({ required_error: "設置場所を選択してください。" })
+    .number({ error: "設置場所を選択してください。" })
     .min(1, "有効な設置場所を選択してください。"),
   purchased_at: z
     .string()

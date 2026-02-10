@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // 必須文字列
 const requiredString = (message: string) =>
-  z.string({ required_error: message }).min(1, { message });
+  z.string({ error: message }).min(1, { message });
 
 /**
  * ログインフォーム用バリデーションスキーマ
@@ -14,7 +14,7 @@ export const loginSchema = z.object({
     message: "有効なメールアドレスを入力してください",
   }),
   password: z
-    .string({ required_error: "パスワードを入力してください" })
+    .string({ error: "パスワードを入力してください" })
     .min(6, { message: "パスワードは6文字以上で入力してください" })
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "パスワードは半角英数字のみで入力してください",
@@ -37,7 +37,7 @@ export const signupSchema = z.object({
     message: "有効なメールアドレスを入力してください",
   }),
   password: z
-    .string({ required_error: "パスワードを入力してください" })
+    .string({ error: "パスワードを入力してください" })
     .min(6, { message: "パスワードは6文字以上で入力してください" })
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "パスワードは半角英数字のみで入力してください",
@@ -58,19 +58,19 @@ export type SignupSchema = z.infer<typeof signupSchema>;
 export const passwordChangeSchema = z
   .object({
     currentPassword: z
-      .string({ required_error: "現在のパスワードを入力してください" })
+      .string({ error: "現在のパスワードを入力してください" })
       .min(6, { message: "現在のパスワードは6文字以上で入力してください" })
       .regex(/^[a-zA-Z0-9]+$/, {
         message: "パスワードは半角英数字のみで入力してください",
       }),
     newPassword: z
-      .string({ required_error: "新しいパスワードを入力してください" })
+      .string({ error: "新しいパスワードを入力してください" })
       .min(6, "新しいパスワードは6文字以上で入力してください")
       .regex(/^[a-zA-Z0-9]+$/, {
         message: "新しいパスワードは半角英数字のみで入力してください",
       }),
     confirmPassword: z.string({
-      required_error: "確認用パスワードを入力してください",
+      error: "確認用パスワードを入力してください",
     }),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -89,7 +89,7 @@ export type PasswordChangeSchema = z.infer<typeof passwordChangeSchema>;
  */
 export const passwordResetSchema = z.object({
   newPassword: z
-    .string({ required_error: "パスワードを入力してください" })
+    .string({ error: "パスワードを入力してください" })
     .min(6, "パスワードは6文字以上で入力してください")
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "新しいパスワードは半角英数字のみで入力してください",

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // 必須文字列
 const requiredString = (message: string) =>
-  z.string({ required_error: message }).min(1, { message });
+  z.string({ error: message }).min(1, { message });
 
 /**
  * お問い合わせフォーム用バリデーションスキーマ

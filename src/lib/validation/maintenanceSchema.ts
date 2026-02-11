@@ -9,10 +9,10 @@ import { z } from "zod";
  */
 export const maintenanceTaskSchema = z.object({
   taskName: z
-    .string({ required_error: "タスク名を入力してください" })
+    .string({ error: "タスク名を入力してください" })
     .min(1, "タスク名を入力してください"),
   cycleValue: z
-    .string({ required_error: "周期値を入力してください" })
+    .string({ error: "周期値を入力してください" })
     .min(1, "周期値を入力してください")
     .regex(/^\d+$/, "周期は正の数値で入力してください"),
   cycleUnit: z.enum(["days", "weeks", "months", "years"]),

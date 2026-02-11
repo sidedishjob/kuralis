@@ -14,20 +14,21 @@ const SheetClose = SheetPrimitive.Close;
 const SheetPortal = SheetPrimitive.Portal;
 
 // オーバーレイ（背景）部分
-const SheetOverlay = React.forwardRef<
-  React.ElementRef<typeof SheetPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <SheetPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
-    )}
-    {...props}
-  />
-));
-SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
+function SheetOverlay({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+  return (
+    <SheetPrimitive.Overlay
+      data-slot="sheet-overlay"
+      className={cn(
+        "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // side（上下左右）バリエーションの定義
 const sheetVariants = cva(
@@ -49,90 +50,93 @@ const sheetVariants = cva(
   },
 );
 
-// SheetContentのprops型
-interface SheetContentProps
-  extends
-    React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
-
 // Sheet本体
-const SheetContent = React.forwardRef<
-  React.ElementRef<typeof SheetPrimitive.Content>,
-  SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
-  <SheetPortal>
-    <SheetOverlay />
-    <SheetPrimitive.Content
-      ref={ref}
-      className={cn(sheetVariants({ side }), className)}
-      {...props}
-    >
-      {/* 👇 SheetTitleやSheetDescriptionは呼び出し側で明示的に使う */}
-      {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-kuralis-400 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-kuralis-100">
-        <FiX className="size-4" />
-        <span className="sr-only">Close</span>
-      </SheetPrimitive.Close>
-    </SheetPrimitive.Content>
-  </SheetPortal>
-));
-SheetContent.displayName = SheetPrimitive.Content.displayName;
+function SheetContent({
+  side = "right",
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Content> &
+  VariantProps<typeof sheetVariants>) {
+  return (
+    <SheetPortal>
+      <SheetOverlay />
+      <SheetPrimitive.Content
+        data-slot="sheet-content"
+        className={cn(sheetVariants({ side }), className)}
+        {...props}
+      >
+        {children}
+        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-kuralis-400 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-kuralis-100">
+          <FiX className="size-4" />
+          <span className="sr-only">Close</span>
+        </SheetPrimitive.Close>
+      </SheetPrimitive.Content>
+    </SheetPortal>
+  );
+}
 
 // ヘッダー領域
-const SheetHeader = ({
+function SheetHeader({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col space-y-2 text-center sm:text-left",
-      className,
-    )}
-    {...props}
-  />
-);
-SheetHeader.displayName = "SheetHeader";
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-slot="sheet-header"
+      className={cn(
+        "flex flex-col space-y-2 text-center sm:text-left",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // フッター領域
-const SheetFooter = ({
+function SheetFooter({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-      className,
-    )}
-    {...props}
-  />
-);
-SheetFooter.displayName = "SheetFooter";
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-slot="sheet-footer"
+      className={cn(
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // タイトル部分（アクセシビリティ用）
-const SheetTitle = React.forwardRef<
-  React.ElementRef<typeof SheetPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <SheetPrimitive.Title
-    ref={ref}
-    className={cn("text-lg font-semibold text-kuralis-900", className)}
-    {...props}
-  />
-));
-SheetTitle.displayName = SheetPrimitive.Title.displayName;
+function SheetTitle({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Title>) {
+  return (
+    <SheetPrimitive.Title
+      data-slot="sheet-title"
+      className={cn("text-lg font-semibold text-kuralis-900", className)}
+      {...props}
+    />
+  );
+}
 
 // 説明部分（アクセシビリティ用）
-const SheetDescription = React.forwardRef<
-  React.ElementRef<typeof SheetPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
->(({ className, ...props }, ref) => (
-  <SheetPrimitive.Description
-    ref={ref}
-    className={cn("text-sm text-kuralis-500", className)}
-    {...props}
-  />
-));
-SheetDescription.displayName = SheetPrimitive.Description.displayName;
+function SheetDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Description>) {
+  return (
+    <SheetPrimitive.Description
+      data-slot="sheet-description"
+      className={cn("text-sm text-kuralis-500", className)}
+      {...props}
+    />
+  );
+}
 
 // Export
 export {

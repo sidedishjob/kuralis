@@ -5,10 +5,7 @@ interface StepIndicatorProps {
   totalSteps: number;
 }
 
-const StepIndicator: React.FC<StepIndicatorProps> = ({
-  currentStep,
-  totalSteps,
-}) => {
+function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
   return (
     <div className="flex items-center justify-center">
       {Array.from({ length: totalSteps }).map((_, index) => (
@@ -29,6 +26,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
       ))}
     </div>
   );
-};
+}
 
 export default StepIndicator;

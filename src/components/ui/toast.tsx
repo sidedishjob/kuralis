@@ -11,20 +11,21 @@ import { cn } from "@/lib/utils";
 const ToastProvider = ToastPrimitives.Provider;
 
 // ToastViewport: トーストの描画位置を定義
-const ToastViewport = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Viewport>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Viewport
-    ref={ref}
-    className={cn(
-      "fixed bottom-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-105",
-      className,
-    )}
-    {...props}
-  />
-));
-ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
+function ToastViewport({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToastPrimitives.Viewport>) {
+  return (
+    <ToastPrimitives.Viewport
+      data-slot="toast-viewport"
+      className={cn(
+        "fixed bottom-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-105",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // トーストのスタイルバリエーション定義
 const toastVariants = cva(
@@ -43,84 +44,88 @@ const toastVariants = cva(
 );
 
 // Toast本体
-const Toast = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+function Toast({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<typeof ToastPrimitives.Root> &
+  VariantProps<typeof toastVariants>) {
   return (
     <ToastPrimitives.Root
-      ref={ref}
+      data-slot="toast"
       className={cn(toastVariants({ variant }), className)}
       {...props}
     />
   );
-});
-Toast.displayName = ToastPrimitives.Root.displayName;
+}
 
 // トーストのアクションボタン
-const ToastAction = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Action>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Action>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Action
-    ref={ref}
-    className={cn(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-kuralis-200 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-kuralis-100 focus:outline-none focus:ring-1 focus:ring-kuralis-400 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-red-100 group-[.destructive]:hover:border-red-500 group-[.destructive]:hover:bg-red-500 group-[.destructive]:hover:text-white group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
-      className,
-    )}
-    {...props}
-  />
-));
-ToastAction.displayName = ToastPrimitives.Action.displayName;
+function ToastAction({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToastPrimitives.Action>) {
+  return (
+    <ToastPrimitives.Action
+      data-slot="toast-action"
+      className={cn(
+        "inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-kuralis-200 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-kuralis-100 focus:outline-none focus:ring-1 focus:ring-kuralis-400 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-red-100 group-[.destructive]:hover:border-red-500 group-[.destructive]:hover:bg-red-500 group-[.destructive]:hover:text-white group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // トーストのクローズボタン
-const ToastClose = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Close>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Close>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Close
-    ref={ref}
-    className={cn(
-      "absolute right-1 top-1 rounded-md p-1 text-kuralis-500 opacity-0 transition-opacity hover:text-kuralis-900 focus:opacity-100 focus:outline-none focus:ring-1 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
-      className,
-    )}
-    suppressHydrationWarning
-    {...props}
-  >
-    <FiX className="size-4" />
-  </ToastPrimitives.Close>
-));
-ToastClose.displayName = ToastPrimitives.Close.displayName;
+function ToastClose({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToastPrimitives.Close>) {
+  return (
+    <ToastPrimitives.Close
+      data-slot="toast-close"
+      className={cn(
+        "absolute right-1 top-1 rounded-md p-1 text-kuralis-500 opacity-0 transition-opacity hover:text-kuralis-900 focus:opacity-100 focus:outline-none focus:ring-1 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
+        className,
+      )}
+      suppressHydrationWarning
+      {...props}
+    >
+      <FiX className="size-4" />
+    </ToastPrimitives.Close>
+  );
+}
 
 // トーストのタイトル
-const ToastTitle = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Title>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Title
-    ref={ref}
-    className={cn("text-sm font-semibold [&+div]:text-xs", className)}
-    {...props}
-  />
-));
-ToastTitle.displayName = ToastPrimitives.Title.displayName;
+function ToastTitle({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToastPrimitives.Title>) {
+  return (
+    <ToastPrimitives.Title
+      data-slot="toast-title"
+      className={cn("text-sm font-semibold [&+div]:text-xs", className)}
+      {...props}
+    />
+  );
+}
 
 // トーストの説明文
-const ToastDescription = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Description>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Description
-    ref={ref}
-    className={cn("text-sm opacity-90", className)}
-    {...props}
-  />
-));
-ToastDescription.displayName = ToastPrimitives.Description.displayName;
+function ToastDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToastPrimitives.Description>) {
+  return (
+    <ToastPrimitives.Description
+      data-slot="toast-description"
+      className={cn("text-sm opacity-90", className)}
+      {...props}
+    />
+  );
+}
 
 // 型定義のエクスポート
-type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>;
+type ToastProps = React.ComponentProps<typeof Toast>;
 type ToastActionElement = React.ReactElement<typeof ToastAction>;
 
 export {

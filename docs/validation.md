@@ -14,9 +14,8 @@
 import { z } from "zod";
 
 // 必須文字列
-export const requiredString = z
-  .string({ required_error: "項目を入力してください" })
-  .min(1, "項目を入力してください");
+const requiredString = (message: string) =>
+  z.string({ error: message }).min(1, { message });
 
 // オプショナル文字列
 export const optionalString = z.string().optional();
@@ -26,7 +25,7 @@ export const email = z.string().email("有効なメールアドレスを入力�
 
 // パスワード
 export const password = z
-  .string({ required_error: "パスワードを入力してください" })
+  .string({ error: "パスワードを入力してください" })
   .min(6, { message: "パスワードは6文字以上で入力してください" });
 ```
 
@@ -37,25 +36,28 @@ export const password = z
 ```typescript
 import { z } from "zod";
 
-export const signupSchema = z.object({
-  email: z
-    .string({ required_error: "メールアドレスを入力してください" })
-    .min(1, { message: "メールアドレスを入力してください" })
-    .email({ message: "有効なメールアドレスを入力してください" }),
+// 必須文字列
+const requiredString = (message: string) =>
+  z.string({ error: message }).min(1, { message });
+
+export const loginSchema = z.object({
+  email: requiredString("メールアドレスを入力してください").email({
+    message: "有効なメールアドレスを入力してください",
+  }),
   password: z
-    .string({ required_error: "パスワードを入力してください" })
+    .string({ error: "パスワードを入力してください" })
     .min(6, { message: "パスワードは6文字以上で入力してください" })
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "パスワードは半角英数字のみで入力してください",
     }),
 });
 
-export const loginSchema = z.object({
-  email: z
-    .string({ required_error: "メールアドレスを入力してください" })
-    .email({ message: "有効なメールアドレスを入力してください" }),
+export const signupSchema = z.object({
+  email: requiredString("メールアドレスを入力してください").email({
+    message: "有効なメールアドレスを入力してください",
+  }),
   password: z
-    .string({ required_error: "パスワードを入力してください" })
+    .string({ error: "パスワードを入力してください" })
     .min(6, { message: "パスワードは6文字以上で入力してください" })
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "パスワードは半角英数字のみで入力してください",
@@ -69,19 +71,19 @@ export const loginSchema = z.object({
 export const passwordChangeSchema = z
   .object({
     currentPassword: z
-      .string({ required_error: "現在のパスワードを入力してください" })
+      .string({ error: "現在のパスワードを入力してください" })
       .min(6, { message: "現在のパスワードは6文字以上で入力してください" })
       .regex(/^[a-zA-Z0-9]+$/, {
         message: "パスワードは半角英数字のみで入力してください",
       }),
     newPassword: z
-      .string({ required_error: "新しいパスワードを入力してください" })
+      .string({ error: "新しいパスワードを入力してください" })
       .min(6, "新しいパスワードは6文字以上で入力してください")
       .regex(/^[a-zA-Z0-9]+$/, {
         message: "新しいパスワードは半角英数字のみで入力してください",
       }),
     confirmPassword: z.string({
-      required_error: "確認用パスワードを入力してください",
+      error: "確認用パスワードを入力してください",
     }),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -91,7 +93,7 @@ export const passwordChangeSchema = z
 
 export const passwordResetSchema = z.object({
   newPassword: z
-    .string({ required_error: "パスワードを入力してください" })
+    .string({ error: "パスワードを入力してください" })
     .min(6, "パスワードは6文字以上で入力してください")
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "新しいパスワードは半角英数字のみで入力してください",
@@ -102,22 +104,26 @@ export const passwordResetSchema = z.object({
 ### お問い合わせスキーマ
 
 ```typescript
+import { z } from "zod";
+
+// 必須文字列
+const requiredString = (message: string) =>
+  z.string({ error: message }).min(1, { message });
+
 export const contactSchema = z.object({
-  name: z
-    .string({ required_error: "お名前を入力してください" })
-    .min(1, "お名前を入力してください")
-    .max(50, "お名前は50文字以内で入力してください"),
-  email: z
-    .string({ required_error: "メールアドレスを入力してください" })
-    .email({ message: "有効なメールアドレスを入力してください" }),
-  subject: z
-    .string({ required_error: "件名を入力してください" })
-    .min(1, "件名を入力してください")
-    .max(50, { message: "件名は50文字以内で入力してください" }),
-  message: z
-    .string({ required_error: "メッセージを入力してください" })
-    .min(1, "メッセージを入力してください")
-    .max(1000, { message: "メッセージは1000文字以内で入力してください" }),
+  name: requiredString("お名前を入力してください").max(
+    50,
+    "お名前は50文字以内で入力してください",
+  ),
+  email: requiredString("メールアドレスを入力してください").email({
+    message: "有効なメールアドレスを入力してください",
+  }),
+  subject: requiredString("件名を入力してください").max(50, {
+    message: "件名は50文字以内で入力してください",
+  }),
+  message: requiredString("メッセージを入力してください").max(1000, {
+    message: "メッセージは1000文字以内で入力してください",
+  }),
 });
 ```
 
@@ -126,9 +132,11 @@ export const contactSchema = z.object({
 ```typescript
 export const registerFurnitureSchema = z.object({
   name: z
-    .string({ required_error: "家具名を入力してください" })
+    .string({ error: "家具名を入力してください" })
     .min(1, "家具名を入力してください")
-    .max(100, { message: "家具名は100文字以内で入力してください" }),
+    .max(100, {
+      message: "家具名は100文字以内で入力してください",
+    }),
   image: z
     .union([z.instanceof(File), z.null()])
     .refine(
@@ -145,16 +153,20 @@ export const registerFurnitureSchema = z.object({
 
 export const furnitureEditSchema = z.object({
   name: z
-    .string({ required_error: "家具名を入力してください" })
+    .string({ error: "家具名を入力してください" })
     .min(1, "家具名を入力してください")
-    .max(100, { message: "家具名は100文字以内で入力してください" }),
+    .max(100, {
+      message: "家具名は100文字以内で入力してください",
+    }),
   brand: z
     .string()
     .trim()
-    .max(100, { message: "ブランド名は100文字以内で入力してください" })
+    .max(100, {
+      message: "ブランド名は100文字以内で入力してください",
+    })
     .optional(),
   location_id: z
-    .number({ required_error: "設置場所を選択してください。" })
+    .number({ error: "設置場所を選択してください。" })
     .min(1, "有効な設置場所を選択してください。"),
   purchased_at: z
     .string()
@@ -165,18 +177,24 @@ export const furnitureEditSchema = z.object({
         const date = new Date(val);
         return isValidFormat && !isNaN(date.getTime());
       },
-      { message: "有効な日付を YYYY-MM-DD 形式で入力してください" },
+      {
+        message: "有効な日付を YYYY-MM-DD 形式で入力してください",
+      },
     )
     .optional(),
   purchased_from: z
     .string()
     .trim()
-    .max(100, { message: "購入店舗名は100文字以内で入力してください" })
+    .max(100, {
+      message: "購入店舗名は100文字以内で入力してください",
+    })
     .optional(),
   notes: z
     .string()
     .trim()
-    .max(1000, { message: "備考は1000文字以内で入力してください" })
+    .max(1000, {
+      message: "備考は1000文字以内で入力してください",
+    })
     .optional(),
   image: z
     .any()
@@ -210,10 +228,10 @@ export const furnitureEditSchema = z.object({
 ```typescript
 export const maintenanceTaskSchema = z.object({
   taskName: z
-    .string({ required_error: "タスク名を入力してください" })
+    .string({ error: "タスク名を入力してください" })
     .min(1, "タスク名を入力してください"),
   cycleValue: z
-    .string({ required_error: "周期値を入力してください" })
+    .string({ error: "周期値を入力してください" })
     .min(1, "周期値を入力してください")
     .regex(/^\d+$/, "周期は正の数値で入力してください"),
   cycleUnit: z.enum(["days", "weeks", "months", "years"]),
@@ -311,7 +329,7 @@ export const dateRangeSchema = z
 ```typescript
 export const uniqueLocationSchema = z
   .object({
-    name: requiredString,
+    name: requiredString("ロケーション名を入力してください"),
   })
   .refine(
     async (data) => {

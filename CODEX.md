@@ -1,6 +1,6 @@
-# CLAUDE.md
+# CODEX.md
 
-このファイルは、Claude Code（claude.ai/code）がこのリポジトリで作業する際のガイダンスを提供する。
+このファイルは、Codex がこのリポジトリで作業する際のガイダンスを提供する。
 
 ## 参照ドキュメント
 
@@ -14,7 +14,7 @@
 AIエージェント別ワークツリー運用は `AGENTS.md` の
 「AIエージェント別ワークツリー運用（Worktree policy）」を正本として、必ず従うこと。
 
-- Claude Code は Claude Code 用ワークツリーで作業する
+- Codex は Codex 用ワークツリーで作業する
 - 待機時は `git switch --detach origin/develop` に戻す
 - 作業時は `git fetch --prune` 後に `git switch -c <branch> origin/develop` で開始する
 
@@ -37,7 +37,7 @@ AIエージェント別ワークツリー運用は `AGENTS.md` の
 - ToDo リスト
 - 調査結果・比較・検討メモ
 
-保存先: `.idea/claude/`
+保存先: `.idea/codex/`
 
 ファイル命名規則:
 

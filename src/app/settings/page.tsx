@@ -4,11 +4,11 @@ import { PolicySection } from "@/components/settings/sections/PolicySection";
 import { SupportSection } from "@/components/settings/sections/SupportSection";
 
 export default function SettingsPage() {
-	return (
-		<SettingsPageLayout>
-			<AccountSection />
-			<PolicySection />
-			<SupportSection />
-		</SettingsPageLayout>
-	);
+  return (
+    <SettingsPageLayout>
+      <AccountSection />
+      <PolicySection />
+      <SupportSection />
+    </SettingsPageLayout>
+  );
 }

@@ -1,14 +1,14 @@
 export interface Category {
-	id: number;
-	name: string;
+  id: number;
+  name: string;
 }
 
 export interface Location {
-	id: number;
-	name: string;
+  id: number;
+  name: string;
 }
 
 export interface FurnitureMeta {
-	categories: Category[];
-	locations: Location[];
+  categories: Category[];
+  locations: Location[];
 }

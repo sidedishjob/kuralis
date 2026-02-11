@@ -130,33 +130,37 @@ CREATE POLICY "Users can manage their own locations" ON locations
 - エンドポイント: `/api/furniture`
 - メソッド: GET
 - クエリパラメータ:
-    ```typescript
-    {
-      category_id?: number;
-      location_id?: number;
-      search?: string;
-    }
-    ```
+
+  ```typescript
+  {
+    category_id?: number;
+    location_id?: number;
+    search?: string;
+  }
+  ```
+
 - レスポンス:
-    ```typescript
-    {
-      items: Furniture[];
-      total: number;
-    }
-    ```
+
+  ```typescript
+  {
+    items: Furniture[];
+    total: number;
+  }
+  ```
 
 #### 家具詳細取得
 
 - エンドポイント: `/api/furniture/[id]`
 - メソッド: GET
 - レスポンス:
-    ```typescript
-    {
-      furniture: Furniture;
-      maintenance_tasks: MaintenanceTask[];
-      maintenance_records: MaintenanceRecord[];
-    }
-    ```
+
+  ```typescript
+  {
+    furniture: Furniture;
+    maintenance_tasks: MaintenanceTask[];
+    maintenance_records: MaintenanceRecord[];
+  }
+  ```
 
 ### メンテナンスAPI
 
@@ -165,31 +169,35 @@ CREATE POLICY "Users can manage their own locations" ON locations
 - エンドポイント: `/api/maintenance/tasks/[furniture_id]`
 - メソッド: GET
 - レスポンス:
-    ```typescript
-    {
-      tasks: MaintenanceTask[];
-    }
-    ```
+
+  ```typescript
+  {
+    tasks: MaintenanceTask[];
+  }
+  ```
 
 #### メンテナンス記録作成
 
 - エンドポイント: `/api/maintenance/records`
 - メソッド: POST
 - リクエストボディ:
-    ```typescript
-    {
-      task_id: string;
-      performed_at: string;
-      notes?: string;
-      status: 'completed' | 'skipped' | 'partial';
-    }
-    ```
+
+  ```typescript
+  {
+    task_id: string;
+    performed_at: string;
+    notes?: string;
+    status: 'completed' | 'skipped' | 'partial';
+  }
+  ```
+
 - レスポンス:
-    ```typescript
-    {
-    	record: MaintenanceRecord;
-    }
-    ```
+
+  ```typescript
+  {
+    record: MaintenanceRecord;
+  }
+  ```
 
 ## データ型定義
 
@@ -197,9 +205,9 @@ CREATE POLICY "Users can manage their own locations" ON locations
 
 ```typescript
 export interface Category {
-	id: number;
-	name: string;
-	icon?: string | null;
+  id: number;
+  name: string;
+  icon?: string | null;
 }
 ```
 
@@ -207,9 +215,9 @@ export interface Category {
 
 ```typescript
 export interface Location {
-	id: number;
-	name: string;
-	user_id?: string;
+  id: number;
+  name: string;
+  user_id?: string;
 }
 ```
 
@@ -217,17 +225,17 @@ export interface Location {
 
 ```typescript
 export interface Furniture {
-	id: string;
-	user_id: string;
-	name: string;
-	brand: string;
-	category_id: number;
-	location_id: number;
-	image_url: string;
-	purchased_at: string;
-	purchased_from: string;
-	next_due_date: string;
-	notes: string;
+  id: string;
+  user_id: string;
+  name: string;
+  brand: string;
+  category_id: number;
+  location_id: number;
+  image_url: string;
+  purchased_at: string;
+  purchased_from: string;
+  next_due_date: string;
+  notes: string;
 }
 ```
 
@@ -235,14 +243,14 @@ export interface Furniture {
 
 ```typescript
 export interface MaintenanceTask {
-	id: string;
-	furniture_id: string;
-	name: string;
-	cycle_value: number;
-	cycle_unit: "days" | "weeks" | "months" | "years";
-	description?: string | null;
-	is_active: boolean;
-	created_at: string;
+  id: string;
+  furniture_id: string;
+  name: string;
+  cycle_value: number;
+  cycle_unit: "days" | "weeks" | "months" | "years";
+  description?: string | null;
+  is_active: boolean;
+  created_at: string;
 }
 ```
 
@@ -250,16 +258,16 @@ export interface MaintenanceTask {
 
 ```typescript
 export interface MaintenanceRecord {
-	id: string;
-	task_id: string | null;
-	performed_at: string;
-	next_due_date: string | null;
-	status: "completed" | "skipped" | "partial";
-	// 下記はDBには存在するが、APIレスポンスや画面で必要な場合のみ付与
-	task_name?: string;
-	task_cycle_value?: number;
-	task_cycle_unit?: string;
-	notes?: string | null;
-	created_at?: string;
+  id: string;
+  task_id: string | null;
+  performed_at: string;
+  next_due_date: string | null;
+  status: "completed" | "skipped" | "partial";
+  // 下記はDBには存在するが、APIレスポンスや画面で必要な場合のみ付与
+  task_name?: string;
+  task_cycle_value?: number;
+  task_cycle_unit?: string;
+  notes?: string | null;
+  created_at?: string;
 }
 ```

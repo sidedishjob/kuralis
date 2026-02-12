@@ -3,18 +3,14 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import type { VariantProps } from "class-variance-authority";
-import { buttonVariants } from "./buttonVariants";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
-interface LoadingButtonProps
-  extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
+interface LoadingButtonProps extends React.ComponentProps<typeof Button> {
   isLoading?: boolean;
   loadingText?: string;
   forceMinWidth?: boolean;
-  asChild?: boolean;
 }
 
 export function LoadingButton({

@@ -8,7 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/common/layout/Header";
 import { Footer } from "@/components/common/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthProvider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { inter, notoSansJP } from "@/constants/fonts";
 import { generateMetadata } from "@/constants/metadata";
 

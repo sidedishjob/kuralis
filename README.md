@@ -114,7 +114,7 @@
   - `cycle_value` × `cycle_unit` を date-fns によって動的加算。単位追加も O(1) で拡張可能。
 
 - **共通エラーハンドリング**
-  - API ➜ `handleApiError` ➜ toast のレイヤー構造で、フロントのエラー UI を 1 箇所に集約。
+  - API ➜ `handleApiError` ➜ `useToast`（`sonner`）のレイヤー構造で、フロントのエラー UI を 1 箇所に集約。
 
 - **画像ファイル名のサニタイズ & UUID 付与**
   - 日本語ファイル名や重複を防止し、S3 互換ストレージでの競合を回避。
@@ -131,6 +131,21 @@
 - 複数ユーザー (家族) での共同管理
 - AI による家具画像タグ付け・自動カテゴリ判定
 - ダークモード（Tailwind の `dark:` クラスで実装）
+
+---
+
+## UI運用メモ（shadcn/ui）
+
+- shadcn/ui の既存コンポーネントを更新する場合は、`add --overwrite` を使用して再取り込みする。
+
+```bash
+npx shadcn@latest add button tabs dialog sheet switch label textarea --overwrite
+```
+
+- トースト通知は `sonner` を採用し、`src/hooks/useToast.ts` から利用する。
+  - 旧 `src/components/ui/toast.tsx` / `src/components/ui/toaster.tsx` / `src/lib/toast/*` は使用しない。
+- アイコンは UI 層では `lucide-react` を優先する（shadcn のデフォルト方針に合わせる）。
+- `tailwindcss-animate` は、Dialog / Sheet などの `animate-in` / `animate-out` 系ユーティリティのため継続利用する。
 
 ---
 

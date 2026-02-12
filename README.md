@@ -132,23 +132,6 @@
 - AI による家具画像タグ付け・自動カテゴリ判定
 - ダークモード（Tailwind の `dark:` クラスで実装）
 
----
-
-## UI運用メモ（shadcn/ui）
-
-- shadcn/ui の既存コンポーネントを更新する場合は、`add --overwrite` を使用して再取り込みする。
-
-```bash
-npx shadcn@latest add button tabs dialog sheet switch label textarea --overwrite
-```
-
-- トースト通知は `sonner` を採用し、`src/hooks/useToast.ts` から利用する。
-  - 旧 `src/components/ui/toast.tsx` / `src/components/ui/toaster.tsx` / `src/lib/toast/*` は使用しない。
-- アイコンは UI 層では `lucide-react` を優先する（shadcn のデフォルト方針に合わせる）。
-- `tailwindcss-animate` は、Dialog / Sheet などの `animate-in` / `animate-out` 系ユーティリティのため継続利用する。
-
----
-
 ## ローカル環境での起動方法
 
 ```bash

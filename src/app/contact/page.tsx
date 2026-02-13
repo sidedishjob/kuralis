@@ -1,11 +1,3 @@
-"use client";
-
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  contactSchema,
-  type ContactSchema,
-} from "@/lib/validation/contactSchema";
 import {
   Card,
   CardContent,
@@ -13,22 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useContactSubmit } from "@/hooks/useContactSubmit";
-import { ContactForm } from "./ContactForm";
+import { ContactFormClient } from "./ContactFormClient";
 
 export default function ContactPage() {
-  const { submitContact, isSuccess } = useContactSubmit();
-
-  const methods = useForm<ContactSchema>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
-  });
-
   return (
     <div className="container mx-auto py-10">
       <Card className="max-w-2xl mx-auto">
@@ -39,9 +18,7 @@ export default function ContactPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <FormProvider {...methods}>
-            <ContactForm onSubmit={submitContact} isSuccess={isSuccess} />
-          </FormProvider>
+          <ContactFormClient />
         </CardContent>
       </Card>
     </div>

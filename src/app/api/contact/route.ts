@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { contactSchema } from "@/lib/validation";
+import { contactSchema } from "@/lib/validation/contactSchema";
 import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {

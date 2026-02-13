@@ -8,7 +8,7 @@ import type { Location } from "@/types/furniture_meta";
 import {
   furnitureEditSchema,
   type FurnitureEditSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/furnitureSchema";
 
 // テスト用のFormProviderラッパー
 function TestWrapper({

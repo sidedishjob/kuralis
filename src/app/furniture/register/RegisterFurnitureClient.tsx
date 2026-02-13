@@ -9,7 +9,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import {
   registerFurnitureSchema,
   type RegisterFurnitureSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/furnitureSchema";
 import StepIndicator from "./StepIndicator";
 import Step1UI from "./Step1UI";
 import Step2UI from "./Step2UI";

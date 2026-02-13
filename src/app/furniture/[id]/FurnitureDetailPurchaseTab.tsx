@@ -3,7 +3,7 @@
 import { FiCalendar, FiMapPin } from "react-icons/fi";
 import { useFormContext } from "react-hook-form";
 import type { FurnitureWithExtras } from "@/types/furniture";
-import type { FurnitureEditSchema } from "@/lib/validation";
+import type { FurnitureEditSchema } from "@/lib/validation/furnitureSchema";
 import { format } from "date-fns";
 
 interface Props {

@@ -31,7 +31,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import {
   furnitureEditSchema,
   type FurnitureEditSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/furnitureSchema";
 
 interface FurnitureDetailClientProps {
   initialFurniture: FurnitureWithExtras;

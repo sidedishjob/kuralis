@@ -255,10 +255,16 @@ git switch --detach origin/develop
 
 ```bash
 git fetch --prune
-git switch -c <branch> origin/develop
+git switch --no-track -c <branch> origin/develop
 ```
 
 - detached HEAD のままコミットしてはならない。
+- 作業ブランチ作成直後は、初回 push で upstream を必ず作成する。
+- 実行手順:
+
+```bash
+git push -u origin <branch>
+```
 
 ### 作業完了手順
 

@@ -2,7 +2,7 @@
 
 import { useFormContext } from "react-hook-form";
 import { FiInfo, FiShoppingBag, FiSettings } from "react-icons/fi";
-import { FurnitureEditSchema } from "@/lib/validation";
+import { FurnitureEditSchema } from "@/lib/validation/furnitureSchema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FurnitureDetailBasicTab from "./FurnitureDetailBasicTab";
 import FurnitureDetailPurchaseTab from "./FurnitureDetailPurchaseTab";

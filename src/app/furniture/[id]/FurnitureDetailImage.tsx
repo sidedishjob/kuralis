@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { FiUpload } from "react-icons/fi";
 import Image from "next/image";
 import { useSupabaseClient } from "@/lib/supabase/hooks/useSupabaseClient";
-import { FurnitureEditSchema } from "@/lib/validation";
+import { FurnitureEditSchema } from "@/lib/validation/furnitureSchema";
 
 interface Props {
   isEditing: boolean;

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import { loginSchema, type LoginSchema } from "@/lib/validation";
+import { loginSchema, type LoginSchema } from "@/lib/validation/authSchema";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";
 import {

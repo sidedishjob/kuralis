@@ -2,7 +2,10 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { contactSchema, type ContactSchema } from "@/lib/validation";
+import {
+  contactSchema,
+  type ContactSchema,
+} from "@/lib/validation/contactSchema";
 import {
   Card,
   CardContent,

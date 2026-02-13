@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { handleApiError } from "@/lib/utils/handleApiError";
-import { maintenanceTaskSchema } from "@/lib/validation";
+import { maintenanceTaskSchema } from "@/lib/validation/maintenanceSchema";
 import type {
   MaintenanceStatus,
   MaintenanceTaskWithRecords,

@@ -14,7 +14,10 @@ import {
 } from "react-icons/fi";
 import { format } from "date-fns";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
-import { maintenanceTaskSchema, MaintenanceTaskSchema } from "@/lib/validation";
+import {
+  maintenanceTaskSchema,
+  MaintenanceTaskSchema,
+} from "@/lib/validation/maintenanceSchema";
 import { ErrorMessage } from "@/components/common/ui/ErrorMessage";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";

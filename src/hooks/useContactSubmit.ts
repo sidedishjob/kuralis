@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "./useToast";
-import { ContactSchema } from "@/lib/validation";
+import { ContactSchema } from "@/lib/validation/contactSchema";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { API_ROUTES } from "@/lib/api/route";
 

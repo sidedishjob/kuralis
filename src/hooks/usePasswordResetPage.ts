@@ -9,7 +9,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import {
   passwordResetSchema,
   type PasswordResetSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/authSchema";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 

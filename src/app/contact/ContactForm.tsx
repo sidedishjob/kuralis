@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LoadingButton } from "@/components/ui/loadingButton";
-import type { ContactSchema } from "@/lib/validation";
+import type { ContactSchema } from "@/lib/validation/contactSchema";
 
 type Props = {
   onSubmit: (data: ContactSchema) => void;

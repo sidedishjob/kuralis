@@ -71,21 +71,39 @@ export default function FurnitureDetailClient({
     },
   });
 
+  const { reset } = methods;
   const furnitureToUse = furniture ?? initialFurniture;
+  const hasFetchedFurniture = Boolean(furniture);
+  const fetchedName = furniture?.name ?? "";
+  const fetchedBrand = furniture?.brand ?? "";
+  const fetchedLocationId = furniture?.location_id ?? undefined;
+  const fetchedPurchasedAt = furniture?.purchased_at ?? "";
+  const fetchedPurchasedFrom = furniture?.purchased_from ?? "";
+  const fetchedNotes = furniture?.notes ?? "";
 
   useEffect(() => {
-    if (furniture && !isEditing) {
-      // 編集モードを抜けたときに最新のデータでリセット
-      methods.reset({
-        name: furniture.name,
-        brand: furniture.brand || "",
-        location_id: furniture.location_id ?? undefined,
-        purchased_at: furniture.purchased_at || "",
-        purchased_from: furniture.purchased_from || "",
-        notes: furniture.notes || "",
-      });
-    }
-  }, [furniture, isEditing, methods]);
+    if (!hasFetchedFurniture || isEditing) return;
+
+    // 編集モードを抜けたときに最新のデータでリセット
+    reset({
+      name: fetchedName,
+      brand: fetchedBrand,
+      location_id: fetchedLocationId,
+      purchased_at: fetchedPurchasedAt,
+      purchased_from: fetchedPurchasedFrom,
+      notes: fetchedNotes,
+    });
+  }, [
+    fetchedBrand,
+    fetchedLocationId,
+    fetchedName,
+    fetchedNotes,
+    fetchedPurchasedAt,
+    fetchedPurchasedFrom,
+    hasFetchedFurniture,
+    isEditing,
+    reset,
+  ]);
 
   const handleDelete = async () => {
     setIsDeleting(true);

@@ -45,14 +45,6 @@ ${message}
 ---
 		`.trim();
 
-    await transporter.sendMail({
-      from: `"kuralis お問い合わせ" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_TO,
-      replyTo: email,
-      subject: adminSubject,
-      text: adminText,
-    });
-
     // === 自動返信メール ===
     const userSubject = `【kuralis】お問い合わせありがとうございます`;
     const userText = `
@@ -71,6 +63,15 @@ ${message}
 
 ※本メールは送信専用アドレスからの自動送信です。返信には対応しておりません。
 		`.trim();
+
+    // 先に運営向け通知を送信し、成功した場合のみ自動返信を送る
+    await transporter.sendMail({
+      from: `"kuralis お問い合わせ" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_TO,
+      replyTo: email,
+      subject: adminSubject,
+      text: adminText,
+    });
 
     await transporter.sendMail({
       from: `"kuralis" <${process.env.EMAIL_USER}>`,

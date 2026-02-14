@@ -39,10 +39,14 @@ import { useDeleteMaintenanceRecord } from "@/hooks/useDeleteMaintenanceRecord";
 import { useAddMaintenanceTask } from "@/hooks/useAddMaintenanceTask";
 import { useUpdateMaintenanceTask } from "@/hooks/useUpdateMaintenanceTask";
 import type { Furniture } from "@/types/furniture";
-import type { MaintenanceCycleUnit } from "@/types/maintenance";
+import type {
+  MaintenanceCycleUnit,
+  MaintenanceTaskWithRecords,
+} from "@/types/maintenance";
 
 interface Props {
   furniture: Furniture;
+  initialTasks: MaintenanceTaskWithRecords[];
 }
 
 const unitMap: Record<MaintenanceCycleUnit, string> = {
@@ -52,12 +56,15 @@ const unitMap: Record<MaintenanceCycleUnit, string> = {
   years: "年",
 };
 
-export default function MaintenanceClient({ furniture }: Props) {
+export default function MaintenanceClient({ furniture, initialTasks }: Props) {
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   const { isGuestUser } = useAuth();
   const { toast } = useToast();
 
-  const { tasks, isLoading, error, mutate } = useMaintenanceTasks(furniture.id);
+  const { tasks, error, mutate } = useMaintenanceTasks(
+    furniture.id,
+    initialTasks,
+  );
   const { addTask } = useAddMaintenanceTask(furniture.id);
   const { addRecord } = useAddMaintenanceRecord();
   const { deleteRecord } = useDeleteMaintenanceRecord();
@@ -210,17 +217,7 @@ export default function MaintenanceClient({ furniture }: Props) {
             <FiPlus size={16} />
           </Button>
         </div>
-        {isLoading ? (
-          // ローディング中のSkeletonやプレースホルダー
-          <div className="mb-6 space-y-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-14 bg-kuralis-100 rounded-sm animate-pulse"
-              />
-            ))}
-          </div>
-        ) : tasks.length === 0 ? (
+        {tasks.length === 0 ? (
           <div className="text-center mb-6 py-12 border-2 border-dashed border-kuralis-200 rounded-sm">
             <FiTool size={32} className="mx-auto text-kuralis-400 mb-4" />
             <p className="text-kuralis-600 tracking-tighter-custom">

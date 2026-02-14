@@ -1,5 +1,10 @@
 import { createServerSupabase } from "@/lib/supabase/server";
-import type { MaintenanceSummary } from "@/types/maintenance";
+import type {
+  MaintenanceSummary,
+  MaintenanceStatus,
+  MaintenanceTaskWithRecords,
+} from "@/types/maintenance";
+import { isMaintenanceCycleUnit } from "@/types/maintenance";
 
 /**
  * 家具IDに紐づくメンテナンスタスクと記録の概要情報を取得
@@ -93,5 +98,83 @@ export async function getMaintenanceSummary(
   } catch (error: unknown) {
     console.error("メンテナンス取得エラー:", error);
     return null;
+  }
+}
+
+/**
+ * 家具IDに紐づくメンテナンスタスク一覧（履歴付き）を取得
+ * SSR で取得し、クライアントの SWR fallbackData として利用する
+ *
+ * @param furnitureId 家具ID（UUID）
+ * @returns MaintenanceTaskWithRecords[] （エラー時は空配列）
+ */
+export async function getMaintenanceTasks(
+  furnitureId: string,
+): Promise<MaintenanceTaskWithRecords[]> {
+  try {
+    const supabase = await createServerSupabase();
+
+    const { data: tasks, error: taskError } = await supabase
+      .from("maintenance_tasks")
+      .select(
+        `
+        id, name, cycle_value, cycle_unit, description, is_active, created_at,
+        maintenance_records (
+          id, task_id, performed_at, next_due_date, status
+        )
+      `,
+      )
+      .eq("furniture_id", furnitureId)
+      .order("created_at", { ascending: true });
+
+    if (taskError) throw new Error(`タスク取得エラー: ${taskError.message}`);
+    if (!tasks || tasks.length === 0) return [];
+
+    return tasks.reduce((acc, task) => {
+      if (!isMaintenanceCycleUnit(task.cycle_unit)) {
+        console.warn(
+          `不正なcycle_unitが検出されました: ${task.cycle_unit} (task_id=${task.id})`,
+        );
+        return acc;
+      }
+
+      const taskRecords = (task.maintenance_records ?? [])
+        .filter(
+          (
+            record,
+          ): record is typeof record & {
+            task_id: string;
+            status: MaintenanceStatus;
+          } => record.task_id !== null && record.status !== null,
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.performed_at).getTime() -
+            new Date(a.performed_at).getTime(),
+        )
+        .map((record) => ({
+          id: record.id,
+          task_id: record.task_id,
+          performed_at: record.performed_at,
+          next_due_date: record.next_due_date,
+          status: record.status,
+        }));
+
+      acc.push({
+        id: task.id,
+        name: task.name,
+        cycle_value: task.cycle_value,
+        cycle_unit: task.cycle_unit,
+        is_active: task.is_active ?? false,
+        created_at: task.created_at ?? new Date(0).toISOString(),
+        description: task.description ?? undefined,
+        records: taskRecords,
+        next_due_date: taskRecords[0]?.next_due_date ?? null,
+      });
+      return acc;
+    }, [] as MaintenanceTaskWithRecords[]);
+  } catch (error: unknown) {
+    console.error("メンテナンスタスク取得エラー:", error);
+    return [];
   }
 }

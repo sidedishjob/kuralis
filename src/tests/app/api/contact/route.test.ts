@@ -51,7 +51,27 @@ describe("POST /api/contact", () => {
     expect(sendMailMock).toHaveBeenCalledTimes(2);
   });
 
-  test("どちらか一方のメール送信が失敗した場合は500を返す", async () => {
+  test("管理者向け通知メールの送信が失敗した場合は500を返し自動返信を送信しない", async () => {
+    sendMailMock.mockRejectedValueOnce(new Error("admin smtp error"));
+
+    const { POST } = await import("@/app/api/contact/route");
+    const response = await POST(
+      createRequest({
+        name: "テスト太郎",
+        email: "user@example.com",
+        subject: "お問い合わせ",
+        message: "本文です",
+      }),
+    );
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      error: "メール送信中にエラーが発生しました",
+    });
+    expect(sendMailMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("自動返信メールの送信が失敗した場合は500を返す", async () => {
     sendMailMock
       .mockResolvedValueOnce({} as SentMessageInfo)
       .mockRejectedValueOnce(new Error("smtp error"));

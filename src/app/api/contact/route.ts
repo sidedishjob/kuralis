@@ -2,11 +2,6 @@ import { NextResponse } from "next/server";
 import { contactSchema } from "@/lib/validation/contactSchema";
 import nodemailer from "nodemailer";
 
-interface MailSendResult {
-  label: string;
-  error: unknown;
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -69,43 +64,21 @@ ${message}
 ※本メールは送信専用アドレスからの自動送信です。返信には対応しておりません。
 		`.trim();
 
-    const [adminResult, userResult] = await Promise.allSettled([
-      transporter.sendMail({
-        from: `"kuralis お問い合わせ" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_TO,
-        replyTo: email,
-        subject: adminSubject,
-        text: adminText,
-      }),
-      transporter.sendMail({
-        from: `"kuralis" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: userSubject,
-        text: userText,
-      }),
-    ]);
+    // 先に運営向け通知を送信し、成功した場合のみ自動返信を送る
+    await transporter.sendMail({
+      from: `"kuralis お問い合わせ" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_TO,
+      replyTo: email,
+      subject: adminSubject,
+      text: adminText,
+    });
 
-    const failedResults: MailSendResult[] = [];
-    if (adminResult.status === "rejected") {
-      failedResults.push({
-        label: "運営向け通知メール",
-        error: adminResult.reason,
-      });
-    }
-    if (userResult.status === "rejected") {
-      failedResults.push({
-        label: "自動返信メール",
-        error: userResult.reason,
-      });
-    }
-
-    if (failedResults.length > 0) {
-      console.error("メール送信エラー:", failedResults);
-      return NextResponse.json(
-        { error: "メール送信中にエラーが発生しました" },
-        { status: 500 },
-      );
-    }
+    await transporter.sendMail({
+      from: `"kuralis" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: userSubject,
+      text: userText,
+    });
 
     return NextResponse.json({ message: "送信成功" }, { status: 200 });
   } catch (error) {

@@ -298,7 +298,7 @@ AIエージェントが作業指示を受けた場合、以下の手順で進捗
 ### ToDo ファイルの作成
 
 - 作業開始時に、タスクを分解した ToDo ファイルを作成する。
-- 保存先・命名規則は「計画 / 調査ルール」に従う（`todo_<短い英語タイトル>.md`）。
+- 保存先・命名規則は「計画 / 調査ルール」に従う（`.idea/tasks/<task_key>/todo_<task_key>.md`）。
 - 各タスクはチェックボックス形式（`- [ ]` / `- [x]`）で記載する。
 
 ### 進捗の更新
@@ -326,21 +326,30 @@ AIエージェントが作業指示を受けた場合、以下の手順で進捗
 
 ### 保存先
 
-| エージェント | 保存先          |
-| ------------ | --------------- |
-| Claude Code  | `.idea/claude/` |
-| Codex        | `.idea/codex/`  |
+| 区分               | 保存先                    |
+| ------------------ | ------------------------- |
+| 全エージェント共通 | `.idea/tasks/<task_key>/` |
+
+- `task_key` は作業単位を表す短い英語名（kebab-case）とする。
+- 1 作業 = 1 フォルダで管理し、同一作業の plan / todo / research を同一フォルダに保存する。
+- 既存の `.idea/claude/` / `.idea/codex/` は過去記録として保持し、新規作成先には使わない。
 
 ### ファイル命名規則
 
-- `plan_<短い英語タイトル>.md`
-- `todo_<短い英語タイトル>.md`
-- `research_<短い英語タイトル>.md`
+- `plan_<task_key>.md`
+- `todo_<task_key>.md`
+- `research_<task_key>.md`
+
+例（`task_key = contact-form-validation`）:
+
+- `.idea/tasks/contact-form-validation/plan_contact-form-validation.md`
+- `.idea/tasks/contact-form-validation/todo_contact-form-validation.md`
+- `.idea/tasks/contact-form-validation/research_contact-form-validation.md`
 
 ### 出力ルール
 
 1. まず Markdown 本文を構成する
-2. 次に必ずファイルに書き出す
+2. 次に `.idea/tasks/<task_key>/` を作成し、必ずファイルに書き出す
 3. チャットには要約のみを表示する
 
 ---

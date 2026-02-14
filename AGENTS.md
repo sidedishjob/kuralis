@@ -66,16 +66,17 @@ npm run lint && npm run prettier:check && npm run test
 
 ## コマンド一覧（Commands）
 
-| タスク                                | コマンド                                           |
-| ------------------------------------- | -------------------------------------------------- |
-| 開発サーバー（Turbopack、ポート3002） | `npm run dev`                                      |
-| ビルド                                | `npm run build`                                    |
-| テスト（Vitest）                      | `npm run test`                                     |
-| 単体テスト実行                        | `npx vitest run src/tests/path/to/file.test.ts`    |
-| Lint                                  | `npm run lint`                                     |
-| フォーマットチェック                  | `npm run prettier:check`                           |
-| フォーマット修正                      | `npm run format`                                   |
-| PR作成（テンプレート使用）            | `gh pr create -T .github/pull_request_template.md` |
+| タスク                                | コマンド                                            |
+| ------------------------------------- | --------------------------------------------------- |
+| 開発サーバー（Turbopack、ポート3002） | `npm run dev`                                       |
+| ビルド                                | `npm run build`                                     |
+| テスト（Vitest）                      | `npm run test`                                      |
+| 単体テスト実行                        | `npx vitest run src/tests/path/to/file.test.ts`     |
+| Lint                                  | `npm run lint`                                      |
+| フォーマットチェック                  | `npm run prettier:check`                            |
+| フォーマット修正                      | `npm run format`                                    |
+| PR作成（対話）                        | `gh pr create -T .github/pull_request_template.md`  |
+| PR作成（非対話 / AI）                 | `gh pr create --title "<title>" --body-file <file>` |
 
 ---
 
@@ -181,33 +182,19 @@ Prettier はリポジトリ設定（設定ファイルがない場合は Prettie
 
 ファイルの修正を加えて作業が一段落した際は、必ずコミットメッセージの提案を行うこと。
 
-判定ルール詳細: `.idea/rules/commit-message-rule.md`
-
-使用可能なプレフィックス:
-
-- `feat:` — 新機能
-- `fix:` — バグ修正
-- `change:` — 既存機能の仕様変更（ユーザーが見て「変わった」と感じるもの）
-- `refactor:` — 外部仕様を変えない内部整理
-- `docs:` — ドキュメント更新
-- `test:` — テスト追加・修正
-- `chore:` — ビルド・依存関係・設定変更
-
-形式:
-
-```text
-<prefix>: <簡潔な説明>
-```
-
-迷ったら `change` / `chore` を使う。
+- 詳細ルール（prefix 判定、形式、禁止事項、例外）は `.idea/rules/commit-message-rule.md` を参照する。
+- 本ファイルにはコミット運用の重複定義を持たない。
 
 ---
 
 ## PR作成ルール（Pull request）
 
 - PR作成時は必ず `.github/pull_request_template.md` を使用する。
+- PRタイトルは原則 `prefix: 説明` 形式に統一する（`feat` / `fix` / `change` / `refactor` / `docs` / `test` / `chore` / `release`）。
 - テンプレートの項目（概要 / 変更内容 / 補足）は省略せずに記載する。
-- `gh pr create` を使う場合は `-T .github/pull_request_template.md` を付与する。
+- 人間が対話的に作成する場合は `gh pr create -T .github/pull_request_template.md` を使う。
+- AI エージェントが `--body` または `--body-file` を使う場合は、`--template`（`-T`）を併用してはならない。
+- 非対話（AI）で作成する場合は、テンプレート構成に沿った本文を `--body` / `--body-file` で渡す。
 
 ---
 
@@ -232,6 +219,18 @@ Prettier はリポジトリ設定（設定ファイルがない場合は Prettie
 
 ## AIエージェント別ワークツリー運用（Worktree policy）
 
+### 実行前確認（必須）
+
+- `git fetch` / `git switch` / `git branch -D` などの git 操作前に、必ず対象ワークツリーへ移動する。
+- 実行手順:
+
+```bash
+cd <対象AIワークツリーパス>
+pwd
+```
+
+- ルートワークスペースで AI 用ワークツリー向けの git 操作を実行してはならない。
+
 ### 役割分担
 
 - 本ワークスペース（ルートクローン）は **人間のレビュー・手動操作専用** とする。
@@ -244,6 +243,7 @@ Prettier はリポジトリ設定（設定ファイルがない場合は Prettie
 - 実行手順:
 
 ```bash
+cd <対象AIワークツリーパス>
 git fetch --prune
 git switch --detach origin/develop
 ```
@@ -254,6 +254,7 @@ git switch --detach origin/develop
 - 実行手順:
 
 ```bash
+cd <対象AIワークツリーパス>
 git fetch --prune
 git switch --no-track -c <branch> origin/develop
 ```
@@ -272,10 +273,25 @@ git push -u origin <branch>
 - 実行手順:
 
 ```bash
+cd <対象AIワークツリーパス>
 git fetch --prune
 git switch --detach origin/develop
 git branch -D <branch>
 ```
+
+### squash マージ完了後のタスクアーカイブ
+
+- ユーザーから「squash マージ完了」の明示指示があった場合、完了タスクを `.idea/_old/tasks/` へ移動する。
+- `.idea` 配下の操作は必ずルートワークスペースで実施する。
+- 実行手順:
+
+```bash
+cd /Users/iwa/Documents/01_develop/01_project/kuralis
+mkdir -p .idea/_old/tasks
+mv .idea/tasks/<task_key> .idea/_old/tasks/
+```
+
+- 同名フォルダが既に存在する場合は `<task_key>_YYYYMMDD` にリネームしてから移動する。
 
 ### マージ運用ルール
 
@@ -305,6 +321,7 @@ AIエージェントが作業指示を受けた場合、以下の手順で進捗
 
 - 各タスクの着手時・完了時に ToDo ファイルを更新する。
 - 作業中に新たなタスクが発生した場合は ToDo ファイルに追記する。
+- 「コミットメッセージ提案」タスクは、提案した時点で完了（`- [x]`）とする。
 - すべてのタスクが完了したら、ファイル先頭に完了を示すステータスを付与する。
 
 ### 対象外
@@ -330,6 +347,8 @@ AIエージェントが作業指示を受けた場合、以下の手順で進捗
 | ------------------ | ------------------------- |
 | 全エージェント共通 | `.idea/tasks/<task_key>/` |
 
+- `.idea` 配下の作成・更新・移動はルートワークスペース（`/Users/iwa/Documents/01_develop/01_project/kuralis`）でのみ行う。
+- AI エージェントの常設ワークツリーでは `.idea` を原則使用しない。やむを得ず使用する場合は、事前に提案して承認を得る。
 - `task_key` は作業単位を表す短い英語名（kebab-case）とする。
 - 1 作業 = 1 フォルダで管理し、同一作業の plan / todo / research を同一フォルダに保存する。
 - 既存の `.idea/claude/` / `.idea/codex/` は過去記録として保持し、新規作成先には使わない。

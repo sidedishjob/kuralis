@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { useForm } from "react-hook-form";
 import { PasswordResetForm } from "@/components/auth/PasswordResetForm";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { passwordResetSchema } from "@/lib/validation";
-import type { PasswordResetSchema } from "@/lib/validation";
+import { passwordResetSchema } from "@/lib/validation/authSchema";
+import type { PasswordResetSchema } from "@/lib/validation/authSchema";
 
 // テスト用のフォームフック
 const TestWrapper = ({

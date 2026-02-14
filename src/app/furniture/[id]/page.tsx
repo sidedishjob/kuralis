@@ -25,8 +25,10 @@ export default async function FurnitureDetailPage({
   const furniture = await getFurnitureById(id, user.id);
   if (!furniture) return redirect("/furniture");
 
-  const summary = await getMaintenanceSummary(id);
-  const meta = await getFurnitureMeta(user.id);
+  const [summary, meta] = await Promise.all([
+    getMaintenanceSummary(id),
+    getFurnitureMeta(user.id),
+  ]);
 
   return (
     <FurnitureDetailClient

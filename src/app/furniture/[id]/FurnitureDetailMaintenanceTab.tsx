@@ -5,7 +5,7 @@ import { FiTool, FiList, FiCalendar } from "react-icons/fi";
 import { useFormContext } from "react-hook-form";
 import type { FurnitureWithExtras } from "@/types/furniture";
 import { MaintenanceSummary } from "@/types/maintenance";
-import type { FurnitureEditSchema } from "@/lib/validation";
+import type { FurnitureEditSchema } from "@/lib/validation/furnitureSchema";
 
 interface Props {
   furniture: FurnitureWithExtras;

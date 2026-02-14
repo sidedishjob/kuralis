@@ -4,7 +4,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const SettingsPageLayout: React.FC<Props> = ({ children }) => {
+export function SettingsPageLayout({ children }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
@@ -13,4 +13,4 @@ export const SettingsPageLayout: React.FC<Props> = ({ children }) => {
       <div className="space-y-4">{children}</div>
     </div>
   );
-};
+}

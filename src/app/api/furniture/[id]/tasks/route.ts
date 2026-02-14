@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseApiClient } from "@/lib/supabase/server";
 import { handleApiError } from "@/lib/utils/handleApiError";
-import { maintenanceTaskSchema } from "@/lib/validation";
+import { maintenanceTaskSchema } from "@/lib/validation/maintenanceSchema";
 import type {
   MaintenanceStatus,
   MaintenanceTaskWithRecords,
@@ -36,34 +36,25 @@ export async function GET(
     const { id } = await params;
     if (!id) throw new ApiError(400, "家具IDが未指定です");
 
-    // 1. 家具に紐づくタスク一覧取得
+    // リレーションを活用してタスクと履歴を 1 クエリで取得
     const { data: tasks, error: taskError } = await supabase
       .from("maintenance_tasks")
       .select(
-        "id, name, cycle_value, cycle_unit, description, is_active, created_at",
+        `
+        id, name, cycle_value, cycle_unit, description, is_active, created_at,
+        maintenance_records (
+          id, task_id, performed_at, next_due_date, status
+        )
+      `,
       )
       .eq("furniture_id", id)
-      // .eq("is_active", true)
       .order("created_at", { ascending: true });
 
     if (taskError) throw new Error(`タスク取得エラー: ${taskError.message}`);
     if (!tasks || tasks.length === 0)
       return NextResponse.json([], { status: 200 });
 
-    // 2. 対象タスクIDの履歴をまとめて取得
-    const taskIds = tasks.map((t) => t.id);
-
-    const { data: records, error: recordError } = await supabase
-      .from("maintenance_records")
-      .select("id, task_id, performed_at, next_due_date, status")
-      .in("task_id", taskIds)
-      .order("performed_at", { ascending: false });
-
-    if (recordError)
-      throw new Error(`メンテナンス履歴取得エラー: ${recordError.message}`);
-    const safeRecords = records ?? [];
-
-    // 3. タスク単位に履歴をグルーピング
+    // タスク単位に履歴をグルーピング
     const result: MaintenanceTaskWithRecords[] = tasks.reduce((acc, task) => {
       if (!isMaintenanceCycleUnit(task.cycle_unit)) {
         console.warn(
@@ -75,14 +66,19 @@ export async function GET(
       const taskIsActive = task.is_active ?? false;
       const taskCreatedAt = task.created_at ?? new Date(0).toISOString();
 
-      const taskRecords = safeRecords
+      const taskRecords = (task.maintenance_records ?? [])
         .filter(
           (
             record,
           ): record is typeof record & {
             task_id: string;
             status: MaintenanceStatus;
-          } => record.task_id === task.id && record.status !== null,
+          } => record.task_id !== null && record.status !== null,
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.performed_at).getTime() -
+            new Date(a.performed_at).getTime(),
         )
         .map((record) => ({
           id: record.id,
@@ -93,7 +89,9 @@ export async function GET(
         }));
 
       acc.push({
-        ...task,
+        id: task.id,
+        name: task.name,
+        cycle_value: task.cycle_value,
         cycle_unit: task.cycle_unit,
         is_active: taskIsActive,
         created_at: taskCreatedAt,

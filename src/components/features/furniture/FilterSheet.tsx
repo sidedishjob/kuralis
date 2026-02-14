@@ -20,23 +20,14 @@ interface FilterSheetProps {
   onLocationSelect: (location: number | null) => void;
 }
 
-export function FilterSheet({
-  categories,
-  locations,
-  activeCategory,
-  activeLocation,
-  onCategorySelect,
-  onLocationSelect,
-}: FilterSheetProps) {
-  const FilterButton = ({
-    isActive,
-    onClick,
-    children,
-  }: {
-    isActive: boolean;
-    onClick: () => void;
-    children: React.ReactNode;
-  }) => (
+interface FilterButtonProps {
+  isActive: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+function FilterButton({ isActive, onClick, children }: FilterButtonProps) {
+  return (
     <button
       onClick={onClick}
       className={`text-sm w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
@@ -48,7 +39,16 @@ export function FilterSheet({
       {children}
     </button>
   );
+}
 
+export function FilterSheet({
+  categories,
+  locations,
+  activeCategory,
+  activeLocation,
+  onCategorySelect,
+  onLocationSelect,
+}: FilterSheetProps) {
   return (
     <Sheet>
       <SheetTrigger

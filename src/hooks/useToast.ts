@@ -1,25 +1,63 @@
 "use client";
 
-import * as React from "react";
-import { toast, useToastCore } from "@/lib/toast/core";
+import type { ReactNode } from "react";
+import { toast as sonnerToast } from "sonner";
 
-export function useToast() {
-  const { memoryState, listeners, dispatch } = useToastCore();
-  const [state, setState] = React.useState(memoryState);
+interface ToastInput {
+  title?: ReactNode;
+  description?: ReactNode;
+  variant?: "default" | "destructive";
+  duration?: number;
+}
 
-  React.useEffect(() => {
-    listeners.push(setState);
-    return () => {
-      const index = listeners.indexOf(setState);
-      if (index > -1) {
-        listeners.splice(index, 1);
-      }
-    };
-  }, [listeners]);
+function resolveToastMessage({
+  title,
+  description,
+  variant = "default",
+}: ToastInput): ReactNode {
+  if (title !== undefined && title !== null) return title;
+  if (description !== undefined && description !== null) return description;
+  return variant === "destructive" ? "エラー" : "通知";
+}
+
+function showToast(input: ToastInput) {
+  const { description, duration, variant = "default" } = input;
+  const message = resolveToastMessage(input);
+  const options = { description, duration };
+
+  const id =
+    variant === "destructive"
+      ? sonnerToast.error(message, options)
+      : sonnerToast(message, options);
 
   return {
-    ...state,
-    toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    id: String(id),
+    dismiss: () => sonnerToast.dismiss(id),
+    update: (next: ToastInput) => {
+      const nextVariant = next.variant ?? variant;
+      const nextMessage = resolveToastMessage({
+        ...next,
+        variant: nextVariant,
+      });
+      const nextOptions = {
+        description: next.description,
+        duration: next.duration,
+        id,
+      };
+
+      if (nextVariant === "destructive") {
+        sonnerToast.error(nextMessage, nextOptions);
+        return;
+      }
+
+      sonnerToast(nextMessage, nextOptions);
+    },
+  };
+}
+
+export function useToast() {
+  return {
+    toast: showToast,
+    dismiss: (toastId?: string) => sonnerToast.dismiss(toastId),
   };
 }

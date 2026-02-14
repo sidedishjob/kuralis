@@ -6,7 +6,7 @@ import FurnitureDetailImage from "@/app/furniture/[id]/FurnitureDetailImage";
 import {
   furnitureEditSchema,
   type FurnitureEditSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/furnitureSchema";
 
 // Supabaseクライアントのモック
 const mockGetPublicUrl = vi.fn();

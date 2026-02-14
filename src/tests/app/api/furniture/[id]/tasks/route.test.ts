@@ -9,16 +9,6 @@ vi.mock("@/lib/supabase/server", () => ({
   createSupabaseApiClient: createSupabaseApiClientMock,
 }));
 
-type TaskRow = {
-  id: string;
-  name: string;
-  cycle_value: number;
-  cycle_unit: string;
-  description: string | null;
-  is_active: boolean | null;
-  created_at: string | null;
-};
-
 type RecordRow = {
   id: string;
   task_id: string | null;
@@ -27,34 +17,25 @@ type RecordRow = {
   status: MaintenanceStatus | null;
 };
 
-function buildSupabaseMock(tasks: TaskRow[], records: RecordRow[]) {
-  const maintenanceTasksOrderMock = vi
-    .fn()
-    .mockResolvedValue({ data: tasks, error: null });
-  const maintenanceTasksEqMock = vi
-    .fn()
-    .mockReturnValue({ order: maintenanceTasksOrderMock });
-  const maintenanceTasksSelectMock = vi
-    .fn()
-    .mockReturnValue({ eq: maintenanceTasksEqMock });
+type TaskRowWithRecords = {
+  id: string;
+  name: string;
+  cycle_value: number;
+  cycle_unit: string;
+  description: string | null;
+  is_active: boolean | null;
+  created_at: string | null;
+  maintenance_records: RecordRow[];
+};
 
-  const maintenanceRecordsOrderMock = vi
-    .fn()
-    .mockResolvedValue({ data: records, error: null });
-  const maintenanceRecordsInMock = vi
-    .fn()
-    .mockReturnValue({ order: maintenanceRecordsOrderMock });
-  const maintenanceRecordsSelectMock = vi
-    .fn()
-    .mockReturnValue({ in: maintenanceRecordsInMock });
+function buildSupabaseMock(tasks: TaskRowWithRecords[]) {
+  const orderMock = vi.fn().mockResolvedValue({ data: tasks, error: null });
+  const eqMock = vi.fn().mockReturnValue({ order: orderMock });
+  const selectMock = vi.fn().mockReturnValue({ eq: eqMock });
 
   const fromMock = vi.fn((table: string) => {
     if (table === "maintenance_tasks") {
-      return { select: maintenanceTasksSelectMock };
-    }
-
-    if (table === "maintenance_records") {
-      return { select: maintenanceRecordsSelectMock };
+      return { select: selectMock };
     }
 
     throw new Error(`Unexpected table: ${table}`);
@@ -77,44 +58,43 @@ describe("GET /api/furniture/[id]/tasks", () => {
   });
 
   test("is_active/created_at が null の legacy 行があっても 500 にせず返却できる", async () => {
-    const supabaseMock = buildSupabaseMock(
-      [
-        {
-          id: "task-legacy",
-          name: "legacy task",
-          cycle_value: 7,
-          cycle_unit: "days",
-          description: null,
-          is_active: null,
-          created_at: null,
-        },
-        {
-          id: "task-normal",
-          name: "normal task",
-          cycle_value: 30,
-          cycle_unit: "days",
-          description: "desc",
-          is_active: true,
-          created_at: "2026-02-01T00:00:00.000Z",
-        },
-      ],
-      [
-        {
-          id: "record-1",
-          task_id: "task-legacy",
-          performed_at: "2026-02-02",
-          next_due_date: "2026-02-09",
-          status: "completed",
-        },
-        {
-          id: "record-2",
-          task_id: "task-legacy",
-          performed_at: "2026-01-25",
-          next_due_date: "2026-02-01",
-          status: null,
-        },
-      ],
-    );
+    const supabaseMock = buildSupabaseMock([
+      {
+        id: "task-legacy",
+        name: "legacy task",
+        cycle_value: 7,
+        cycle_unit: "days",
+        description: null,
+        is_active: null,
+        created_at: null,
+        maintenance_records: [
+          {
+            id: "record-1",
+            task_id: "task-legacy",
+            performed_at: "2026-02-02",
+            next_due_date: "2026-02-09",
+            status: "completed",
+          },
+          {
+            id: "record-2",
+            task_id: "task-legacy",
+            performed_at: "2026-01-25",
+            next_due_date: "2026-02-01",
+            status: null,
+          },
+        ],
+      },
+      {
+        id: "task-normal",
+        name: "normal task",
+        cycle_value: 30,
+        cycle_unit: "days",
+        description: "desc",
+        is_active: true,
+        created_at: "2026-02-01T00:00:00.000Z",
+        maintenance_records: [],
+      },
+    ]);
 
     createSupabaseApiClientMock.mockResolvedValue(supabaseMock);
 

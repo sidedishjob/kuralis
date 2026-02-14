@@ -8,7 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/common/layout/Header";
 import { Footer } from "@/components/common/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthProvider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { inter, notoSansJP } from "@/constants/fonts";
 import { generateMetadata } from "@/constants/metadata";
 
@@ -38,9 +38,9 @@ export default function RootLayout({
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="ga-init" strategy="afterInteractive">
+            <Script id="ga-init" strategy="lazyOnload">
               {`
 								window.dataLayer = window.dataLayer || [];
 								function gtag(){dataLayer.push(arguments);}

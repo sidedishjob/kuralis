@@ -7,7 +7,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import {
   passwordChangeSchema,
   type PasswordChangeSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/authSchema";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/useToast";

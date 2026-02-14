@@ -31,7 +31,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import {
   furnitureEditSchema,
   type FurnitureEditSchema,
-} from "@/lib/validation";
+} from "@/lib/validation/furnitureSchema";
 
 interface FurnitureDetailClientProps {
   initialFurniture: FurnitureWithExtras;
@@ -47,7 +47,7 @@ export default function FurnitureDetailClient({
   const router = useRouter();
   const { toast } = useToast();
 
-  const { furniture, mutate, isLoading, error } = useFurnitureById(
+  const { furniture, mutate, error } = useFurnitureById(
     initialFurniture.id,
     initialFurniture,
   );
@@ -71,21 +71,39 @@ export default function FurnitureDetailClient({
     },
   });
 
+  const { reset } = methods;
   const furnitureToUse = furniture ?? initialFurniture;
+  const hasFetchedFurniture = Boolean(furniture);
+  const fetchedName = furniture?.name ?? "";
+  const fetchedBrand = furniture?.brand ?? "";
+  const fetchedLocationId = furniture?.location_id ?? undefined;
+  const fetchedPurchasedAt = furniture?.purchased_at ?? "";
+  const fetchedPurchasedFrom = furniture?.purchased_from ?? "";
+  const fetchedNotes = furniture?.notes ?? "";
 
   useEffect(() => {
-    if (furniture && !isEditing) {
-      // 編集モードを抜けたときに最新のデータでリセット
-      methods.reset({
-        name: furniture.name,
-        brand: furniture.brand || "",
-        location_id: furniture.location_id ?? undefined,
-        purchased_at: furniture.purchased_at || "",
-        purchased_from: furniture.purchased_from || "",
-        notes: furniture.notes || "",
-      });
-    }
-  }, [furniture, isEditing, methods]);
+    if (!hasFetchedFurniture || isEditing) return;
+
+    // 編集モードを抜けたときに最新のデータでリセット
+    reset({
+      name: fetchedName,
+      brand: fetchedBrand,
+      location_id: fetchedLocationId,
+      purchased_at: fetchedPurchasedAt,
+      purchased_from: fetchedPurchasedFrom,
+      notes: fetchedNotes,
+    });
+  }, [
+    fetchedBrand,
+    fetchedLocationId,
+    fetchedName,
+    fetchedNotes,
+    fetchedPurchasedAt,
+    fetchedPurchasedFrom,
+    hasFetchedFurniture,
+    isEditing,
+    reset,
+  ]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -160,8 +178,6 @@ export default function FurnitureDetailClient({
       />
     );
 
-  if (!furnitureToUse) return <div>家具データが見つかりません</div>;
-
   return (
     <div className="container mx-auto py-6 md:py-12 px-6 md:px-12">
       <Link
@@ -175,129 +191,101 @@ export default function FurnitureDetailClient({
         <span>Back to Collection</span>
       </Link>
 
-      {isLoading ? (
-        // ローディング中のSkeleton表示
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* 左カラム：画像部分 */}
-          <div className="w-full max-w-125 aspect-4/3 bg-kuralis-100 rounded-sm animate-pulse" />
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[90vw] mx-auto">
+            <FurnitureDetailImage
+              isEditing={isEditing}
+              imageUrl={furnitureToUse.image_url}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
+            />
 
-          {/* 右カラム：タブなどの情報部分のSkeleton */}
-          <div className="space-y-6">
-            {/* メンテナンスバッジ or スイッチのSkeleton */}
-            <div className="flex justify-between items-center">
-              <div className="h-6 w-48 bg-kuralis-100 rounded-sm animate-pulse" />
-              <div className="h-6 w-12 bg-kuralis-100 rounded-sm animate-pulse" />
-            </div>
-
-            {/* タブ部分 Skeleton */}
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
-                <div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
-                <div className="h-4 w-32 bg-kuralis-100 rounded-sm animate-pulse" />
-              </div>
-              <div className="h-32 w-full bg-kuralis-100 rounded-sm animate-pulse" />
-              <div className="h-24 w-full bg-kuralis-100 rounded-sm animate-pulse" />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[90vw] mx-auto">
-              <FurnitureDetailImage
+            <div className="space-y-8">
+              <FurnitureDetailTabs
+                furniture={furnitureToUse}
                 isEditing={isEditing}
-                imageUrl={furnitureToUse.image_url}
-                selectedImage={selectedImage}
-                setSelectedImage={setSelectedImage}
+                locations={initialLocations}
+                summary={initialMaintenanceSummary}
               />
 
-              <div className="space-y-8">
-                <FurnitureDetailTabs
-                  furniture={furnitureToUse}
-                  isEditing={isEditing}
-                  locations={initialLocations}
-                  summary={initialMaintenanceSummary}
-                />
-
-                {/* 編集削除ボタンをタブの外に表示 */}
-                <div className="flex items-center justify-between">
-                  {!isEditing ? (
-                    <div className="flex justify-end space-x-4">
-                      <button
-                        type="button"
-                        onClick={() => setIsEditing(true)}
-                        aria-label="編集"
-                        className="h-10 p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
-                      >
-                        <FiEdit2 size={18} />
-                      </button>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <button
+              {/* 編集削除ボタンをタブの外に表示 */}
+              <div className="flex items-center justify-between">
+                {!isEditing ? (
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(true)}
+                      aria-label="編集"
+                      className="h-10 p-2 text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 rounded-full hover:bg-kuralis-50"
+                    >
+                      <FiEdit2 size={18} />
+                    </button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label="削除"
+                          className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50"
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>家具を削除しますか？</DialogTitle>
+                          <DialogDescription>
+                            この操作は取り消せません。
+                            <br className="md:hidden" />
+                            本当に
+                            {furnitureToUse.name}
+                            を削除しますか？
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter className="mt-4">
+                          <LoadingButton
                             type="button"
-                            aria-label="削除"
-                            className="p-2 text-accent-500 hover:text-accent-600 transition-colors duration-300 rounded-full hover:bg-accent-50"
+                            variant="destructive"
+                            isLoading={isDeleting}
+                            loadingText="削除中..."
+                            onClick={handleDelete}
+                            className="w-full"
                           >
-                            <FiTrash2 size={18} />
-                          </button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>家具を削除しますか？</DialogTitle>
-                            <DialogDescription>
-                              この操作は取り消せません。
-                              <br className="md:hidden" />
-                              本当に
-                              {furnitureToUse.name}
-                              を削除しますか？
-                            </DialogDescription>
-                          </DialogHeader>
-                          <DialogFooter className="mt-4">
-                            <LoadingButton
-                              type="button"
-                              variant="destructive"
-                              isLoading={isDeleting}
-                              loadingText="削除中..."
-                              onClick={handleDelete}
-                              className="w-full"
-                            >
-                              削除する
-                            </LoadingButton>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  ) : (
-                    <div className="flex justify-end space-x-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          setIsEditing(false);
-                          setSelectedImage(null);
-                          methods.reset();
-                        }}
-                        className="h-10 px-6 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
-                      >
-                        キャンセル
-                      </Button>
-                      <LoadingButton
-                        type="submit"
-                        isLoading={isSaving}
-                        loadingText="保存中..."
-                        className="px-6 tracking-tighter-custom transition-all duration-300 transform hover:-translate-y-0.5"
-                      >
-                        保存する
-                      </LoadingButton>
-                    </div>
-                  )}
-                </div>
+                            削除する
+                          </LoadingButton>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                ) : (
+                  <div className="flex justify-end space-x-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setSelectedImage(null);
+                        methods.reset();
+                      }}
+                      className="h-10 px-6 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
+                    >
+                      キャンセル
+                    </Button>
+                    <LoadingButton
+                      type="submit"
+                      isLoading={isSaving}
+                      loadingText="保存中..."
+                      className="px-6 tracking-tighter-custom transition-all duration-300 transform hover:-translate-y-0.5"
+                    >
+                      保存する
+                    </LoadingButton>
+                  </div>
+                )}
               </div>
             </div>
-          </form>
-        </FormProvider>
-      )}
+          </div>
+        </form>
+      </FormProvider>
     </div>
   );
 }

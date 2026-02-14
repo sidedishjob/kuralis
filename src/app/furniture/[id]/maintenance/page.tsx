@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getFurnitureById } from "@/lib/server/furniture";
+import { getMaintenanceTasks } from "@/lib/server/maintenance";
 import { createServerSupabase } from "@/lib/supabase/server";
 import MaintenanceClient from "./MaintenanceClient";
 
@@ -23,5 +24,7 @@ export default async function MaintenancePage({
   const furniture = await getFurnitureById(id, user.id);
   if (!furniture) return redirect("/furniture");
 
-  return <MaintenanceClient furniture={furniture} />;
+  const tasks = await getMaintenanceTasks(id);
+
+  return <MaintenanceClient furniture={furniture} initialTasks={tasks} />;
 }

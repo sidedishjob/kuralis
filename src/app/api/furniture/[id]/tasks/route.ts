@@ -89,7 +89,9 @@ export async function GET(
         }));
 
       acc.push({
-        ...task,
+        id: task.id,
+        name: task.name,
+        cycle_value: task.cycle_value,
         cycle_unit: task.cycle_unit,
         is_active: taskIsActive,
         created_at: taskCreatedAt,

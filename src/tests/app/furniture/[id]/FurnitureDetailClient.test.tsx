@@ -24,7 +24,6 @@ vi.mock("@/lib/supabase/hooks/useSupabaseClient", () => ({
 vi.mock("@/hooks/useFurnitureById", () => ({
   useFurnitureById: vi.fn(() => ({
     furniture: mockFurniture,
-    isLoading: false,
     error: null,
     mutate: mutateMock,
   })),

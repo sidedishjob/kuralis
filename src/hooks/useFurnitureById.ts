@@ -20,16 +20,15 @@ export function useFurnitureById(
   const {
     data: furniture,
     error,
-    isLoading,
     mutate,
   } = useSWR<FurnitureWithExtras>(API_ROUTES.furnitureById(id), fetcher, {
     fallbackData: initialData,
     revalidateOnMount: initialData ? false : true,
+    revalidateIfStale: initialData ? false : true,
   });
 
   return {
     furniture,
-    isLoading,
     error,
     mutate,
   };

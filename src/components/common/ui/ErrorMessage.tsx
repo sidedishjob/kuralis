@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, RotateCcw } from "lucide-react";
+import { FiAlertCircle, FiRotateCcw } from "react-icons/fi";
 
 interface ErrorMessageProps {
   error: unknown; // SWR の error オブジェクト
@@ -27,7 +27,7 @@ export const ErrorMessage = ({
   return (
     <Alert variant="destructive" className={`gap-1 ${className}`}>
       {/* アイコン */}
-      <AlertCircle />
+      <FiAlertCircle />
 
       {/* 本文 + ボタン */}
       <AlertTitle>エラーが発生しました</AlertTitle>
@@ -40,7 +40,7 @@ export const ErrorMessage = ({
           onClick={onRetry}
           className="pt-5 col-span-2 inline-flex items-center justify-center gap-1 text-sm text-kuralis-900 hover:underline"
         >
-          <RotateCcw size={16} /> 再試行
+          <FiRotateCcw size={16} /> 再試行
         </button>
       )}
     </Alert>

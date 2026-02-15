@@ -123,81 +123,7 @@ CREATE POLICY "Users can manage their own locations" ON locations
 
 ## API仕様
 
-### 家具API
-
-#### 家具一覧取得
-
-- エンドポイント: `/api/furniture`
-- メソッド: GET
-- クエリパラメータ:
-
-  ```typescript
-  {
-    category_id?: number;
-    location_id?: number;
-    search?: string;
-  }
-  ```
-
-- レスポンス:
-
-  ```typescript
-  {
-    items: Furniture[];
-    total: number;
-  }
-  ```
-
-#### 家具詳細取得
-
-- エンドポイント: `/api/furniture/[id]`
-- メソッド: GET
-- レスポンス:
-
-  ```typescript
-  {
-    furniture: Furniture;
-    maintenance_tasks: MaintenanceTask[];
-    maintenance_records: MaintenanceRecord[];
-  }
-  ```
-
-### メンテナンスAPI
-
-#### メンテナンスタスク一覧取得
-
-- エンドポイント: `/api/maintenance/tasks/[furniture_id]`
-- メソッド: GET
-- レスポンス:
-
-  ```typescript
-  {
-    tasks: MaintenanceTask[];
-  }
-  ```
-
-#### メンテナンス記録作成
-
-- エンドポイント: `/api/maintenance/records`
-- メソッド: POST
-- リクエストボディ:
-
-  ```typescript
-  {
-    task_id: string;
-    performed_at: string;
-    notes?: string;
-    status: 'completed' | 'skipped' | 'partial';
-  }
-  ```
-
-- レスポンス:
-
-  ```typescript
-  {
-    record: MaintenanceRecord;
-  }
-  ```
+API のエンドポイント・リクエスト・レスポンス仕様は [api-design.md](./api-design.md) を参照。
 
 ## データ型定義
 
@@ -207,7 +133,7 @@ CREATE POLICY "Users can manage their own locations" ON locations
 export interface Category {
   id: number;
   name: string;
-  icon?: string | null;
+  icon?: string | null; // DB型では `icon: string | null`、API型では optional
 }
 ```
 
@@ -217,7 +143,7 @@ export interface Category {
 export interface Location {
   id: number;
   name: string;
-  user_id?: string;
+  user_id?: string; // DB型では `user_id: string`（NOT NULL相当）、API型では optional
 }
 ```
 
@@ -228,14 +154,14 @@ export interface Furniture {
   id: string;
   user_id: string;
   name: string;
-  brand: string;
-  category_id: number;
-  location_id: number;
-  image_url: string;
-  purchased_at: string;
-  purchased_from: string;
-  next_due_date: string;
-  notes: string;
+  brand: string | null;
+  category_id: number | null;
+  location_id: number | null;
+  image_url: string | null;
+  purchased_at: string | null;
+  purchased_from: string | null;
+  next_due_date: string | null;
+  notes: string | null;
 }
 ```
 
@@ -269,5 +195,54 @@ export interface MaintenanceRecord {
   task_cycle_unit?: string;
   notes?: string | null;
   created_at?: string;
+}
+```
+
+### MaintenanceTaskWithRecords
+
+```typescript
+export interface MaintenanceTaskWithRecords {
+  id: string;
+  name: string;
+  cycle_value: number;
+  cycle_unit: MaintenanceCycleUnit;
+  description?: string;
+  is_active: boolean;
+  created_at: string;
+  records: MaintenanceRecord[];
+  next_due_date: string | null;
+}
+```
+
+### MaintenanceSummary
+
+```typescript
+export type MaintenanceSummary = {
+  activeTaskCount: number;
+  nearestTaskName: string | null;
+  nearestDueDate: string | null;
+};
+```
+
+### MaintenanceSummaryItem
+
+```typescript
+export interface MaintenanceSummaryItem {
+  furnitureId: string;
+  furnitureName: string;
+  taskId: string;
+  taskName: string;
+  lastPerformedAt: string;
+  nextDueDate: string | null;
+}
+```
+
+### MaintenanceTaskPayload
+
+```typescript
+export interface MaintenanceTaskPayload {
+  taskName: string;
+  cycleValue: string;
+  cycleUnit: string;
 }
 ```

@@ -51,7 +51,10 @@ export function Header() {
                 </div>
               </nav>
               <div className="p-6 border-t border-kuralis-100">
-                <p className="text-xs text-kuralis-500">
+                <p
+                  className="text-xs text-kuralis-500"
+                  suppressHydrationWarning
+                >
                   © {new Date().getFullYear()} kuralis
                 </p>
               </div>

@@ -44,6 +44,7 @@ export async function proxy(req: NextRequest) {
     "/auth/reset-request",
     "/auth/reset-password",
     "/auth/callback",
+    "/auth/verify-email",
     "/terms",
     "/privacy",
     "/about",

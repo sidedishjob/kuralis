@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { signupSchema, type SignupSchema } from "@/lib/validation/authSchema";
-import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loadingButton";
 import {
@@ -28,7 +27,6 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -45,14 +43,12 @@ export function SignupForm({
     setIsLoading(true);
     setAuthError(null);
 
-    // 1. サインアップ
     const { error: signupError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
-      // ↓将来メール認証用
-      // options: {
-      // 	emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
-      // },
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      },
     });
 
     if (signupError) {
@@ -61,20 +57,7 @@ export function SignupForm({
       return;
     }
 
-    // 2. 自動ログイン
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
-
-    if (loginError) {
-      setAuthError(getErrorMessage(loginError, "ログイン処理に失敗しました"));
-      return;
-    }
-
-    // 3. 家具一覧へリダイレクト
-    router.push("/furniture");
-    toast({ title: "ようこそ！", description: "ご登録ありがとうございます。" });
+    router.push(`/auth/verify-email?email=${encodeURIComponent(data.email)}`);
   };
 
   const handleGoogleSignup = async () => {

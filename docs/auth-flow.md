@@ -15,7 +15,7 @@
 
 ## 📍 認証状態の保持
 
-- SSRでは `getUserFromCookie()` を使用（`@supabase/ssr`）
+- SSRでは `createServerSupabase()` + `getUser()` を使用（`@supabase/ssr`）
 - CSRでは `useAuth()` カスタムフックを使用（`AuthContext` 経由）
 - SupabaseはJWTによりCookieベースでセッション管理
 
@@ -26,11 +26,12 @@
 ### 🔸 サインアップ（メール）
 
 1. `/auth/signup` にアクセス
-2. フォーム入力 → メール＋パスワードをSupabaseへ送信
+2. フォーム入力 → `signUp({ emailRedirectTo: .../auth/callback })` を実行
 3. Supabaseが**確認メールを送信**
-4. ユーザーがメール内リンクをクリック
-5. `redirectTo` で `/auth/callback` に遷移し、セッションが確立
-6. `/furniture` へリダイレクト
+4. `/auth/verify-email?email=xxx` にリダイレクト（確認待ち案内ページ）
+5. ユーザーがメール内リンクをクリック
+6. `/auth/callback` で `exchangeCodeForSession()` によりセッションが確立
+7. `/furniture` へリダイレクト
 
 ### 🔸 ログイン（メール）
 
@@ -72,19 +73,20 @@
 | 役割                       | 使用ファイル                      |
 | -------------------------- | --------------------------------- |
 | フォームUI                 | `SignupForm.tsx`, `LoginForm.tsx` |
+| メール確認待ち案内UI       | `VerifyEmailCard.tsx`             |
 | 認証状態管理               | `contexts/AuthContext.tsx`        |
 | サーバー認証クライアント   | `lib/supabase/server.ts`          |
 | Supabase OAuthログイン処理 | `handleGoogleLogIn()`             |
-| 認証後コールバック処理     | `app/auth/callback/page.tsx`      |
+| 認証後コールバック処理     | `app/auth/callback/route.ts`      |
 
 ---
 
 ## 🧪 認証のユースケース別挙動まとめ
 
-| 状況                                     | 挙動                                                |
-| ---------------------------------------- | --------------------------------------------------- |
-| 未ログイン状態で `/furniture` にアクセス | `/auth/login` にリダイレクト                        |
-| ログアウト                               | Cookieが削除され、`getUserFromCookie()` が `null`に |
+| 状況                                     | 挙動                                       |
+| ---------------------------------------- | ------------------------------------------ |
+| 未ログイン状態で `/furniture` にアクセス | `/auth/login` にリダイレクト               |
+| ログアウト                               | Cookieが削除され、`getUser()` が `null` に |
 
 ---
 

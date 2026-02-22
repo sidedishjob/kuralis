@@ -40,7 +40,7 @@ export type MaintenanceStatus = "completed" | "skipped" | "partial";
 
 export interface MaintenanceRecord {
   id: string;
-  task_id: string;
+  task_id: string | null;
   performed_at: string;
   next_due_date: string | null;
   status: MaintenanceStatus;

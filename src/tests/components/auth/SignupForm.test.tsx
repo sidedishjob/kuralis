@@ -6,7 +6,6 @@ import type { AuthResponse } from "@supabase/supabase-js";
 // 共通のモック設定
 const mockPush = vi.fn();
 const mockSignUp = vi.fn();
-const mockSignInWithPassword = vi.fn();
 const mockSignInWithOAuth = vi.fn();
 
 vi.mock("next/navigation", () => ({
@@ -17,7 +16,6 @@ vi.mock("@/lib/supabase/client", () => ({
   supabase: {
     auth: {
       signUp: mockSignUp,
-      signInWithPassword: mockSignInWithPassword,
       signInWithOAuth: mockSignInWithOAuth,
     },
   },
@@ -85,10 +83,9 @@ describe("SignupForm", () => {
   });
 
   describe("メール・パスワード登録", () => {
-    test("有効な情報で登録成功時、家具ページに遷移する", async () => {
+    test("有効な情報で登録成功時、メール確認ページに遷移する", async () => {
       const user = userEvent.setup();
       mockSignUp.mockResolvedValue({ error: null });
-      mockSignInWithPassword.mockResolvedValue({ error: null });
 
       render(<SignupFormComponent />);
 
@@ -103,10 +100,15 @@ describe("SignupForm", () => {
         expect(mockSignUp).toHaveBeenCalledWith({
           email: "test@example.com",
           password: "password123",
+          options: {
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+          },
         });
       });
 
-      expect(mockPush).toHaveBeenCalledWith("/furniture");
+      expect(mockPush).toHaveBeenCalledWith(
+        "/auth/verify-email?email=test%40example.com",
+      );
     });
 
     test("登録失敗時、エラーメッセージが表示される", async () => {
@@ -158,7 +160,9 @@ describe("SignupForm", () => {
       resolveSignIn!({ error: null } as AuthResponse);
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith("/furniture");
+        expect(mockPush).toHaveBeenCalledWith(
+          "/auth/verify-email?email=test%40example.com",
+        );
       });
     });
   });
@@ -261,7 +265,6 @@ describe("SignupForm", () => {
 
       // 2回目の登録試行：成功
       mockSignUp.mockResolvedValueOnce({ error: null });
-      mockSignInWithPassword.mockResolvedValue({ error: null });
 
       await user.clear(screen.getByLabelText("パスワード"));
       await user.type(screen.getByLabelText("パスワード"), "correctpassword");
@@ -273,7 +276,9 @@ describe("SignupForm", () => {
         ).not.toBeInTheDocument();
       });
 
-      expect(mockPush).toHaveBeenCalledWith("/furniture");
+      expect(mockPush).toHaveBeenCalledWith(
+        "/auth/verify-email?email=test%40example.com",
+      );
     });
   });
 

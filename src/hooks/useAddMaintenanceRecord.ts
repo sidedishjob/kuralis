@@ -14,7 +14,7 @@ export function useAddMaintenanceRecord() {
 
     if (!res.ok) {
       const error = await res.json();
-      throw new Error(error.message || "追加に失敗しました");
+      throw new Error(error.error || "追加に失敗しました");
     }
 
     return res.json();

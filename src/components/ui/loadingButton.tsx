@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { FiLoader } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
@@ -48,7 +48,7 @@ export function LoadingButton({
       >
         {isLoading ? (
           <>
-            <Loader2 className="mr-2 size-4 animate-spin" />
+            <FiLoader className="mr-2 size-4 animate-spin" />
             {loadingText}
           </>
         ) : (

@@ -4,5 +4,7 @@ export const errorMessageMap: Record<string, string> = {
     "新しいパスワードは古いパスワードとは異なる必要があります。",
   Unauthorized: "認証に失敗しました。再度ログインしてください",
   "User already registered": "ユーザーは既に登録されています",
+  "Email not confirmed":
+    "メールアドレスの確認が完了していません。確認メール内のリンクをクリックしてください",
   // 必要に応じて随時追加
 };

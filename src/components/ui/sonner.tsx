@@ -2,12 +2,12 @@
 
 import type { CSSProperties } from "react";
 import {
-  CircleCheckIcon,
-  InfoIcon,
-  Loader2Icon,
-  OctagonXIcon,
-  TriangleAlertIcon,
-} from "lucide-react";
+  FiAlertTriangle,
+  FiCheckCircle,
+  FiInfo,
+  FiLoader,
+  FiXOctagon,
+} from "react-icons/fi";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const toasterStyle: CSSProperties = {
@@ -23,11 +23,11 @@ function Toaster({ ...props }: ToasterProps) {
       className="toaster group"
       richColors
       icons={{
-        success: <CircleCheckIcon className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
+        success: <FiCheckCircle className="size-4" />,
+        info: <FiInfo className="size-4" />,
+        warning: <FiAlertTriangle className="size-4" />,
+        error: <FiXOctagon className="size-4" />,
+        loading: <FiLoader className="size-4 animate-spin" />,
       }}
       toastOptions={{
         classNames: {

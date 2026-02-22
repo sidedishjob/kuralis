@@ -12,7 +12,7 @@ export function useDeleteMaintenanceRecord() {
 
     if (!res.ok) {
       const error = await res.json().catch(() => null);
-      throw new Error(error?.message || "メンテナンス履歴の削除に失敗しました");
+      throw new Error(error?.error || "メンテナンス履歴の削除に失敗しました");
     }
   }, []);
 

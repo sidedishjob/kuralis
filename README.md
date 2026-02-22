@@ -73,7 +73,7 @@
 | **データ取得**     | SWR 2.3.3                                                 |
 | **フォーム**       | react-hook-form 7.57.0 / Zod 4.3.6                        |
 | **状態管理**       | React Context API + Custom Hook                           |
-| **UI / スタイル**  | Tailwind CSS 4.1.7 / shadcn/ui / Radix UI / lucide-react  |
+| **UI / スタイル**  | Tailwind CSS 4.1.7 / shadcn/ui / Radix UI / react-icons   |
 | **メール送信**     | nodemailer 7.0.3                                          |
 | **CI / CD**        | GitHub Actions（Vercel CLI による手動デプロイ）           |
 | **その他**         | date-fns / clsx / eslint / prettier                       |

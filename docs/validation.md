@@ -245,6 +245,7 @@ export const maintenanceTaskSchema = z.object({
 ```typescript
 import { NextResponse } from "next/server";
 import { registerFurnitureSchema } from "@/lib/validation/furnitureSchema";
+import { handleApiError } from "@/lib/utils/handleApiError";
 
 export async function POST(req: Request) {
   try {
@@ -254,15 +255,9 @@ export async function POST(req: Request) {
     // バリデーション済みデータを使用して処理を続行
     const result = await createFurniture(validatedData);
 
-    return NextResponse.json({ data: result });
+    return NextResponse.json(result);
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: { code: "VALIDATION_ERROR", details: error.errors } },
-        { status: 400 },
-      );
-    }
-    throw error;
+    return handleApiError(error, "家具の登録に失敗しました");
   }
 }
 ```
@@ -272,11 +267,11 @@ export async function POST(req: Request) {
 ```typescript
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { furnitureSchema } from '@/lib/validations/furniture';
+import { furnitureEditSchema } from '@/lib/validation/furnitureSchema';
 
 export function FurnitureForm() {
   const form = useForm({
-    resolver: zodResolver(furnitureSchema),
+    resolver: zodResolver(furnitureEditSchema),
     defaultValues: {
       name: '',
       brand: '',
@@ -289,7 +284,7 @@ export function FurnitureForm() {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof furnitureSchema>) => {
+  const onSubmit = async (data: z.infer<typeof furnitureEditSchema>) => {
     try {
       await createFurniture(data);
       toast.success('家具を登録しました');

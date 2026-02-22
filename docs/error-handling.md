@@ -97,7 +97,7 @@ function getErrorMessage(
 ```ts
 if (!res.ok) {
   const error = await res.json().catch(() => null);
-  throw new Error(error?.message || "〜に失敗しました");
+  throw new Error(error?.error || "〜に失敗しました");
 }
 ```
 

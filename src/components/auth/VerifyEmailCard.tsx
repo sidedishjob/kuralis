@@ -27,6 +27,9 @@ export function VerifyEmailCard({ email }: Props) {
     const { error } = await supabase.auth.resend({
       type: "signup",
       email,
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      },
     });
 
     setIsResending(false);

@@ -172,7 +172,7 @@ export default function FurnitureDetailImage({
               fileInputRef.current?.click();
             }
           }}
-          className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
+          className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuralis-900"
         >
           <input
             ref={fileInputRef}

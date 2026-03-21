@@ -141,9 +141,9 @@ export default function AboutPage() {
                 title: "成長",
                 desc: "記録が積み重なることで物語が生まれる",
               },
-            ].map((feature, idx) => (
+            ].map((feature) => (
               <div
-                key={idx}
+                key={feature.title}
                 className="bg-white p-8 rounded-2xl shadow-lg border border-kuralis-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
               >
                 <div className="size-16 bg-kuralis-100 rounded-2xl flex items-center justify-center text-kuralis-600 mb-6">
@@ -193,9 +193,9 @@ export default function AboutPage() {
                 desc: "美しく使いやすいインターフェースで、日々の記録を楽しく続けられます。",
                 features: ["美しいデザイン", "快適な操作性", "継続しやすさ"],
               },
-            ].map((item, idx) => (
+            ].map((item) => (
               <div
-                key={idx}
+                key={item.title}
                 className="bg-white p-8 rounded-2xl shadow-lg border border-kuralis-100 hover:shadow-xl transition-all duration-300 group"
               >
                 <div className="size-16 rounded-2xl bg-kuralis-100 flex items-center justify-center mx-auto mb-8 group-hover:bg-kuralis-200 transition-colors">
@@ -389,8 +389,8 @@ export default function AboutPage() {
               {[
                 { number: "無料", label: "利用料金" },
                 { number: "即座", label: "開始可能" },
-              ].map((stat, idx) => (
-                <div key={idx} className="text-center">
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
                   <div className="text-2xl font-bold text-white">
                     {stat.number}
                   </div>

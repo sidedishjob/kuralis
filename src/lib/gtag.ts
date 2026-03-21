@@ -16,26 +16,26 @@ export const pageview = (path: string): void => {
 };
 
 // gtag 関数の型
-export type GtagFunction = (
+type GtagFunction = (
   command: "config" | "event" | "js",
   targetId: string,
   config?: ControlParams | EventParams | CustomParams,
 ) => void;
 
 // 各パラメータ型
-export interface ControlParams {
+interface ControlParams {
   page_path?: string;
   send_to?: string;
 }
 
-export interface EventParams {
+interface EventParams {
   event_category?: string;
   event_label?: string;
   value?: number;
   [key: string]: unknown;
 }
 
-export interface CustomParams {
+interface CustomParams {
   [key: string]: unknown;
 }
 

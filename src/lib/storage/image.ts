@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 /**
  * ファイル名を安全な形式に変換する
  */
-export function sanitizeFileName(name: string): string {
+function sanitizeFileName(name: string): string {
   return name
     .normalize("NFKD")
     .replace(/[^a-zA-Z0-9._-]/g, "-")

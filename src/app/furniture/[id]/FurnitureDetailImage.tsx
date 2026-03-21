@@ -161,9 +161,17 @@ export default function FurnitureDetailImage({
       // 画像がなく、編集モード → アップロードUI
       return (
         <div
+          role="button"
+          tabIndex={0}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onClick={() => fileInputRef.current?.click()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }
+          }}
           className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
         >
           <input

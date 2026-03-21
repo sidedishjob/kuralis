@@ -398,10 +398,14 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
               <div>
-                <label className="block text-sm tracking-tighter-custom text-kuralis-600 mb-2">
+                <label
+                  htmlFor="maintenance-task-name"
+                  className="block text-sm tracking-tighter-custom text-kuralis-600 mb-2"
+                >
                   メンテナンスタスク名
                 </label>
                 <input
+                  id="maintenance-task-name"
                   type="text"
                   {...register("taskName")}
                   className="w-full px-3 py-2 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"
@@ -414,11 +418,15 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                 )}
               </div>
               <div>
-                <label className="block text-sm tracking-tighter-custom text-kuralis-600 mb-2">
+                <label
+                  htmlFor="maintenance-cycle-value"
+                  className="block text-sm tracking-tighter-custom text-kuralis-600 mb-2"
+                >
                   実施周期
                 </label>
                 <div className="flex items-center">
                   <input
+                    id="maintenance-cycle-value"
                     type="number"
                     {...register("cycleValue")}
                     className=" px-3 py-2 w-1/3 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none"

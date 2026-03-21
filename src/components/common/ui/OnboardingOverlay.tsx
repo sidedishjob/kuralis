@@ -71,9 +71,9 @@ export function OnboardingOverlay({
           </div>
 
           <div className="flex justify-center space-x-2">
-            {STEPS.map((_, index) => (
+            {STEPS.map((step, index) => (
               <div
-                key={index}
+                key={step.title}
                 className={`size-2 rounded-full transition-all duration-300 ${
                   index + 1 === currentStep
                     ? "bg-kuralis-900 scale-125"

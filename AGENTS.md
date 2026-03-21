@@ -95,7 +95,7 @@ npm run lint && npm run prettier:check && npm run test
 - `app/` — ページと API ルート（App Router）
 - `app/api/` — REST API ルート（`route.ts`）
 - `components/ui/` — ベース UI（shadcn/ui スタイル）
-- `components/common/` — Header、Footer、Layout
+- `components/common/` — layout（Header, Footer）、navigation、sections、ui
 - `contexts/` — React Context プロバイダー（AuthProvider）
 - `hooks/` — SWR ベースのデータ取得 + ミューテーションフック
 - `lib/supabase/` — Supabase クライアント（`client.ts` / `server.ts`）

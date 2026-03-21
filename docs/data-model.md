@@ -133,7 +133,6 @@ API のエンドポイント・リクエスト・レスポンス仕様は [api-d
 export interface Category {
   id: number;
   name: string;
-  icon?: string | null; // DB型では `icon: string | null`、API型では optional
 }
 ```
 
@@ -143,7 +142,6 @@ export interface Category {
 export interface Location {
   id: number;
   name: string;
-  user_id?: string; // DB型では `user_id: string`（NOT NULL相当）、API型では optional
 }
 ```
 
@@ -165,18 +163,49 @@ export interface Furniture {
 }
 ```
 
-### MaintenanceTask
+### FurnitureWithExtras
 
 ```typescript
-export interface MaintenanceTask {
-  id: string;
-  furniture_id: string;
+export type FurnitureWithExtras = Furniture & {
+  category?: { id: number; name: string };
+  location?: { id: number; name: string };
+  needsMaintenance?: boolean;
+};
+```
+
+### UpdateFurniturePayload
+
+```typescript
+export type UpdateFurniturePayload = {
   name: string;
-  cycle_value: number;
-  cycle_unit: "days" | "weeks" | "months" | "years";
-  description?: string | null;
-  is_active: boolean;
-  created_at: string;
+  location_id: number;
+  updated_at: string;
+  brand?: string | null;
+  image_url?: string | null;
+  purchased_at?: string | null;
+  purchased_from?: string | null;
+  notes?: string;
+};
+```
+
+### MaintenanceCycleUnit
+
+```typescript
+export type MaintenanceCycleUnit = "days" | "weeks" | "months" | "years";
+```
+
+### MaintenanceStatus
+
+```typescript
+export type MaintenanceStatus = "completed" | "skipped" | "partial";
+```
+
+### MaintenanceHistory
+
+```typescript
+export interface MaintenanceHistory {
+  taskId: string;
+  performedAt: string;
 }
 ```
 
@@ -188,13 +217,7 @@ export interface MaintenanceRecord {
   task_id: string | null;
   performed_at: string;
   next_due_date: string | null;
-  status: "completed" | "skipped" | "partial";
-  // 下記はDBには存在するが、APIレスポンスや画面で必要な場合のみ付与
-  task_name?: string;
-  task_cycle_value?: number;
-  task_cycle_unit?: string;
-  notes?: string | null;
-  created_at?: string;
+  status: MaintenanceStatus;
 }
 ```
 

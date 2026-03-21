@@ -1,4 +1,4 @@
-export const siteMetadata = {
+const siteMetadata = {
   // 基本情報
   title: "kuralis | 使い手として、家具と暮らす。",
   titleBase: "kuralis",
@@ -88,9 +88,6 @@ export const siteMetadata = {
     url: "https://opensource.org/licenses/MIT",
   },
 } as const;
-
-// 型定義
-export type SiteMetadata = typeof siteMetadata;
 
 // ページ別メタデータの生成ヘルパー
 export function generateMetadata({

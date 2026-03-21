@@ -191,7 +191,7 @@ Prettier はリポジトリ設定（設定ファイルがない場合は Prettie
 
 - Claude Code: `/create-pr` スキルを使用する。
 - 人間が対話的に作成する場合は `gh pr create -T .github/pull_request_template.md` を使う。
-- その他のエージェント: `.claude/skills/create-pr/SKILL.md` を参照して実行する。
+- その他のエージェント: `.github/pull_request_template.md` のテンプレート構成に沿った本文を `--body` / `--body-file` で渡して作成する。`--template`（`-T`）と `--body` は併用しない。
 
 ---
 

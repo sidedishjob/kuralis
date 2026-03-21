@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,8 +56,49 @@ const unitMap: Record<MaintenanceCycleUnit, string> = {
   years: "年",
 };
 
+const getTodayDate = () => new Date().toISOString().split("T")[0];
+
+interface UIState {
+  isAddTaskDialogOpen: boolean;
+  isTaskAdding: boolean;
+  addingHistoryId: string | null;
+  deletingHistoryId: string | null;
+  newHistoryDate: string;
+}
+
+type UIAction =
+  | { type: "OPEN_ADD_DIALOG" }
+  | { type: "CLOSE_ADD_DIALOG" }
+  | { type: "SET_TASK_ADDING"; payload: boolean }
+  | { type: "SET_ADDING_HISTORY"; payload: string | null }
+  | { type: "SET_DELETING_HISTORY"; payload: string | null }
+  | { type: "SET_HISTORY_DATE"; payload: string }
+  | { type: "RESET_HISTORY_INPUT" };
+
+function uiReducer(state: UIState, action: UIAction): UIState {
+  switch (action.type) {
+    case "OPEN_ADD_DIALOG":
+      return { ...state, isAddTaskDialogOpen: true };
+    case "CLOSE_ADD_DIALOG":
+      return { ...state, isAddTaskDialogOpen: false };
+    case "SET_TASK_ADDING":
+      return { ...state, isTaskAdding: action.payload };
+    case "SET_ADDING_HISTORY":
+      return { ...state, addingHistoryId: action.payload };
+    case "SET_DELETING_HISTORY":
+      return { ...state, deletingHistoryId: action.payload };
+    case "SET_HISTORY_DATE":
+      return { ...state, newHistoryDate: action.payload };
+    case "RESET_HISTORY_INPUT":
+      return {
+        ...state,
+        newHistoryDate: getTodayDate(),
+        deletingHistoryId: null,
+      };
+  }
+}
+
 export default function MaintenanceClient({ furniture, initialTasks }: Props) {
-  const getTodayDate = () => new Date().toISOString().split("T")[0];
   const { isGuestUser } = useAuth();
   const { toast } = useToast();
 
@@ -70,13 +111,13 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
   const { deleteRecord } = useDeleteMaintenanceRecord();
   const { updateTaskActive } = useUpdateMaintenanceTask(furniture.id);
 
-  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false); // ダイアログOPEN用
-  const [isTaskAdding, setIsTaskAdding] = useState(false); // タスク追加Loading用
-  const [addingHistoryId, setAddingHistoryId] = useState<string | null>(null); //履歴追加Loading用
-  const [deletingHistoryId, setDeletingHistoryId] = useState<string | null>(
-    null,
-  ); // 履歴削除Loading用
-  const [newHistoryDate, setNewHistoryDate] = useState(getTodayDate);
+  const [ui, dispatch] = useReducer(uiReducer, {
+    isAddTaskDialogOpen: false,
+    isTaskAdding: false,
+    addingHistoryId: null,
+    deletingHistoryId: null,
+    newHistoryDate: getTodayDate(),
+  });
 
   const {
     register,
@@ -97,13 +138,13 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
    * メンテナンスタスク追加
    */
   const onSubmit = async (data: MaintenanceTaskSchema) => {
-    setIsTaskAdding(true);
+    dispatch({ type: "SET_TASK_ADDING", payload: true });
     try {
       await addTask(data);
       await mutate();
 
       reset();
-      setIsAddTaskDialogOpen(false);
+      dispatch({ type: "CLOSE_ADD_DIALOG" });
 
       toast({ title: "メンテナンスタスクを追加しました" });
     } catch (error: unknown) {
@@ -114,7 +155,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
         variant: "destructive",
       });
     } finally {
-      setIsTaskAdding(false);
+      dispatch({ type: "SET_TASK_ADDING", payload: false });
     }
   };
 
@@ -122,15 +163,14 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
    * メンテナンス履歴追加
    */
   const handleAddHistory = async (taskId: string) => {
-    if (!newHistoryDate) return;
+    if (!ui.newHistoryDate) return;
 
-    setAddingHistoryId(taskId);
+    dispatch({ type: "SET_ADDING_HISTORY", payload: taskId });
     try {
-      await addRecord(taskId, newHistoryDate);
+      await addRecord(taskId, ui.newHistoryDate);
       await mutate();
 
-      setNewHistoryDate(getTodayDate);
-      setDeletingHistoryId(null);
+      dispatch({ type: "RESET_HISTORY_INPUT" });
       toast({ title: "メンテナンス履歴を追加しました" });
     } catch (error: unknown) {
       console.error("メンテナンス履歴追加エラー:", error);
@@ -140,7 +180,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
         variant: "destructive",
       });
     } finally {
-      setAddingHistoryId(null);
+      dispatch({ type: "SET_ADDING_HISTORY", payload: null });
     }
   };
 
@@ -148,7 +188,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
    * メンテナンス履歴削除
    */
   const handleDeleteHistory = async (recordId: string) => {
-    setDeletingHistoryId(recordId);
+    dispatch({ type: "SET_DELETING_HISTORY", payload: recordId });
     try {
       await deleteRecord(recordId);
       await mutate();
@@ -161,7 +201,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
         variant: "destructive",
       });
     } finally {
-      setDeletingHistoryId(null);
+      dispatch({ type: "SET_DELETING_HISTORY", payload: null });
     }
   };
 
@@ -211,7 +251,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
             {furniture.name}のメンテナンス管理
           </h1>
           <Button
-            onClick={() => setIsAddTaskDialogOpen(true)}
+            onClick={() => dispatch({ type: "OPEN_ADD_DIALOG" })}
             className="hidden md:block size-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
           >
             <FiPlus size={16} />
@@ -262,20 +302,25 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                   )}
                 </div>
                 <div className="mb-2 md:ml-8">
-                  {deletingHistoryId === task.id ? (
+                  {ui.deletingHistoryId === task.id ? (
                     <div className="h-8 flex items-center space-x-2">
                       <input
                         type="date"
-                        value={newHistoryDate}
-                        onChange={(e) => setNewHistoryDate(e.target.value)}
+                        value={ui.newHistoryDate}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "SET_HISTORY_DATE",
+                            payload: e.target.value,
+                          })
+                        }
                         className="text-sm border border-kuralis-200 rounded-sm px-2 py-1"
                       />
                       <LoadingButton
                         type="button"
                         onClick={() => handleAddHistory(task.id)}
-                        isLoading={addingHistoryId === task.id}
+                        isLoading={ui.addingHistoryId === task.id}
                         loadingText=""
-                        disabled={!newHistoryDate}
+                        disabled={!ui.newHistoryDate}
                         variant="ghost"
                         forceMinWidth={false}
                         className="p-1 size-8 inline-flex items-center justify-center text-kuralis-900 hover:text-kuralis-700 disabled:text-kuralis-400"
@@ -286,11 +331,10 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                         />
                       </LoadingButton>
                       <button
-                        onClick={() => {
-                          setDeletingHistoryId(null);
-                          setNewHistoryDate(getTodayDate);
-                        }}
-                        disabled={addingHistoryId === task.id}
+                        onClick={() =>
+                          dispatch({ type: "RESET_HISTORY_INPUT" })
+                        }
+                        disabled={ui.addingHistoryId === task.id}
                         className="text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom"
                       >
                         <FiX size={14} />
@@ -298,7 +342,12 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                     </div>
                   ) : (
                     <button
-                      onClick={() => setDeletingHistoryId(task.id)}
+                      onClick={() =>
+                        dispatch({
+                          type: "SET_DELETING_HISTORY",
+                          payload: task.id,
+                        })
+                      }
                       className="h-8 text-sm text-kuralis-600 hover:text-kuralis-900 transition-colors duration-300 tracking-tighter-custom inline-flex items-center"
                     >
                       <FiPlus size={14} className="mr-1" />
@@ -346,7 +395,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                                 type="button"
                                 variant="destructive"
                                 onClick={() => handleDeleteHistory(record.id)}
-                                isLoading={deletingHistoryId === record.id}
+                                isLoading={ui.deletingHistoryId === record.id}
                                 loadingText="削除中..."
                                 className="w-full"
                               >
@@ -377,7 +426,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
         )}
         <div className="md:hidden w-full flex items-center justify-center">
           <Button
-            onClick={() => setIsAddTaskDialogOpen(true)}
+            onClick={() => dispatch({ type: "OPEN_ADD_DIALOG" })}
             className="size-10 rounded-full bg-kuralis-900 hover:bg-kuralis-800 transition-colors duration-300 tracking-tighter-custom"
           >
             <FiPlus size={16} />
@@ -386,8 +435,10 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
 
         {/* ダイアログ（タスク追加） */}
         <Dialog
-          open={isAddTaskDialogOpen}
-          onOpenChange={setIsAddTaskDialogOpen}
+          open={ui.isAddTaskDialogOpen}
+          onOpenChange={(open) =>
+            dispatch({ type: open ? "OPEN_ADD_DIALOG" : "CLOSE_ADD_DIALOG" })
+          }
         >
           <DialogContent>
             <DialogHeader>
@@ -460,7 +511,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                   type="button"
                   variant="outline"
                   onClick={() => {
-                    setIsAddTaskDialogOpen(false);
+                    dispatch({ type: "CLOSE_ADD_DIALOG" });
                     reset();
                   }}
                   className="mt-2 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"
@@ -469,7 +520,7 @@ export default function MaintenanceClient({ furniture, initialTasks }: Props) {
                 </Button>
                 <LoadingButton
                   type="submit"
-                  isLoading={isTaskAdding}
+                  isLoading={ui.isTaskAdding}
                   loadingText="追加中..."
                   disabled={!isValid}
                   className="w-full md:w-auto mt-2 bg-kuralis-900 hover:bg-kuralis-800 transition-all duration-300 transform hover:-translate-y-0.5 tracking-tighter-custom"

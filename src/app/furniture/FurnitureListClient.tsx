@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useReducer, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { FiPlus, FiSearch, FiX, FiChevronDown } from "react-icons/fi";
 import { FurnitureCard } from "@/components/features/furniture/FurnitureCard";
@@ -15,21 +15,65 @@ type FurnitureListClientProps = {
   initialLocations: Location[];
 };
 
+interface ListState {
+  searchQuery: string;
+  activeCategory: number | null;
+  activeLocation: number | null;
+  isCategoryOpen: boolean;
+  isLocationOpen: boolean;
+  onboardingStep: number | null;
+}
+
+type ListAction =
+  | { type: "SET_SEARCH"; payload: string }
+  | { type: "SET_CATEGORY"; payload: number | null }
+  | { type: "SET_LOCATION"; payload: number | null }
+  | { type: "TOGGLE_CATEGORY" }
+  | { type: "TOGGLE_LOCATION" }
+  | { type: "SET_ONBOARDING"; payload: number | null }
+  | { type: "NEXT_ONBOARDING" };
+
+function listReducer(state: ListState, action: ListAction): ListState {
+  switch (action.type) {
+    case "SET_SEARCH":
+      return { ...state, searchQuery: action.payload };
+    case "SET_CATEGORY":
+      return { ...state, activeCategory: action.payload };
+    case "SET_LOCATION":
+      return { ...state, activeLocation: action.payload };
+    case "TOGGLE_CATEGORY":
+      return { ...state, isCategoryOpen: !state.isCategoryOpen };
+    case "TOGGLE_LOCATION":
+      return { ...state, isLocationOpen: !state.isLocationOpen };
+    case "SET_ONBOARDING":
+      return { ...state, onboardingStep: action.payload };
+    case "NEXT_ONBOARDING":
+      return {
+        ...state,
+        onboardingStep: state.onboardingStep ? state.onboardingStep + 1 : null,
+      };
+  }
+}
+
+const listInitialState: ListState = {
+  searchQuery: "",
+  activeCategory: null,
+  activeLocation: null,
+  isCategoryOpen: false,
+  isLocationOpen: false,
+  onboardingStep: null,
+};
+
 export default function FurnitureListClient({
   initialFurniture,
   initialCategories,
   initialLocations,
 }: FurnitureListClientProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<number | null>(null);
-  const [activeLocation, setActiveLocation] = useState<number | null>(null);
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
+  const [state, dispatch] = useReducer(listReducer, listInitialState);
 
   useEffect(() => {
     const hasSeen = localStorage.getItem("hasSeenOnboarding");
-    setOnboardingStep(hasSeen ? null : 1);
+    dispatch({ type: "SET_ONBOARDING", payload: hasSeen ? null : 1 });
   }, []);
 
   const filteredFurniture = useMemo(() => {
@@ -37,20 +81,29 @@ export default function FurnitureListClient({
 
     return initialFurniture?.filter((furniture) => {
       const matchesSearch =
-        searchQuery === "" ||
-        furniture.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        state.searchQuery === "" ||
+        furniture.name
+          .toLowerCase()
+          .includes(state.searchQuery.toLowerCase()) ||
         (furniture.brand ?? "")
           .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+          .includes(state.searchQuery.toLowerCase());
 
       const matchesCategory =
-        activeCategory === null || furniture.category_id === activeCategory;
+        state.activeCategory === null ||
+        furniture.category_id === state.activeCategory;
       const matchesLocation =
-        activeLocation === null || furniture.location_id === activeLocation;
+        state.activeLocation === null ||
+        furniture.location_id === state.activeLocation;
 
       return matchesSearch && matchesCategory && matchesLocation;
     });
-  }, [initialFurniture, searchQuery, activeCategory, activeLocation]);
+  }, [
+    initialFurniture,
+    state.searchQuery,
+    state.activeCategory,
+    state.activeLocation,
+  ]);
 
   const priorityImageFurnitureIds = useMemo(() => {
     const ids: string[] = [];
@@ -62,24 +115,23 @@ export default function FurnitureListClient({
     return new Set(ids);
   }, [filteredFurniture]);
 
-  const handleOnboardingNext = () =>
-    setOnboardingStep((prev) => (prev ? prev + 1 : null));
+  const handleOnboardingNext = () => dispatch({ type: "NEXT_ONBOARDING" });
   const handleOnboardingSkip = () => {
-    setOnboardingStep(null);
+    dispatch({ type: "SET_ONBOARDING", payload: null });
     if (typeof window !== "undefined")
       localStorage.setItem("hasSeenOnboarding", "true");
   };
   const handleOnboardingComplete = () => {
-    setOnboardingStep(null);
+    dispatch({ type: "SET_ONBOARDING", payload: null });
     if (typeof window !== "undefined")
       localStorage.setItem("hasSeenOnboarding", "true");
   };
 
   return (
     <div className="container mx-auto py-4 md:py-6 px-4 md:px-12">
-      {onboardingStep && (
+      {state.onboardingStep && (
         <OnboardingOverlay
-          currentStep={onboardingStep}
+          currentStep={state.onboardingStep}
           onNext={handleOnboardingNext}
           onSkip={handleOnboardingSkip}
           onComplete={handleOnboardingComplete}
@@ -100,26 +152,28 @@ export default function FurnitureListClient({
             {/* Category Filter */}
             <div className="space-y-3">
               <button
-                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                onClick={() => dispatch({ type: "TOGGLE_CATEGORY" })}
                 className="flex items-center justify-between w-full text-sm text-kuralis-600 font-bold tracking-tighter-custom"
               >
                 <span>Category</span>
                 <FiChevronDown
                   size={16}
                   className={`transform transition-transform duration-300 ${
-                    isCategoryOpen ? "rotate-180" : ""
+                    state.isCategoryOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
               <div
                 className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${
-                  isCategoryOpen ? "max-h-96" : "max-h-0"
+                  state.isCategoryOpen ? "max-h-96" : "max-h-0"
                 }`}
               >
                 <button
-                  onClick={() => setActiveCategory(null)}
+                  onClick={() =>
+                    dispatch({ type: "SET_CATEGORY", payload: null })
+                  }
                   className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-                    activeCategory === null
+                    state.activeCategory === null
                       ? "text-kuralis-900"
                       : "text-kuralis-500 hover:text-kuralis-700"
                   }`}
@@ -129,9 +183,11 @@ export default function FurnitureListClient({
                 {initialCategories.map((category) => (
                   <button
                     key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
+                    onClick={() =>
+                      dispatch({ type: "SET_CATEGORY", payload: category.id })
+                    }
                     className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-                      activeCategory === category.id
+                      state.activeCategory === category.id
                         ? "text-kuralis-900"
                         : "text-kuralis-500 hover:text-kuralis-700"
                     }`}
@@ -145,26 +201,28 @@ export default function FurnitureListClient({
             {/* Location Filter */}
             <div className="space-y-3">
               <button
-                onClick={() => setIsLocationOpen(!isLocationOpen)}
+                onClick={() => dispatch({ type: "TOGGLE_LOCATION" })}
                 className="flex items-center justify-between w-full text-sm text-kuralis-600 font-bold tracking-tighter-custom"
               >
                 <span>Location</span>
                 <FiChevronDown
                   size={16}
                   className={`transform transition-transform duration-300 ${
-                    isLocationOpen ? "rotate-180" : ""
+                    state.isLocationOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
               <div
                 className={`space-y-3 ml-2 overflow-hidden transition-all duration-300 ${
-                  isLocationOpen ? "max-h-96" : "max-h-0"
+                  state.isLocationOpen ? "max-h-96" : "max-h-0"
                 }`}
               >
                 <button
-                  onClick={() => setActiveLocation(null)}
+                  onClick={() =>
+                    dispatch({ type: "SET_LOCATION", payload: null })
+                  }
                   className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-                    activeLocation === null
+                    state.activeLocation === null
                       ? "text-kuralis-900"
                       : "text-kuralis-500 hover:text-kuralis-700"
                   }`}
@@ -174,9 +232,11 @@ export default function FurnitureListClient({
                 {initialLocations.map((location) => (
                   <button
                     key={location.id}
-                    onClick={() => setActiveLocation(location.id)}
+                    onClick={() =>
+                      dispatch({ type: "SET_LOCATION", payload: location.id })
+                    }
                     className={`text-sm whitespace-nowrap md:w-full text-left transition-colors duration-300 font-normal tracking-tighter-custom ${
-                      activeLocation === location.id
+                      state.activeLocation === location.id
                         ? "text-kuralis-900"
                         : "text-kuralis-500 hover:text-kuralis-700"
                     }`}
@@ -196,8 +256,10 @@ export default function FurnitureListClient({
               <input
                 type="text"
                 placeholder="search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={state.searchQuery}
+                onChange={(e) =>
+                  dispatch({ type: "SET_SEARCH", payload: e.target.value })
+                }
                 className="w-full pl-10 pr-12 py-2 bg-transparent border-b border-kuralis-200 focus:border-kuralis-400 outline-none transition-colors duration-300 font-normal tracking-tighter-custom"
               />
               <FiSearch
@@ -205,9 +267,11 @@ export default function FurnitureListClient({
                 className="absolute left-0 top-1/2 -translate-y-1/2 text-kuralis-400"
               />
               <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                {searchQuery && (
+                {state.searchQuery && (
                   <button
-                    onClick={() => setSearchQuery("")}
+                    onClick={() =>
+                      dispatch({ type: "SET_SEARCH", payload: "" })
+                    }
                     className="text-kuralis-400 hover:text-kuralis-600 transition-colors duration-300"
                   >
                     <FiX size={16} />
@@ -216,10 +280,14 @@ export default function FurnitureListClient({
                 <FilterSheet
                   categories={initialCategories}
                   locations={initialLocations}
-                  activeCategory={activeCategory}
-                  activeLocation={activeLocation}
-                  onCategorySelect={setActiveCategory}
-                  onLocationSelect={setActiveLocation}
+                  activeCategory={state.activeCategory}
+                  activeLocation={state.activeLocation}
+                  onCategorySelect={(id) =>
+                    dispatch({ type: "SET_CATEGORY", payload: id })
+                  }
+                  onLocationSelect={(id) =>
+                    dispatch({ type: "SET_LOCATION", payload: id })
+                  }
                 />
               </div>
             </div>

@@ -5,13 +5,107 @@ import { useFormContext } from "react-hook-form";
 import { FiUpload } from "react-icons/fi";
 import Image from "next/image";
 import { useSupabaseClient } from "@/lib/supabase/hooks/useSupabaseClient";
-import { FurnitureEditSchema } from "@/lib/validation/furnitureSchema";
+import type { FurnitureEditSchema } from "@/lib/validation/furnitureSchema";
 
 interface Props {
   isEditing: boolean;
   imageUrl: string | null;
   selectedImage: File | null;
   setSelectedImage: (file: File | null) => void;
+}
+
+interface ImageContentProps {
+  selectedImage: File | null;
+  publicUrl: string | null;
+  isEditing: boolean;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
+  onImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function ImageContent({
+  selectedImage,
+  publicUrl,
+  isEditing,
+  fileInputRef,
+  onDrop,
+  onDragOver,
+  onImageChange,
+}: ImageContentProps) {
+  if (selectedImage) {
+    // プレビュー表示（新規選択時）
+    return (
+      <div className="relative aspect-4/3 w-full">
+        <Image
+          src={URL.createObjectURL(selectedImage)}
+          alt="Preview"
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="size-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
+          unoptimized
+        />
+      </div>
+    );
+  }
+
+  if (publicUrl) {
+    // 既存画像（変更不可）
+    return (
+      <div className="relative aspect-4/3 w-full">
+        <Image
+          src={publicUrl}
+          alt="家具画像"
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="size-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
+        />
+      </div>
+    );
+  }
+
+  if (isEditing) {
+    // 画像がなく、編集モード → アップロードUI
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onClick={() => fileInputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }
+        }}
+        className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kuralis-900"
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={onImageChange}
+          className="hidden"
+        />
+        <FiUpload
+          size={32}
+          className="mb-4 group-hover:scale-110 transition-transform duration-300"
+        />
+        <p className="text-sm text-kuralis-600 font-bold tracking-tighter-custom text-center px-6">
+          クリックまたはドラッグ＆ドロップで写真をアップロード
+        </p>
+      </div>
+    );
+  }
+
+  // 画像なし・編集不可
+  return (
+    <div className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400">
+      <FiUpload size={32} className="mb-2" />
+      <p className="text-sm">No image</p>
+    </div>
+  );
 }
 
 export default function FurnitureDetailImage({
@@ -61,17 +155,15 @@ export default function FurnitureDetailImage({
       return;
     }
 
-    if (imageUrl) {
-      if (imageUrl.startsWith("http")) {
-        // すでに public URL の場合
-        setPublicUrl(imageUrl);
-      } else {
-        // パスだけの場合は Supabase 側で公開URLを取得
-        const { publicUrl } = supabase.storage
-          .from("furniture")
-          .getPublicUrl(imageUrl).data;
-        setPublicUrl(publicUrl || null);
-      }
+    if (imageUrl.startsWith("http")) {
+      // すでに public URL の場合
+      setPublicUrl(imageUrl);
+    } else {
+      // パスだけの場合は Supabase 側で公開URLを取得
+      const { publicUrl } = supabase.storage
+        .from("furniture")
+        .getPublicUrl(imageUrl).data;
+      setPublicUrl(publicUrl || null);
     }
   }, [imageUrl, supabase]);
 
@@ -129,70 +221,6 @@ export default function FurnitureDetailImage({
     event.preventDefault();
   };
 
-  const renderImage = () => {
-    if (selectedImage) {
-      // プレビュー表示（新規選択時）
-      return (
-        <div className="relative aspect-4/3 w-full">
-          <Image
-            src={URL.createObjectURL(selectedImage)}
-            alt="Preview"
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="size-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
-            unoptimized
-          />
-        </div>
-      );
-    } else if (publicUrl) {
-      // 既存画像（変更不可）
-      return (
-        <div className="relative aspect-4/3 w-full">
-          <Image
-            src={publicUrl}
-            alt="家具画像"
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="size-full object-cover transition-transform duration-700 ease-natural group-hover:scale-105"
-          />
-        </div>
-      );
-    } else if (isEditing) {
-      // 画像がなく、編集モード → アップロードUI
-      return (
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onClick={() => fileInputRef.current?.click()}
-          className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400 cursor-pointer group"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="hidden"
-          />
-          <FiUpload
-            size={32}
-            className="mb-4 group-hover:scale-110 transition-transform duration-300"
-          />
-          <p className="text-sm text-kuralis-600 font-bold tracking-tighter-custom text-center px-6">
-            クリックまたはドラッグ＆ドロップで写真をアップロード
-          </p>
-        </div>
-      );
-    } else {
-      // 画像なし・編集不可
-      return (
-        <div className="aspect-4/3 size-full flex flex-col items-center justify-center text-kuralis-400">
-          <FiUpload size={32} className="mb-2" />
-          <p className="text-sm">No image</p>
-        </div>
-      );
-    }
-  };
-
   return (
     <div
       ref={imageContainerRef}
@@ -204,7 +232,15 @@ export default function FurnitureDetailImage({
       className="sticky top-4 z-10 md:static"
     >
       <div className="bg-kuralis-100 overflow-hidden shadow-lg relative group">
-        {renderImage()}
+        <ImageContent
+          selectedImage={selectedImage}
+          publicUrl={publicUrl}
+          isEditing={isEditing}
+          fileInputRef={fileInputRef}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onImageChange={handleImageChange}
+        />
       </div>
       {errors.image && typeof errors.image.message === "string" && (
         <p className="mt-2 text-red-500 text-sm font-bold tracking-tighter-custom">

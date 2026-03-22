@@ -124,9 +124,9 @@ export default async function Page() {
 
       {/* Value Props */}
       <section className="max-w-6xl mx-auto px-4 py-32 grid md:grid-cols-3 gap-12">
-        {valueProps.map((item, index) => (
+        {valueProps.map((item) => (
           <div
-            key={index}
+            key={item.title}
             className="group p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             <div className="size-12 bg-kuralis-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-kuralis-200 transition-colors">

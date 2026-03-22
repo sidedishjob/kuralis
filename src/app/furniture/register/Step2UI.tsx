@@ -92,10 +92,14 @@ export default function Step2UI({
 
       {/* Name Input */}
       <div>
-        <label className="text-sm tracking-tighter-custom text-kuralis-600 mb-4 block">
+        <label
+          htmlFor="furniture-name"
+          className="text-sm tracking-tighter-custom text-kuralis-600 mb-4 block"
+        >
           家具名
         </label>
         <input
+          id="furniture-name"
           type="text"
           placeholder="例：ウォールナットダイニングテーブル"
           className="w-full px-6 py-4 border border-kuralis-200 rounded-sm focus:border-kuralis-900 outline-none transition-all duration-500 tracking-tighter-custom bg-white/80 backdrop-blur-sm focus:bg-white"
@@ -108,7 +112,10 @@ export default function Step2UI({
 
       {/* Image Upload */}
       <div>
-        <label className="text-sm tracking-tighter-custom text-kuralis-600 mb-4 block">
+        <label
+          htmlFor="furniture-image"
+          className="text-sm tracking-tighter-custom text-kuralis-600 mb-4 block"
+        >
           写真
           <span className="ml-2 text-xs text-kuralis-500 bg-kuralis-100 rounded px-2 py-0.5">
             任意

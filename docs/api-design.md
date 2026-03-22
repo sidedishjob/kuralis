@@ -120,7 +120,17 @@ T
 - レスポンス:
 
   ```typescript
-  MaintenanceTask; // 登録されたタスクオブジェクトを直接返却
+  // maintenance_tasks テーブルの Row を直接返却
+  {
+    id: string;
+    furniture_id: string;
+    name: string;
+    cycle_value: number;
+    cycle_unit: MaintenanceCycleUnit;
+    description: string | null;
+    is_active: boolean;
+    created_at: string;
+  }
   ```
 
 - ステータス: `200`
